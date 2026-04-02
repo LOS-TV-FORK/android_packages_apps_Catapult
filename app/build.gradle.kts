@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -10,24 +10,24 @@ plugins {
 
 android {
     namespace = "org.lineageos.tv.launcher"
-    compileSdk = 36
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "org.lineageos.tv.launcher"
         minSdk = 31
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        targetSdk = 34
+        versionCode = 140001
+        versionName = "14.0.1"
     }
 
-    signingConfigs {
-        create("testKey") {
-            storeFile = file("test-signing.jks")
-            storePassword = "android"
-            keyAlias = "testkey"
-            keyPassword = "android"
-        }
-    }
+     signingConfigs {
+         create("platform") {
+             storeFile = file("platform.jks")
+             storePassword = "android"
+             keyAlias = "platform"
+             keyPassword = "android"
+         }
+     }
 
     buildTypes {
         release {
@@ -37,7 +37,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("testKey")
+            signingConfig = signingConfigs.getByName("platform")
         }
         debug {
             applicationIdSuffix = ".dev"
