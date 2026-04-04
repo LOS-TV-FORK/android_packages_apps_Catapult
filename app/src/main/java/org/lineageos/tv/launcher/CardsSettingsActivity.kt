@@ -7,11 +7,10 @@ package org.lineageos.tv.launcher
 
 import android.os.Bundle
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.SeekBar
 import android.widget.TextView
 import androidx.preference.PreferenceManager
 import com.google.android.material.materialswitch.MaterialSwitch
+import com.google.android.material.slider.Slider
 import org.lineageos.tv.launcher.ext.allAppsGrid
 import org.lineageos.tv.launcher.ext.allAppsGridColumns
 import org.lineageos.tv.launcher.ext.appCardSize
@@ -23,8 +22,6 @@ class CardsSettingsActivity : ModalActivity(R.layout.activity_cards_settings) {
 
     private val prefs by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
 
-    private val cardSizeValues = listOf(60, 70, 80, 90, 100, 110, 120, 130, 140)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupCardSizeSettings()
@@ -32,15 +29,11 @@ class CardsSettingsActivity : ModalActivity(R.layout.activity_cards_settings) {
 
     private fun setupCardSizeSettings() {
         val allAppsGridSwitch = findViewById<MaterialSwitch>(R.id.all_apps_grid_switch)!!
-        val gridColumnsSection = findViewById<LinearLayout>(R.id.grid_columns_section)!!
-        val gridColumnsSeekBar = findViewById<SeekBar>(R.id.grid_columns_seekbar)!!
+        val gridColumnsSlider = findViewById<Slider>(R.id.grid_columns_slider)!!
         val gridColumnsValue = findViewById<TextView>(R.id.grid_columns_value)!!
-        val appCardSizeSection = findViewById<LinearLayout>(R.id.app_card_size_section)!!
 
         allAppsGridSwitch.isChecked = prefs.allAppsGrid
         
-        // Grid mode: show columns, hide card size
-        // Carousel mode: hide columns, show card size
         updateSettingsVisibility(prefs.allAppsGrid)
 
         allAppsGridSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -48,90 +41,68 @@ class CardsSettingsActivity : ModalActivity(R.layout.activity_cards_settings) {
             updateSettingsVisibility(isChecked)
         }
 
-        gridColumnsSeekBar.progress = prefs.allAppsGridColumns - 4
+        gridColumnsSlider.value = prefs.allAppsGridColumns.toFloat()
         gridColumnsValue.text = prefs.allAppsGridColumns.toString()
 
-        gridColumnsSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val value = progress + 4
-                gridColumnsValue.text = value.toString()
-                if (fromUser) {
-                    prefs.allAppsGridColumns = value
-                }
+        gridColumnsSlider.addOnChangeListener { _, value, fromUser ->
+            val intValue = value.toInt()
+            gridColumnsValue.text = intValue.toString()
+            if (fromUser) {
+                prefs.allAppsGridColumns = intValue
             }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        }
 
-        val appCardSeekBar = findViewById<SeekBar>(R.id.app_card_size_seekbar)!!
+        val appCardSlider = findViewById<Slider>(R.id.app_card_size_slider)!!
         val appCardValue = findViewById<TextView>(R.id.app_card_size_value)!!
 
-        val favoriteCardSeekBar = findViewById<SeekBar>(R.id.favorite_card_size_seekbar)!!
+        val favoriteCardSlider = findViewById<Slider>(R.id.favorite_card_size_slider)!!
         val favoriteCardValue = findViewById<TextView>(R.id.favorite_card_size_value)!!
 
-        val watchNextCardSeekBar = findViewById<SeekBar>(R.id.watch_next_card_size_seekbar)!!
+        val watchNextCardSlider = findViewById<Slider>(R.id.watch_next_card_size_slider)!!
         val watchNextCardValue = findViewById<TextView>(R.id.watch_next_card_size_value)!!
 
-        appCardSeekBar.progress = cardSizeValues.indexOf(prefs.appCardSize.coerceIn(60, 140))
-        favoriteCardSeekBar.progress = cardSizeValues.indexOf(prefs.favoriteCardSize.coerceIn(60, 140))
-        watchNextCardSeekBar.progress = cardSizeValues.indexOf(prefs.watchNextCardSize.coerceIn(60, 140))
+        appCardSlider.value = prefs.appCardSize.coerceIn(60, 140).toFloat()
+        favoriteCardSlider.value = prefs.favoriteCardSize.coerceIn(60, 140).toFloat()
+        watchNextCardSlider.value = prefs.watchNextCardSize.coerceIn(60, 140).toFloat()
 
-        updateCardSizeLabel(appCardValue, cardSizeValues[appCardSeekBar.progress])
-        updateCardSizeLabel(favoriteCardValue, cardSizeValues[favoriteCardSeekBar.progress])
-        updateCardSizeLabel(watchNextCardValue, cardSizeValues[watchNextCardSeekBar.progress])
+        updateCardSizeLabel(appCardValue, appCardSlider.value.toInt())
+        updateCardSizeLabel(favoriteCardValue, favoriteCardSlider.value.toInt())
+        updateCardSizeLabel(watchNextCardValue, watchNextCardSlider.value.toInt())
 
-        appCardSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val value = cardSizeValues[progress]
-                updateCardSizeLabel(appCardValue, value)
-                if (fromUser) {
-                    prefs.appCardSize = value
-                }
+        appCardSlider.addOnChangeListener { _, value, fromUser ->
+            updateCardSizeLabel(appCardValue, value.toInt())
+            if (fromUser) {
+                prefs.appCardSize = value.toInt()
             }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        }
 
-        favoriteCardSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val value = cardSizeValues[progress]
-                updateCardSizeLabel(favoriteCardValue, value)
-                if (fromUser) {
-                    prefs.favoriteCardSize = value
-                }
+        favoriteCardSlider.addOnChangeListener { _, value, fromUser ->
+            updateCardSizeLabel(favoriteCardValue, value.toInt())
+            if (fromUser) {
+                prefs.favoriteCardSize = value.toInt()
             }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        }
 
-        watchNextCardSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val value = cardSizeValues[progress]
-                updateCardSizeLabel(watchNextCardValue, value)
-                if (fromUser) {
-                    prefs.watchNextCardSize = value
-                }
+        watchNextCardSlider.addOnChangeListener { _, value, fromUser ->
+            updateCardSizeLabel(watchNextCardValue, value.toInt())
+            if (fromUser) {
+                prefs.watchNextCardSize = value.toInt()
             }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        }
 
-        val cornerRadiusSeekBar = findViewById<SeekBar>(R.id.card_corner_radius_seekbar)!!
+        val cornerRadiusSlider = findViewById<Slider>(R.id.card_corner_radius_slider)!!
         val cornerRadiusValue = findViewById<TextView>(R.id.card_corner_radius_value)!!
 
-        cornerRadiusSeekBar.progress = prefs.cardCornerRadius.coerceIn(0, 20)
-        cornerRadiusValue.text = "${cornerRadiusSeekBar.progress}dp"
+        cornerRadiusSlider.value = prefs.cardCornerRadius.coerceIn(0, 20).toFloat()
+        cornerRadiusValue.text = "${cornerRadiusSlider.value.toInt()}dp"
 
-        cornerRadiusSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                cornerRadiusValue.text = "${progress}dp"
-                if (fromUser) {
-                    prefs.cardCornerRadius = progress
-                }
+        cornerRadiusSlider.addOnChangeListener { _, value, fromUser ->
+            val intValue = value.toInt()
+            cornerRadiusValue.text = "${intValue}dp"
+            if (fromUser) {
+                prefs.cardCornerRadius = intValue
             }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        }
     }
 
     private fun updateCardSizeLabel(textView: TextView, value: Int) {
@@ -139,11 +110,9 @@ class CardsSettingsActivity : ModalActivity(R.layout.activity_cards_settings) {
     }
 
     private fun updateSettingsVisibility(isGridMode: Boolean) {
-        val gridColumnsSection = findViewById<LinearLayout>(R.id.grid_columns_section)!!
-        val appCardSizeSection = findViewById<LinearLayout>(R.id.app_card_size_section)!!
+        val gridColumnsSection = findViewById<View>(R.id.grid_columns_section)!!
+        val appCardSizeSection = findViewById<View>(R.id.app_card_size_section)!!
         
-        // Grid mode: show columns, hide card size
-        // Carousel mode: hide columns, show card size
         gridColumnsSection.visibility = if (isGridMode) View.VISIBLE else View.GONE
         appCardSizeSection.visibility = if (isGridMode) View.GONE else View.VISIBLE
     }
