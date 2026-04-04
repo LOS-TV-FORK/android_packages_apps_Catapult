@@ -66,4 +66,6 @@
     <string name="all_apps_grid_columns">Grid columns</string>
     <string name="card_corner_radius">Card corner radius</string>
     <string name="ok">OK</string>
+    <string name="overlay_title">Catapult Overlay</string>
+    <string name="overlay_hint">Double HOME, ESC или BACK для закрытия</string>
 </resources>

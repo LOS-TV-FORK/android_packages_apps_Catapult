@@ -17,6 +17,7 @@ import android.os.Bundle
 import android.transition.Slide
 import android.transition.TransitionManager
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -72,6 +73,24 @@ import org.lineageos.tv.launcher.viewmodels.NotificationViewModel
 import java.util.Locale
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
+    companion object {
+        @Volatile
+        private var instance: MainActivity? = null
+
+        var isMainActivityVisible = false
+        private var lastResumedTime = 0L
+
+        fun getLastResumedTime() = lastResumedTime
+
+        fun finishSelf() {
+            instance?.finish()
+        }
+
+        fun finishWithOverlay() {
+            instance?.finish()
+        }
+    }
+
     // Card size tracking
     private var lastAppCardSize = 100
     private var lastFavoriteCardSize = 100
@@ -192,6 +211,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     @Suppress("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        instance = this
+
+        // Start global hotkey service
+        startService(Intent(this, GlobalHotkeyService::class.java))
 
         applyBackground()
 
@@ -218,11 +241,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                     width = (350 * resources.displayMetrics.density).toInt()
                 }
             }
-            dialog.findViewById<TextView>(R.id.system_settings_item)?.setOnClickListener {
-                startActivity(Intent(android.provider.Settings.ACTION_SETTINGS))
+            dialog.findViewById<View>(R.id.system_settings_item)?.setOnClickListener {
+                startActivity(Intent(android.provider.Settings.ACTION_SETTINGS).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                })
                 dialog.dismiss()
             }
-            dialog.findViewById<TextView>(R.id.launcher_settings_item)?.setOnClickListener {
+            dialog.findViewById<View>(R.id.launcher_settings_item)?.setOnClickListener {
                 startActivity(Intent(this@MainActivity, LauncherSettingsActivity::class.java))
                 dialog.dismiss()
             }
@@ -290,8 +315,15 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     override fun onResume() {
         super.onResume()
+        isMainActivityVisible = true
+        lastResumedTime = System.currentTimeMillis()
         applyBackground()
         checkCardSizeChanges()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        isMainActivityVisible = false
     }
 
     private fun checkCardSizeChanges() {
