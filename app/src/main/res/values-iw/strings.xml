@@ -57,5 +57,15 @@
     <string name="recent_apps_size">גודל כרטיסים</string>
     <string name="recent_apps_size_percent">%d%% מגובה המסך</string>
     <string name="recent_apps_thumbnails">הצג תמונות ממוזערות</string>
-    <string name="recent_apps_thumbnails_hint">בקרוב</string>
+    <string name="recent_apps_thumbnails_hint">תצוגה מקדימה של המסך האחרון של האפליקציה בכרטיסים</string>
+    <string name="app_info">פרטי האפליקציה</string>
+
+    <!-- App cards settings -->
+    <string name="app_cards">כרטיסי אפליקציות</string>
+    <string name="app_cards_size">גודל כרטיסי אפליקציות</string>
+    <string name="favorite_cards_size">גודל כרטיסי מועדפים</string>
+    <string name="watch_next_cards_size">גודל כרטיסי \u0027צפה בבא\u0027</string>
+    <string name="card_corner_radius">רדיוס פינות הכרטיסים</string>
+    <string name="all_apps_grid_view">תצוגת רשת של כל היישומונים</string>
+    <string name="all_apps_grid_columns">עמודות הרשת</string>
 </resources>

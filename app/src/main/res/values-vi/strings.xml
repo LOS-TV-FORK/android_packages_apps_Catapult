@@ -57,5 +57,15 @@
     <string name="recent_apps_size">Kích thước thẻ</string>
     <string name="recent_apps_size_percent">%d%% chiều cao màn hình</string>
     <string name="recent_apps_thumbnails">Hiển thị hình thu nhỏ</string>
-    <string name="recent_apps_thumbnails_hint">Sắp ra mắt</string>
+    <string name="recent_apps_thumbnails_hint">Xem trước màn hình cuối cùng của ứng dụng trên thẻ</string>
+    <string name="app_info">Thông tin ứng dụng</string>
+
+    <!-- App cards settings -->
+    <string name="app_cards">Thẻ ứng dụng</string>
+    <string name="app_cards_size">Kích thước thẻ ứng dụng</string>
+    <string name="favorite_cards_size">Kích thước thẻ yêu thích</string>
+    <string name="watch_next_cards_size">Kích thước thẻ "Xem tiếp"</string>
+    <string name="card_corner_radius">Độ bo góc của thẻ</string>
+    <string name="all_apps_grid_view">Lưới tất cả ứng dụng</string>
+    <string name="all_apps_grid_columns">Cột của lưới</string>
 </resources>

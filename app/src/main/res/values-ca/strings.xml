@@ -57,5 +57,15 @@
     <string name="recent_apps_size">Mida de les targetes</string>
     <string name="recent_apps_size_percent">%d%% de l\'alçada de la pantalla</string>
     <string name="recent_apps_thumbnails">Mostra miniatures</string>
-    <string name="recent_apps_thumbnails_hint">Properament</string>
+    <string name="recent_apps_thumbnails_hint">Vista prèvia de l\'última pantalla de l\'aplicació a les targetes</string>
+    <string name="app_info">Informació de l\'aplicació</string>
+
+    <!-- App cards settings -->
+    <string name="app_cards">Targetes d\'aplicacions</string>
+    <string name="app_cards_size">Mida de les targetes d\'aplicacions</string>
+    <string name="favorite_cards_size">Mida de les targetes de preferits</string>
+    <string name="watch_next_cards_size">Mida de les targetes «Veure el següent»</string>
+    <string name="card_corner_radius">Radi de les cantonades de les targetes</string>
+    <string name="all_apps_grid_view">Quadrícula de totes les aplicacions</string>
+    <string name="all_apps_grid_columns">Columnes de la quadrícula</string>
 </resources>

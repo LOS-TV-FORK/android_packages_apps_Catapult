@@ -57,5 +57,15 @@
     <string name="recent_apps_size">اندازه کارت‌ها</string>
     <string name="recent_apps_size_percent">%d%% ارتفاع صفحه</string>
     <string name="recent_apps_thumbnails">نمایش تصاویر کوچک</string>
-    <string name="recent_apps_thumbnails_hint">به‌زودی</string>
+    <string name="recent_apps_thumbnails_hint">پیش‌نماهای آخرین صفحهٔ برنامه در کارت‌ها</string>
+    <string name="app_info">اطلاعات برنامه</string>
+
+    <!-- App cards settings -->
+    <string name="app_cards">کارت‌های برنامه</string>
+    <string name="app_cards_size">اندازه کارت‌های برنامه</string>
+    <string name="favorite_cards_size">اندازه کارت‌های دلخواه</string>
+    <string name="watch_next_cards_size">اندازه کارت‌های «تماشای بعدی»</string>
+    <string name="card_corner_radius">شعاع گوشه‌های کارت</string>
+    <string name="all_apps_grid_view">نمای شبکه‌ای همهٔ برنامه‌ها</string>
+    <string name="all_apps_grid_columns">ستون‌های شبکه</string>
 </resources>

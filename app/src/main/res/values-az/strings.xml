@@ -57,5 +57,15 @@
     <string name="recent_apps_size">Kart ölçüsü</string>
     <string name="recent_apps_size_percent">Ekran hündürlüyünün %d%%</string>
     <string name="recent_apps_thumbnails">Kiçik şəkilləri göstər</string>
-    <string name="recent_apps_thumbnails_hint">Tezliklə</string>
+    <string name="recent_apps_thumbnails_hint">"İndi" kartlarda tətbiqin son ekranının ön görünüşü</string>
+    <string name="app_info">Tətbiq haqqında</string>
+
+    <!-- App cards settings -->
+    <string name="app_cards">Tətbiq kartları</string>
+    <string name="app_cards_size">Tətbiq kartlarının ölçüsü</string>
+    <string name="favorite_cards_size">Sevimli kartların ölçüsü</string>
+    <string name="watch_next_cards_size">«Növbətiyə bax» kartlarının ölçüsü</string>
+    <string name="card_corner_radius">Kart künclərinin radiusu</string>
+    <string name="all_apps_grid_view">Bütün tətbiqlərin toru</string>
+    <string name="all_apps_grid_columns">Tor sütunları</string>
 </resources>

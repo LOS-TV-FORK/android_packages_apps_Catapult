@@ -38,4 +38,17 @@
     <string name="connected">Tilkopla</string>
     <string name="mic_assistant">Søk med mikrofonen</string>
     <string name="keyboard_assistant">Søk med tastaturet</string>
+    <string name="app_info">Informasjon om appen</string>
+
+    <!-- App cards settings -->
+    <string name="app_cards">App-kort</string>
+    <string name="app_cards_size">Storleik på app-kort</string>
+    <string name="favorite_cards_size">Storleik på favoritt-kort</string>
+    <string name="watch_next_cards_size">Storleik på «Sjå neste»-kort</string>
+    <string name="card_corner_radius">Hjørneradius på kort</string>
+    <string name="all_apps_grid_view">Rutenett for alle appar</string>
+    <string name="all_apps_grid_columns">Rutekolonner</string>
+
+    <string name="recent_apps_thumbnails">Vis miniatyrar</string>
+    <string name="recent_apps_thumbnails_hint">Førehandsvising av appen sin siste skjerm på korta</string>
 </resources>

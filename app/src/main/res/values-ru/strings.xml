@@ -51,7 +51,7 @@
     <string name="recent_apps_size">Размер карточек</string>
     <string name="recent_apps_size_percent">%d%% от высоты экрана</string>
     <string name="recent_apps_thumbnails">Показывать превью</string>
-    <string name="recent_apps_thumbnails_hint">Скоро</string>
+    <string name="recent_apps_thumbnails_hint">Превью последнего экрана приложения в карточках</string>
 
     <string name="additional">Дополнительно</string>
     <string name="external_launcher">Сторонний лаунчер</string>
@@ -59,4 +59,15 @@
     <string name="external_launcher_none">Не использовать сторонний лаунчер</string>
     <string name="external_launcher_not_found">Других домашних лаунчеров не найдено.</string>
     <string name="external_launcher_picker">Catapult: выбор лаунчера</string>
+
+    <string name="app_info">Информация о приложении</string>
+
+    <!-- App cards settings -->
+    <string name="app_cards">Карточки приложений</string>
+    <string name="app_cards_size">Размер карточек приложений</string>
+    <string name="favorite_cards_size">Размер карточек избранного</string>
+    <string name="watch_next_cards_size">Размер карточек «Смотреть далее»</string>
+    <string name="card_corner_radius">Радиус скругления карточек</string>
+    <string name="all_apps_grid_view">Сетка всех приложений</string>
+    <string name="all_apps_grid_columns">Столбцов в сетке</string>
 </resources>

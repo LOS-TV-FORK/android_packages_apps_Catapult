@@ -57,5 +57,15 @@
     <string name="recent_apps_size">Tamaño de tarjetas</string>
     <string name="recent_apps_size_percent">%d%% de la altura de la pantalla</string>
     <string name="recent_apps_thumbnails">Mostrar miniaturas</string>
-    <string name="recent_apps_thumbnails_hint">Próximamente</string>
+    <string name="recent_apps_thumbnails_hint">Vista previa de la última pantalla de la app en las tarjetas</string>
+    <string name="app_info">Información de la app</string>
+
+    <!-- App cards settings -->
+    <string name="app_cards">Tarjetas de aplicaciones</string>
+    <string name="app_cards_size">Tamaño de las tarjetas de aplicaciones</string>
+    <string name="favorite_cards_size">Tamaño de tarjetas de favoritos</string>
+    <string name="watch_next_cards_size">Tamaño de tarjetas «Ver siguiente»</string>
+    <string name="card_corner_radius">Redondeo de esquinas de las tarjetas</string>
+    <string name="all_apps_grid_view">Cuadrícula de todas las apps</string>
+    <string name="all_apps_grid_columns">Columnas de la cuadrícula</string>
 </resources>

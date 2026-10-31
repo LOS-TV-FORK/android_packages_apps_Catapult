@@ -54,5 +54,15 @@
     <string name="recent_apps_size">卡片大小</string>
     <string name="recent_apps_size_percent">螢幕高度的%d%%</string>
     <string name="recent_apps_thumbnails">顯示縮圖</string>
-    <string name="recent_apps_thumbnails_hint">即將推出</string>
+    <string name="recent_apps_thumbnails_hint">在卡片中顯示應用程式的最後畫面</string>
+    <string name="app_info">應用程式資訊</string>
+
+    <!-- App cards settings -->
+    <string name="app_cards">應用程式卡片</string>
+    <string name="app_cards_size">應用程式卡片大小</string>
+    <string name="favorite_cards_size">我的最愛卡片大小</string>
+    <string name="watch_next_cards_size">"接下來觀看"卡片大小</string>
+    <string name="card_corner_radius">卡片圓角半徑</string>
+    <string name="all_apps_grid_view">所有應用程式網格</string>
+    <string name="all_apps_grid_columns">網格欄數</string>
 </resources>

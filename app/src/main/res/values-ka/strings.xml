@@ -38,4 +38,17 @@
     <string name="connected">შეერთებულია</string>
     <string name="mic_assistant">ძიება მიკროფონით</string>
     <string name="keyboard_assistant">ძიება კლავიატურით</string>
+    <string name="app_info">აპის მონაცემები</string>
+
+    <!-- App cards settings -->
+    <string name="app_cards">აპლიკაციების ქართები</string>
+    <string name="app_cards_size">აპლიკაციების ქართების ზომა</string>
+    <string name="favorite_cards_size">რჩეულების ქართების ზომა</string>
+    <string name="watch_next_cards_size">«შემდეგის ყურება»-ის ქართების ზომა</string>
+    <string name="card_corner_radius">ქარტების კუთხეების რადიუსი</string>
+    <string name="all_apps_grid_view">ყველა პროგრამის ბადე</string>
+    <string name="all_apps_grid_columns">ბადის სვეტები</string>
+
+    <string name="recent_apps_thumbnails">მინიატურების ჩვენება</string>
+    <string name="recent_apps_thumbnails_hint">აპლიკაციის ბოლო ეკრანის გადახედვა ქარტებზე</string>
 </resources>

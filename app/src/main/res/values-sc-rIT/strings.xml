@@ -38,4 +38,17 @@
     <string name="connected">Connètidu</string>
     <string name="mic_assistant">Chirca impreende su micròfonu</string>
     <string name="keyboard_assistant">Chirca impreende su tecladu</string>
+    <string name="app_info">Informatziones de s\'aplicatzione</string>
+
+    <!-- App cards settings -->
+    <string name="app_cards">Cartas de is aplicatziones</string>
+    <string name="app_cards_size">Mannària de is cartas de is aplicatziones</string>
+    <string name="favorite_cards_size">Mannària de is cartas preferidas</string>
+    <string name="watch_next_cards_size">Mannària de is cartas "Càstia cussu imbeniente"</string>
+    <string name="card_corner_radius">Ràdiu de is cantones de is cartas</string>
+    <string name="all_apps_grid_view">Grilia de totu is aplicatziones</string>
+    <string name="all_apps_grid_columns">Colunnas de sa grilia</string>
+
+    <string name="recent_apps_thumbnails">Amustra miniaturas</string>
+    <string name="recent_apps_thumbnails_hint">Antiprima de s\'ùrtima scrinada de s\'aplicatzione in is cartas</string>
 </resources>

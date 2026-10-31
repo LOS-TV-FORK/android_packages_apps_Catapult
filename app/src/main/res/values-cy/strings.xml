@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     SPDX-FileCopyrightText: The LineageOS Project
+     SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
      SPDX-License-Identifier: Apache-2.0
 -->
 <resources>
-    <string name="all_apps">Pob ap</string>
     <string name="no_notifications">Dim hysbysiadau</string>
-    <string name="disabled">Wedi\'i analluogi</string>
-    <string name="home_role_request_dialog_negative">Peidio â gofyn eto</string>
-    <string name="allow_notification_access">Caniatáu mynediad at hysbysiadau</string>
-    <string name="dismiss">Diystyru</string>
+    <string name="app_info">Gwybodaeth yr ap</string>
+
+    <!-- App cards settings -->
+    <string name="app_cards">Cerdiau apiau</string>
+    <string name="app_cards_size">Maint y cerdiau apiau</string>
+    <string name="favorite_cards_size">Maint y cerdiau ffefrynnau</string>
+    <string name="watch_next_cards_size">Maint y cerdiau „Gwylio nesaf“</string>
+    <string name="card_corner_radius">Radiws corneli\'r cerdiau</string>
+    <string name="all_apps_grid_view">Grid pob ap</string>
+    <string name="all_apps_grid_columns">Colofnau\'r grid</string>
+
+    <string name="recent_apps_thumbnails">Dangos mân-luniau</string>
+    <string name="recent_apps_thumbnails_hint">Rhagolwg o sgrin olaf yr ap ar y cerdiau</string>
 </resources>

@@ -38,4 +38,17 @@
     <string name="connected">باغلاندى</string>
     <string name="mic_assistant">مىكروفون ئىشلىتىپ ئىزدە</string>
     <string name="keyboard_assistant">ھەرپتاختا ئىشلىتىپ ئىزدە</string>
+    <string name="app_info">ئەپ سانلىق مەلۇمات</string>
+
+    <!-- App cards settings -->
+    <string name="app_cards">ئەپ كارتىلىرى</string>
+    <string name="app_cards_size">ئەپ كارتىلىرىنىڭ چوڭلۇقى</string>
+    <string name="favorite_cards_size">سۆيىدىغان كارتىلارنىڭ چوڭلۇقى</string>
+    <string name="watch_next_cards_size">"كېيىنكى مەزمۇن" كارتىلىرىنىڭ چوڭلۇقى</string>
+    <string name="card_corner_radius">كارتا بۇلۇڭلىرىنىڭ چەمبىرىكى</string>
+    <string name="all_apps_grid_view">ئەپلەرنىڭ ھەممىسىنى كۆرسەتكۈسى</string>
+    <string name="all_apps_grid_columns">كۆرسەتكۈنىڭ ئىستونلىرى</string>
+
+    <string name="recent_apps_thumbnails">كىچىك رەسىملەرنى كۆرسەت</string>
+    <string name="recent_apps_thumbnails_hint">ئەپنىڭ ئاخىرقى ئېكرانىنى كارتا ئۆچرەتلىرىدە كۆرسىتىدۇ</string>
 </resources>

@@ -49,5 +49,15 @@
     <string name="recent_apps_size">Velikost karet</string>
     <string name="recent_apps_size_percent">%d%% výšky obrazovky</string>
     <string name="recent_apps_thumbnails">Zobrazit náhledy</string>
-    <string name="recent_apps_thumbnails_hint">Již brzy</string>
+    <string name="recent_apps_thumbnails_hint">Náhledy poslední obrazovky aplikace na kartách</string>
+    <string name="app_info">O aplikaci</string>
+
+    <!-- App cards settings -->
+    <string name="app_cards">Karty aplikací</string>
+    <string name="app_cards_size">Velikost karet aplikací</string>
+    <string name="favorite_cards_size">Velikost karet oblíbených</string>
+    <string name="watch_next_cards_size">Velikost karet „Zhlédnout další“</string>
+    <string name="card_corner_radius">Zaoblení rohů karet</string>
+    <string name="all_apps_grid_view">Mřížka všech aplikací</string>
+    <string name="all_apps_grid_columns">Sloupce mřížky</string>
 </resources>

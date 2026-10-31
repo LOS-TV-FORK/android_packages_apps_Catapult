@@ -57,5 +57,15 @@
     <string name="recent_apps_size">Kartengröße</string>
     <string name="recent_apps_size_percent">%d%% der Bildschirmhöhe</string>
     <string name="recent_apps_thumbnails">Miniaturansichten anzeigen</string>
-    <string name="recent_apps_thumbnails_hint">Bald verfügbar</string>
+    <string name="recent_apps_thumbnails_hint">Vorschau des letzten App-Bildschirms auf den Karten</string>
+    <string name="app_info">App-Info</string>
+
+    <!-- App cards settings -->
+    <string name="app_cards">App-Karten</string>
+    <string name="app_cards_size">Größe der App-Karten</string>
+    <string name="favorite_cards_size">Größe der Favoriten-Karten</string>
+    <string name="watch_next_cards_size">Größe der „Als Nächstes ansehen“-Karten</string>
+    <string name="card_corner_radius">Eckradius der Karten</string>
+    <string name="all_apps_grid_view">Raster aller Apps</string>
+    <string name="all_apps_grid_columns">Rasterspalten</string>
 </resources>

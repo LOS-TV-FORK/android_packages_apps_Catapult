@@ -9,4 +9,17 @@
     <string name="system_modal">Opciones del sistema</string>
     <string name="system_settings">Configuración del sistema</string>
     <string name="launcher_settings">Configuración del launcher</string>
+    <string name="app_info">Información de la aplicación</string>
+
+    <!-- App cards settings -->
+    <string name="app_cards">Tarxetes d\'aplicaciones</string>
+    <string name="app_cards_size">Tamañu de les tarxetes d\'aplicaciones</string>
+    <string name="favorite_cards_size">Tamañu de les tarxetes de favoritos</string>
+    <string name="watch_next_cards_size">Tamañu de tarxetes «Ver lo siguiente»</string>
+    <string name="card_corner_radius">Radiu d\'esquina de les tarxetes</string>
+    <string name="all_apps_grid_view">Rejilla de toes les aplicaciones</string>
+    <string name="all_apps_grid_columns">Columnes de la rejilla</string>
+
+    <string name="recent_apps_thumbnails">Amosar miniatures</string>
+    <string name="recent_apps_thumbnails_hint">Previsualización de la postrera pantalla de l\'aplicación en les tarxetes</string>
 </resources>

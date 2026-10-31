@@ -57,5 +57,15 @@
     <string name="recent_apps_size">Tamanho dos cartões</string>
     <string name="recent_apps_size_percent">%d%% da altura do ecrã</string>
     <string name="recent_apps_thumbnails">Mostrar miniaturas</string>
-    <string name="recent_apps_thumbnails_hint">Em breve</string>
+    <string name="recent_apps_thumbnails_hint">Pré-visualização do último ecrã da aplicação nos cartões</string>
+    <string name="app_info">Info da app</string>
+
+    <!-- App cards settings -->
+    <string name="app_cards">Cartões de aplicações</string>
+    <string name="app_cards_size">Tamanho dos cartões de aplicações</string>
+    <string name="favorite_cards_size">Tamanho dos cartões de favoritas</string>
+    <string name="watch_next_cards_size">Tamanho dos cartões "Ver a seguir"</string>
+    <string name="card_corner_radius">Arredondamento dos cantos dos cartões</string>
+    <string name="all_apps_grid_view">Grelha de todas as aplicações</string>
+    <string name="all_apps_grid_columns">Colunas da grelha</string>
 </resources>

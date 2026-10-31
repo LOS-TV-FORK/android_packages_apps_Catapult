@@ -57,5 +57,15 @@
     <string name="recent_apps_size">Dimensione schede</string>
     <string name="recent_apps_size_percent">%d%% dell\'altezza dello schermo</string>
     <string name="recent_apps_thumbnails">Mostra miniature</string>
-    <string name="recent_apps_thumbnails_hint">In arrivo</string>
+    <string name="recent_apps_thumbnails_hint">Anteprima dell\'ultima schermata dell\'app sulle schede</string>
+    <string name="app_info">Informazioni app</string>
+
+    <!-- App cards settings -->
+    <string name="app_cards">Schede delle app</string>
+    <string name="app_cards_size">Dimensione delle schede delle app</string>
+    <string name="favorite_cards_size">Dimensione delle schede dei preferiti</string>
+    <string name="watch_next_cards_size">Dimensione delle schede "Guarda il prossimo"</string>
+    <string name="card_corner_radius">Raggio degli angoli delle schede</string>
+    <string name="all_apps_grid_view">Griglia di tutte le app</string>
+    <string name="all_apps_grid_columns">Colonne della griglia</string>
 </resources>
