@@ -1,28 +1,36 @@
 /*
- * SPDX-FileCopyrightText: The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package org.lineageos.tv.launcher
 
+import android.animation.ObjectAnimator
 import android.app.Dialog
 import android.app.role.RoleManager
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.os.Bundle
 import android.transition.Slide
 import android.transition.TransitionManager
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -34,10 +42,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.preference.PreferenceManager
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import java.net.NetworkInterface
 import org.lineageos.tv.launcher.adapter.AllAppsAdapter
 import org.lineageos.tv.launcher.adapter.FavoritesAdapter
 import org.lineageos.tv.launcher.adapter.MainVerticalAdapter
@@ -79,6 +89,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         var isMainActivityVisible = false
         private var lastResumedTime = 0L
+        private const val VPN_PACKAGE_KEY = "vpn_package"
 
         fun getLastResumedTime() = lastResumedTime
 
@@ -105,6 +116,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private var lastCardBackgroundGradientMode = 0
     private var lastCardBackgroundIconGradientMode = 0
 
+    // Top bar hide/show
+    private var favoritesRowPosition = 0
+    private var isTopBarHidden = false
+    private var topBarAnimator: ObjectAnimator? = null
+
     // View models
     private val model: LauncherViewModel by viewModels()
     private val notificationViewModel: NotificationViewModel by viewModels()
@@ -115,12 +131,18 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private val keyboardAssistantButton by lazy { findViewById<ImageButton>(R.id.keyboard_assistant)!! }
     private val mainVerticalGridView by lazy { findViewById<VerticalGridView>(R.id.main_vertical_grid)!! }
     private val settingButton by lazy { findViewById<ImageButton>(R.id.settingsMaterialButton)!! }
+    private val vpnButton by lazy { findViewById<ImageButton>(R.id.vpnButton)!! }
     private val notificationCountTextView by lazy { findViewById<TextView>(R.id.notificationCountTextView)!! }
     private val topBarContainer by lazy { findViewById<LinearLayout>(R.id.top_bar)!! }
     private val voiceAssistantButton by lazy { findViewById<ImageButton>(R.id.voice_assistant)!! }
 
     // System services
     private val roleManager by lazy { getSystemService(RoleManager::class.java)!! }
+    private val connectivityManager by lazy { getSystemService(ConnectivityManager::class.java)!! }
+
+    // VPN status tracking
+    private val vpnNetworks = mutableSetOf<Network>()
+    private var vpnNetworkCallback: ConnectivityManager.NetworkCallback? = null
 
     // Activity request launchers
     private val homeRoleActivityRequestLauncher = registerForActivityResult(
@@ -170,6 +192,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                         }
                     } to watchNextPrograms
                 }.collectLatest { (updatedList, watchNextPrograms) ->
+                    favoritesRowPosition = updatedList.indexOfFirst { it.first == InternalChannel.FAVORITE_APPS.id }
+                        .coerceAtLeast(0)
                     mainVerticalAdapter.submitList(updatedList)
                     watchNextAdapter.submitList(watchNextPrograms)
                 }
@@ -258,6 +282,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             startActivity(Intent(this@MainActivity, SystemOptionsActivity::class.java))
         }
 
+        setupVpnButton()
+
         val assistIntent = Intent(Intent.ACTION_ASSIST)
         assistIntent.resolveActivity(packageManager)?.also {
             setupAssistantButtons(assistIntent)
@@ -267,6 +293,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
 
         mainVerticalGridView.adapter = mainVerticalAdapter
+        setupFocusTrackingForTopBar()
 
         favoritesAdapter.onFavoritesChangedCallback = {
             sharedPreferences.favoriteApps = it
@@ -319,6 +346,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         lastResumedTime = System.currentTimeMillis()
         applyBackground()
         checkCardSizeChanges()
+        showTopBar()
     }
 
     override fun onPause() {
@@ -379,8 +407,166 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         mainVerticalAdapter.notifyDataSetChanged()
     }
 
+    private fun setupFocusTrackingForTopBar() {
+        mainVerticalGridView.viewTreeObserver.addOnGlobalFocusChangeListener { _, newFocus ->
+            if (newFocus != null) {
+                updateTopBarVisibilityBasedOnFocus(newFocus)
+            }
+        }
+    }
+
+    private fun updateTopBarVisibilityBasedOnFocus(focusedView: View) {
+        val position = findRowPositionForView(focusedView)
+        if (position != -1) {
+            if (position > favoritesRowPosition && !isTopBarHidden) {
+                hideTopBar()
+            } else if (position <= favoritesRowPosition && isTopBarHidden) {
+                showTopBar()
+            }
+        }
+    }
+
+    private fun findRowPositionForView(view: View): Int {
+        for (i in 0 until mainVerticalGridView.childCount) {
+            val rowView = mainVerticalGridView.getChildAt(i)
+            if (isDescendant(rowView, view) || rowView == view) {
+                return mainVerticalGridView.getChildAdapterPosition(rowView)
+            }
+        }
+        return -1
+    }
+
+    private fun isDescendant(parent: View, child: View): Boolean {
+        if (child == parent) return true
+        var parentOfChild = child.parent
+        while (parentOfChild != null) {
+            if (parentOfChild == parent) return true
+            parentOfChild = parentOfChild.parent
+        }
+        return false
+    }
+
+    private fun hideTopBar() {
+        if (topBarAnimator?.isRunning == true) {
+            topBarAnimator?.cancel()
+        }
+        val topBarHeight = topBarContainer.height.toFloat()
+        topBarAnimator = ObjectAnimator.ofFloat(topBarContainer, "translationY", 0f, -topBarHeight).apply {
+            duration = 250
+            interpolator = DecelerateInterpolator()
+            start()
+        }
+        isTopBarHidden = true
+    }
+
+    private fun showTopBar() {
+        if (topBarAnimator?.isRunning == true) {
+            topBarAnimator?.cancel()
+        }
+        topBarAnimator = ObjectAnimator.ofFloat(topBarContainer, "translationY", topBarContainer.translationY, 0f).apply {
+            duration = 250
+            interpolator = DecelerateInterpolator()
+            start()
+        }
+        isTopBarHidden = false
+    }
+
+    private fun setupVpnButton() {
+        vpnButton.setOnClickListener { launchVpn() }
+
+        vpnNetworkCallback = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                vpnNetworks += network
+                updateVpnIcon()
+            }
+
+            override fun onLost(network: Network) {
+                vpnNetworks -= network
+                updateVpnIcon()
+            }
+        }.also {
+            val request = NetworkRequest.Builder()
+                .addTransportType(NetworkCapabilities.TRANSPORT_VPN)
+                .build()
+            connectivityManager.registerNetworkCallback(request, it)
+        }
+        updateVpnIcon()
+    }
+
+    private fun isVpnActive(): Boolean {
+        if (vpnNetworks.isEmpty()) return false
+        return try {
+            NetworkInterface.getNetworkInterfaces().toList().any { it.isUp && it.name.startsWith("tun") }
+        } catch (_: Exception) {
+            true
+        }
+    }
+
+    private fun updateVpnIcon() {
+        vpnButton.imageTintList = if (isVpnActive()) {
+            ColorStateList.valueOf(MaterialColors.getColor(vpnButton, com.google.android.material.R.attr.colorPrimary))
+        } else {
+            ColorStateList.valueOf(Color.argb(0xB0, 128, 128, 128))
+        }
+    }
+
+    private fun vpnClientPackages(): List<String> {
+        return packageManager.queryIntentServices(
+            Intent("android.net.VpnService"),
+            0
+        ).mapNotNull { it.serviceInfo?.packageName }.distinct()
+    }
+
+    private fun launchVpn() {
+        val packages = vpnClientPackages()
+        when {
+            packages.isEmpty() -> {
+                Toast.makeText(this, R.string.vpn_no_clients, Toast.LENGTH_SHORT).show()
+            }
+            packages.size == 1 -> launchVpnPackage(packages.first())
+            else -> {
+                val saved = sharedPreferences.getString(VPN_PACKAGE_KEY, null)?.takeIf { it in packages }
+                if (saved == null) {
+                    sharedPreferences.edit().remove(VPN_PACKAGE_KEY).apply()
+                    showVpnChooser(packages)
+                } else {
+                    launchVpnPackage(saved)
+                }
+            }
+        }
+    }
+
+    private fun showVpnChooser(packages: List<String>) {
+        val labels = packages.map { pkg ->
+            runCatching { packageManager.getApplicationLabel(packageManager.getApplicationInfo(pkg, 0)) }
+                .getOrDefault(pkg as CharSequence)
+        }.toTypedArray()
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.vpn)
+            .setItems(labels) { _, which ->
+                val pkg = packages[which]
+                sharedPreferences.edit().putString(VPN_PACKAGE_KEY, pkg).apply()
+                launchVpnPackage(pkg)
+            }
+            .show()
+    }
+
+    private fun launchVpnPackage(pkg: String) {
+        val intent = packageManager.getLaunchIntentForPackage(pkg)
+        if (intent != null) {
+            startActivity(intent)
+        } else {
+            Toast.makeText(this, R.string.vpn_no_clients, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
+
+        vpnNetworkCallback?.let {
+            runCatching { connectivityManager.unregisterNetworkCallback(it) }
+            vpnNetworkCallback = null
+        }
 
         if (NotificationUtils.notificationPermissionGranted(this)) {
             notificationViewModel.unbindService(this)
