@@ -109,6 +109,8 @@ class MainRowItemView @JvmOverloads constructor(
         verticalGridRecyclerView.adapter = adapter
         verticalGridRecyclerView.layoutManager = GridLayoutManager(context, columns)
         verticalGridRecyclerView.isNestedScrollingEnabled = false
+        verticalGridRecyclerView.clipToPadding = false
+        verticalGridRecyclerView.clipChildren = false
         while (verticalGridRecyclerView.itemDecorationCount > 0) {
             verticalGridRecyclerView.removeItemDecorationAt(0)
         }
