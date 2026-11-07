@@ -7,6 +7,7 @@ package org.lineageos.tv.launcher
 
 import android.os.Bundle
 import android.widget.ProgressBar
+import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.leanback.widget.VerticalGridView
@@ -62,6 +63,16 @@ class ModifyChannelsActivity : ModalActivity(R.layout.activity_modify_channels) 
         }
 
         channelsGrid.adapter = modifyChannelsAdapter
+
+        // Back/ESC: exit move mode first; only close the panel when not moving.
+        onBackPressedDispatcher.addCallback(this) {
+            if (modifyChannelsAdapter.exitMovingIfAny()) {
+                return@addCallback
+            }
+            isEnabled = false
+            onBackPressedDispatcher.onBackPressed()
+            isEnabled = true
+        }
 
         permissionsGatedCallback.runAfterPermissionsCheck()
     }
