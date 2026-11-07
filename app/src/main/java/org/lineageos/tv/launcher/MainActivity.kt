@@ -46,6 +46,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.RecyclerView
 import androidx.leanback.widget.VerticalGridView
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.MaterialColors
@@ -208,7 +209,17 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                                 }
                             } to watchNextPrograms
                         }.collectLatest { (updatedList, watchNextPrograms) ->
-                            mainVerticalAdapter.submitList(updatedList)
+                            // DiffUtil would emit notifyItemMoved; leanback GridLayoutManager
+                            // corrupts its grid state on moves during pending updates (NPE).
+                            // On order change do a full replace (remove-all + insert-all);
+                            // content-only updates keep using the diff (no move ops there).
+                            val previousIds = mainVerticalAdapter.currentList.map { it.first }
+                            if (previousIds == updatedList.map { it.first }) {
+                                mainVerticalAdapter.submitList(updatedList)
+                            } else {
+                                mainVerticalAdapter.submitList(null)
+                                mainVerticalAdapter.submitList(updatedList)
+                            }
                             watchNextAdapter.submitList(watchNextPrograms)
                         }
                     }
@@ -771,11 +782,31 @@ class MainVerticalGridView @JvmOverloads constructor(
 
     override fun requestChildFocus(child: View, focused: View) {
         val inGrid = isInMainGrid(focused)
+        // Must be sampled before stopScroll(): while a leanback smooth-scroll pass is running
+        // (state SETTLING) the rule must not scrollBy from inside it.
+        val busy = inLayoutPass || scrollState != RecyclerView.SCROLL_STATE_IDLE
         if (inGrid) stopScroll()
         super.requestChildFocus(child, focused)
         if (inGrid) {
             stopScroll()
-            ensureFocusedVisible(focused)
+            if (busy) {
+                post {
+                    findFocus()?.let { if (isInMainGrid(it)) ensureFocusedVisible(it) }
+                }
+            } else {
+                ensureFocusedVisible(focused)
+            }
+        }
+    }
+
+    private var inLayoutPass = false
+
+    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        inLayoutPass = true
+        try {
+            super.onLayout(changed, l, t, r, b)
+        } finally {
+            inLayoutPass = false
         }
     }
 

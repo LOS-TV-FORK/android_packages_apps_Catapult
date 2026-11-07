@@ -22,4 +22,11 @@ abstract class ModalActivity(layout: Int) : AppCompatActivity(layout) {
             height = WindowManager.LayoutParams.MATCH_PARENT
         }
     }
+
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+        // Home/recents must dismiss the panel: as a separate NEW_TASK it would otherwise
+        // linger in background and be re-raised above anything else in this app.
+        finish()
+    }
 }

@@ -22,6 +22,17 @@ class ModifyChannelsAdapter :
     var onChannelToggled: (channel: Channel, enabled: Boolean) -> Unit = { _, _ -> }
     var onOrderChanged: (channels: List<Channel>) -> Unit = {}
 
+    // Move mode lives in the adapter so it survives view recycling/rebinds
+    private var movingChannelId: Long? = null
+
+    fun exitMovingIfAny(): Boolean {
+        val id = movingChannelId ?: return false
+        movingChannelId = null
+        val index = currentList.indexOfFirst { it.first.id == id }
+        if (index >= 0) notifyItemChanged(index)
+        return true
+    }
+
     inner class ViewHolder(
         private val toggleChannelView: ToggleChannelView,
     ) : RecyclerView.ViewHolder(toggleChannelView) {
@@ -30,8 +41,8 @@ class ModifyChannelsAdapter :
 
         init {
             toggleChannelView.setOnClickListener {
-                if (toggleChannelView.moving) {
-                    toggleChannelView.setMoveDone()
+                if (movingChannelId == toggleChannelView.channel?.id) {
+                    exitMovingIfAny()
                     return@setOnClickListener
                 }
 
@@ -45,35 +56,40 @@ class ModifyChannelsAdapter :
             }
 
             itemView.setOnLongClickListener {
+                toggleChannelView.channel?.let { movingChannelId = it.id }
                 toggleChannelView.setMoving()
 
                 return@setOnLongClickListener true
             }
 
             itemView.setOnKeyListener { _, keyCode, event ->
-                if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+                val isOk = keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER
+                if (isOk && movingChannelId == toggleChannelView.channel?.id) {
+                    // Short OK/Enter while moving: exit move mode. Consume both actions so
+                    // the framework does not also deliver a click on the same press.
+                    // Ignore key-repeat DOWNs: long-press (which enters move mode) is
+                    // immediately followed by repeats that must not exit it.
+                    if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0) {
+                        exitMovingIfAny()
+                    }
+                    return@setOnKeyListener true
+                }
+                if (isOk) {
                     return@setOnKeyListener false
                 }
 
-                // Only handle keyDown events here
+                // Only handle keyDown events here. BACK is intentionally not handled
+                // here: the activity's back callback exits move mode first, else closes.
                 if (event.action != KeyEvent.ACTION_DOWN) {
-                    return@setOnKeyListener toggleChannelView.moving
+                    return@setOnKeyListener movingChannelId == toggleChannelView.channel?.id
                 }
 
                 val list = currentList.toMutableList()
                 val pos = bindingAdapterPosition
 
                 when (keyCode) {
-                    KeyEvent.KEYCODE_BACK -> {
-                        if (toggleChannelView.moving) {
-                            toggleChannelView.setMoveDone()
-                            return@setOnKeyListener true
-                        }
-                        return@setOnKeyListener false
-                    }
-
                     KeyEvent.KEYCODE_DPAD_UP -> {
-                        if (toggleChannelView.moving) {
+                        if (movingChannelId == toggleChannelView.channel?.id) {
                             if (pos == 0) {
                                 return@setOnKeyListener true
                             }
@@ -84,7 +100,7 @@ class ModifyChannelsAdapter :
                     }
 
                     KeyEvent.KEYCODE_DPAD_DOWN -> {
-                        if (toggleChannelView.moving) {
+                        if (movingChannelId == toggleChannelView.channel?.id) {
                             if (pos == list.size - 1) {
                                 return@setOnKeyListener true
                             }
@@ -101,6 +117,12 @@ class ModifyChannelsAdapter :
 
         fun bind(channel: Pair<Channel, Boolean>) {
             toggleChannelView.setData(channel.first, channel.second)
+
+            if (channel.first.id == movingChannelId) {
+                toggleChannelView.setMoving()
+            } else {
+                toggleChannelView.setMoveDone()
+            }
 
             if (channel.first.id == InternalChannel.FAVORITE_APPS.id) {
                 toggleChannelView.disableToggle()
