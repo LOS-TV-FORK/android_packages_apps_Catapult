@@ -8,30 +8,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <org.lineageos.tv.launcher.MainVerticalGridView
+        android:id="@+id/main_vertical_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:clipChildren="false"
-        android:clipToPadding="false">
+        android:clipChildren="true"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:verticalSpacing="8dp"
+        android:saveEnabled="false"
+        android:focusable="false"
+        app:numberOfColumns="1"
+        app:focusOutFront="true"
+        app:focusOutEnd="true"
+        app:focusOutSideStart="false"
+        app:focusOutSideEnd="false" />
 
-        <include
-            layout="@layout/top_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <androidx.leanback.widget.VerticalGridView
-            android:id="@+id/main_vertical_grid"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:paddingTop="24dp"
-            android:paddingBottom="100dp"
-            android:verticalSpacing="8dp"
-            app:focusOutEnd="true"
-            app:focusOutFront="true" />
-
-    </LinearLayout>
+    <include
+        layout="@layout/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </FrameLayout>

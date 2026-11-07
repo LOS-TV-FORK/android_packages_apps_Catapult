@@ -28,17 +28,13 @@ class MainVerticalAdapter(
     inner class ViewHolder(
         private val mainRowItemView: MainRowItemView,
     ) : RecyclerView.ViewHolder(mainRowItemView) {
-        fun bind(item: Pair<Long, MainRowItem>, position: Int) {
+        fun bind(item: Pair<Long, MainRowItem>) {
             mainRowItemView.setData(item.second)
-
-            if (position == 0) {
-                mainRowItemView.requestFocus()
-            }
         }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position), position)
+        holder.bind(getItem(position))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
