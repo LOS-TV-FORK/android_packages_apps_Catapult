@@ -109,45 +109,15 @@ class MainRowItemView @JvmOverloads constructor(
         verticalGridRecyclerView.adapter = adapter
         verticalGridRecyclerView.layoutManager = GridLayoutManager(context, columns)
         verticalGridRecyclerView.isNestedScrollingEnabled = false
-        verticalGridRecyclerView.clipToPadding = false
-        verticalGridRecyclerView.clipChildren = false
         while (verticalGridRecyclerView.itemDecorationCount > 0) {
             verticalGridRecyclerView.removeItemDecorationAt(0)
         }
-
-        // Calculate row height based on card dimensions
-        val screenWidth = context.resources.displayMetrics.widthPixels
-        val availableWidth = screenWidth - edgePadding * 2 - spacing * (columns - 1)
-        
-        // Card width = available width / columns
-        val cardWidth = (availableWidth / columns.toFloat()).toInt()
-        
-        // Card image height = cardWidth * 100 / 177
-        val cardImageHeight = (cardWidth * 100f / 177f).toInt()
-        
-        // Text scales with card width (base: 12sp at 177dp)
-        val textScale = cardWidth / (177f * density)
-        val textSizeSp = 12f * textScale
-        val textHeight = (textSizeSp * density).toInt() + (8 * density).toInt() // extra padding for safety
-        
-        // Total card height
-        val cardTotalHeight = cardImageHeight + textHeight
-        
-        // Fully expanded grid: all rows visible, outer VerticalGridView scrolls the page
-        val rowCount = (adapter.itemCount + columns - 1) / columns
-        val cardSlotHeight = cardTotalHeight + 2 * spacing
-        val focusMargin = (cardTotalHeight * 0.1f).toInt() + (8f * density).toInt()
-        val gridHeight = rowCount * cardSlotHeight + focusMargin * 2
 
         verticalGridRecyclerView.addItemDecoration(
             GridSpacingItemDecoration(columns, spacing, spacing)
         )
 
-        verticalGridRecyclerView.setPadding(edgePadding, focusMargin, edgePadding, focusMargin)
-
-        val lp = verticalGridRecyclerView.layoutParams
-        lp.height = gridHeight
-        verticalGridRecyclerView.layoutParams = lp
+        verticalGridRecyclerView.setPadding(edgePadding, 0, edgePadding, 0)
         verticalGridRecyclerView.overScrollMode = View.OVER_SCROLL_NEVER
     }
 

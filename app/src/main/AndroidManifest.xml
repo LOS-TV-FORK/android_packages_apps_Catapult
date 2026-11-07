@@ -77,6 +77,7 @@
 
         <activity
             android:name=".MainActivity"
+            android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|smallestScreenSize|screenLayout|uiMode|density|layoutDirection|fontScale|locale"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:stateNotNeeded="true"
@@ -89,6 +90,7 @@
 
         <activity
             android:name=".ProxyHomeActivity"
+            android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|smallestScreenSize|screenLayout|uiMode|density|layoutDirection|fontScale|locale"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:launchMode="singleInstance"
             android:excludeFromRecents="true"

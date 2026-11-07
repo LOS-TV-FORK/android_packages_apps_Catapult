@@ -23,6 +23,12 @@ abstract class Card @JvmOverloads constructor(
         clipToPadding = false
     }
     
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        pivotX = w / 2f
+        pivotY = h / 2f
+    }
+
     var packageName: String = ""
     var label: String = ""
     var launchIntent: Intent? = null

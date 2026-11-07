@@ -5,27 +5,33 @@
 
 package org.lineageos.tv.launcher
 
-import android.animation.ObjectAnimator
 import android.app.Dialog
 import android.app.role.RoleManager
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
+import android.content.res.Configuration
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.GradientDrawable
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Bundle
+import android.util.AttributeSet
+import android.content.Context
+import android.view.ViewGroup
+
 import android.transition.Slide
 import android.transition.TransitionManager
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
-import android.view.animation.DecelerateInterpolator
+import android.view.ViewTreeObserver
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -37,10 +43,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import androidx.leanback.widget.VerticalGridView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.leanback.widget.VerticalGridView
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -74,6 +80,7 @@ import org.lineageos.tv.launcher.ext.cardBackgroundIconGradientMode
 import org.lineageos.tv.launcher.model.AppInfo
 import org.lineageos.tv.launcher.model.InternalChannel
 import org.lineageos.tv.launcher.model.MainRowItem
+import org.lineageos.tv.launcher.view.Card
 import org.lineageos.tv.launcher.notification.NotificationUtils
 import org.lineageos.tv.launcher.notification.ServiceConnectionState
 import org.lineageos.tv.launcher.utils.AppManager
@@ -116,10 +123,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private var lastCardBackgroundGradientMode = 0
     private var lastCardBackgroundIconGradientMode = 0
 
-    // Top bar hide/show
-    private var favoritesRowPosition = 0
-    private var isTopBarHidden = false
-    private var topBarAnimator: ObjectAnimator? = null
 
     // View models
     private val model: LauncherViewModel by viewModels()
@@ -129,12 +132,25 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private val assistantButtonsContainer by lazy { findViewById<LinearLayout>(R.id.assistant_buttons)!! }
     private val assistantHintImageView by lazy { findViewById<ImageView>(R.id.assistantHintImageView)!! }
     private val keyboardAssistantButton by lazy { findViewById<ImageButton>(R.id.keyboard_assistant)!! }
-    private val mainVerticalGridView by lazy { findViewById<VerticalGridView>(R.id.main_vertical_grid)!! }
     private val settingButton by lazy { findViewById<ImageButton>(R.id.settingsMaterialButton)!! }
     private val vpnButton by lazy { findViewById<ImageButton>(R.id.vpnButton)!! }
     private val notificationCountTextView by lazy { findViewById<TextView>(R.id.notificationCountTextView)!! }
     private val topBarContainer by lazy { findViewById<LinearLayout>(R.id.top_bar)!! }
+    private val assistantTransition by lazy {
+        Slide().apply {
+            slideEdge = Gravity.START
+            duration = 400
+        }
+    }
+    private val mainVerticalGridView by lazy { findViewById<MainVerticalGridView>(R.id.main_vertical_grid)!! }
     private val voiceAssistantButton by lazy { findViewById<ImageButton>(R.id.voice_assistant)!! }
+
+    // Return to first row when focus moves to the top bar
+    private val mainFocusScrollListener = ViewTreeObserver.OnGlobalFocusChangeListener { _, newFocus ->
+        if (newFocus != null && isTopBarDescendant(newFocus)) {
+            mainVerticalGridView.setSelectedPosition(0)
+        }
+    }
 
     // System services
     private val roleManager by lazy { getSystemService(RoleManager::class.java)!! }
@@ -163,174 +179,179 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     }
 
     private val permissionsGatedCallback = PermissionsGatedCallback(this) {
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                combine(
-                    model.watchNextPrograms,
-                    model.channelsToPrograms
-                ) { watchNextPrograms, channels ->
-                    channels.mapNotNull { channel ->
-                        // Check if "Watch Next" should be skipped
-                        if (channel.first.id == InternalChannel.WATCH_NEXT.id && watchNextPrograms.isEmpty()) {
-                            null
-                        } else {
-                            channel.first.id to MainRowItem(
-                                channel.first.title,
-                                when (channel.first.id) {
-                                    InternalChannel.FAVORITE_APPS.id -> favoritesAdapter
-                                    InternalChannel.WATCH_NEXT.id -> watchNextAdapter
-                                    InternalChannel.ALL_APPS.id -> allAppsAdapter
-                                    else -> previewChannelAdapters.getOrPut(channel.first.id) {
-                                        PreviewProgramsAdapter()
-                                    }.apply {
-                                        channel.second?.let { previewPrograms ->
-                                            submitList(previewPrograms)
+                lifecycleScope.launch {
+                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        combine(
+                            model.watchNextPrograms,
+                            model.channelsToPrograms
+                        ) { watchNextPrograms, channels ->
+                            channels.mapNotNull { channel ->
+                                // Check if "Watch Next" should be skipped
+                                if (channel.first.id == InternalChannel.WATCH_NEXT.id && watchNextPrograms.isEmpty()) {
+                                    null
+                                } else {
+                                    channel.first.id to MainRowItem(
+                                        channel.first.title,
+                                        when (channel.first.id) {
+                                            InternalChannel.FAVORITE_APPS.id -> favoritesAdapter
+                                            InternalChannel.WATCH_NEXT.id -> watchNextAdapter
+                                            InternalChannel.ALL_APPS.id -> allAppsAdapter
+                                            else -> previewChannelAdapters.getOrPut(channel.first.id) {
+                                                PreviewProgramsAdapter()
+                                            }.apply {
+                                                channel.second?.let { previewPrograms ->
+                                                    submitList(previewPrograms)
+                                                }
+                                            }
                                         }
-                                    }
+                                    )
                                 }
-                            )
+                            } to watchNextPrograms
+                        }.collectLatest { (updatedList, watchNextPrograms) ->
+                            mainVerticalAdapter.submitList(updatedList)
+                            watchNextAdapter.submitList(watchNextPrograms)
                         }
-                    } to watchNextPrograms
-                }.collectLatest { (updatedList, watchNextPrograms) ->
-                    favoritesRowPosition = updatedList.indexOfFirst { it.first == InternalChannel.FAVORITE_APPS.id }
-                        .coerceAtLeast(0)
-                    mainVerticalAdapter.submitList(updatedList)
-                    watchNextAdapter.submitList(watchNextPrograms)
-                }
-            }
-        }
-
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                model.installedApps.collectLatest {
-                    allAppsAdapter.submitList(it)
-
-                    if (it.isNotEmpty()) {
-                        AppManager.updateFavoriteApps(this@MainActivity, it)
                     }
                 }
-            }
-        }
 
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                model.favoriteApps.collectLatest {
-                    favoritesAdapter.submitList(
-                        it.mapNotNull {
-                            runCatching {
-                                AppInfo.create(this@MainActivity, it)
-                            }.getOrNull()
-                        } + listOf(
-                            FavoritesAdapter.createAddFavoriteEntry(this@MainActivity),
-                            FavoritesAdapter.createModifyChannelsEntry(this@MainActivity),
-                        )
-                    )
-                }
-            }
-        }
+                lifecycleScope.launch {
+                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        model.installedApps.collectLatest {
+                            allAppsAdapter.submitList(it)
 
-        askForHomeRoleIfNeeded()
-    }
-
-    @Suppress("RestrictedApi")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        instance = this
-
-        // Start global hotkey service
-        startService(Intent(this, GlobalHotkeyService::class.java))
-
-        applyBackground()
-
-        lastAppCardSize = sharedPreferences.appCardSize
-        lastFavoriteCardSize = sharedPreferences.favoriteCardSize
-        lastWatchNextCardSize = sharedPreferences.watchNextCardSize
-        lastAllAppsGrid = sharedPreferences.allAppsGrid
-        lastAllAppsGridColumns = sharedPreferences.allAppsGridColumns
-        lastCardCornerRadius = sharedPreferences.cardCornerRadius
-        lastCardBackgroundType = sharedPreferences.cardBackgroundType
-        lastCardBackgroundColor = sharedPreferences.cardBackgroundColor
-        lastCardBackgroundGradientStart = sharedPreferences.cardBackgroundGradientStart
-        lastCardBackgroundGradientEnd = sharedPreferences.cardBackgroundGradientEnd
-        lastCardBackgroundGradientMode = sharedPreferences.cardBackgroundGradientMode
-        lastCardBackgroundIconGradientMode = sharedPreferences.cardBackgroundIconGradientMode
-
-        settingButton.setOnClickListener {
-            val dialog = Dialog(this, R.style.Theme_Catapult_SideActivity)
-            dialog.setContentView(R.layout.settings_button_menu)
-            dialog.window?.apply {
-                setGravity(Gravity.END)
-                attributes = attributes.apply {
-                    height = android.view.WindowManager.LayoutParams.MATCH_PARENT
-                    width = (350 * resources.displayMetrics.density).toInt()
-                }
-            }
-            dialog.findViewById<View>(R.id.system_settings_item)?.setOnClickListener {
-                startActivity(Intent(android.provider.Settings.ACTION_SETTINGS).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                })
-                dialog.dismiss()
-            }
-            dialog.findViewById<View>(R.id.launcher_settings_item)?.setOnClickListener {
-                startActivity(Intent(this@MainActivity, LauncherSettingsActivity::class.java))
-                dialog.dismiss()
-            }
-            dialog.show()
-        }
-
-        notificationCountTextView.setOnClickListener {
-            startActivity(Intent(this@MainActivity, SystemOptionsActivity::class.java))
-        }
-
-        setupVpnButton()
-
-        val assistIntent = Intent(Intent.ACTION_ASSIST)
-        assistIntent.resolveActivity(packageManager)?.also {
-            setupAssistantButtons(assistIntent)
-        } ?: run {
-            assistantHintImageView.isInvisible = true
-            assistantButtonsContainer.isInvisible = true
-        }
-
-        mainVerticalGridView.adapter = mainVerticalAdapter
-        setupFocusTrackingForTopBar()
-
-        favoritesAdapter.onFavoritesChangedCallback = {
-            sharedPreferences.favoriteApps = it
-        }
-
-        settingButton.requestFocus()
-
-        permissionsGatedCallback.runAfterPermissionsCheck()
-
-        onBackPressedDispatcher.addCallback(object: OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-            }
-        })
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                notificationViewModel.state.collect { state ->
-                    when (state) {
-                        ServiceConnectionState.Connected -> {}
-                        ServiceConnectionState.Disconnected -> {
-                            notificationCountTextView.text = ""
-                        }
-                        is ServiceConnectionState.Notifications -> {
-                            if (state.notifications.isNotEmpty()) {
-                                notificationCountTextView.text = String.format(
-                                    Locale.getDefault(),
-                                    "%d",
-                                    state.notifications.count()
-                                )
-                            } else {
-                                notificationCountTextView.text = ""
+                            if (it.isNotEmpty()) {
+                                AppManager.updateFavoriteApps(this@MainActivity, it)
                             }
                         }
                     }
                 }
+
+                lifecycleScope.launch {
+                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        model.favoriteApps.collectLatest {
+                            favoritesAdapter.submitList(
+                                it.mapNotNull {
+                                    runCatching {
+                                        AppInfo.create(this@MainActivity, it)
+                                    }.getOrNull()
+                                } + listOf(
+                                    FavoritesAdapter.createAddFavoriteEntry(this@MainActivity),
+                                    FavoritesAdapter.createModifyChannelsEntry(this@MainActivity),
+                                )
+                            )
+                        }
+                    }
+                }
+
+                askForHomeRoleIfNeeded()
             }
-        }
+
+            @Suppress("RestrictedApi")
+            override fun onCreate(savedInstanceState: Bundle?) {
+                super.onCreate(savedInstanceState)
+                instance = this
+
+                // Start global hotkey service
+                startService(Intent(this, GlobalHotkeyService::class.java))
+
+                applyBackground()
+                mainVerticalGridView.setFocusScrollStrategy(androidx.leanback.widget.BaseGridView.FOCUS_SCROLL_ITEM)
+                mainVerticalGridView.adapter = mainVerticalAdapter
+                mainVerticalGridView.setSelectedPosition(0)
+                mainVerticalGridView.viewTreeObserver.addOnGlobalFocusChangeListener(mainFocusScrollListener)
+                mainVerticalGridView.upFocusFallback = findTopBarFocusable()
+                setupTopBarScrim()
+                topBarContainer.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
+                    if (bottom != oldBottom) applyMainGridTopInset()
+                }
+                topBarContainer.post { applyMainGridTopInset() }
+
+                lastAppCardSize = sharedPreferences.appCardSize
+                lastFavoriteCardSize = sharedPreferences.favoriteCardSize
+                lastWatchNextCardSize = sharedPreferences.watchNextCardSize
+                lastAllAppsGrid = sharedPreferences.allAppsGrid
+                lastAllAppsGridColumns = sharedPreferences.allAppsGridColumns
+                lastCardCornerRadius = sharedPreferences.cardCornerRadius
+                lastCardBackgroundType = sharedPreferences.cardBackgroundType
+                lastCardBackgroundColor = sharedPreferences.cardBackgroundColor
+                lastCardBackgroundGradientStart = sharedPreferences.cardBackgroundGradientStart
+                lastCardBackgroundGradientEnd = sharedPreferences.cardBackgroundGradientEnd
+                lastCardBackgroundGradientMode = sharedPreferences.cardBackgroundGradientMode
+                lastCardBackgroundIconGradientMode = sharedPreferences.cardBackgroundIconGradientMode
+
+                settingButton.setOnClickListener {
+                    val dialog = Dialog(this, R.style.Theme_Catapult_SideActivity)
+                    dialog.setContentView(R.layout.settings_button_menu)
+                    dialog.window?.apply {
+                        setGravity(Gravity.END)
+                        attributes = attributes.apply {
+                            height = android.view.WindowManager.LayoutParams.MATCH_PARENT
+                            width = (350 * resources.displayMetrics.density).toInt()
+                        }
+                    }
+                    dialog.findViewById<View>(R.id.system_settings_item)?.setOnClickListener {
+                        startActivity(Intent(android.provider.Settings.ACTION_SETTINGS).apply {
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        })
+                        dialog.dismiss()
+                    }
+                    dialog.findViewById<View>(R.id.launcher_settings_item)?.setOnClickListener {
+                        startActivity(Intent(this@MainActivity, LauncherSettingsActivity::class.java))
+                        dialog.dismiss()
+                    }
+                    dialog.show()
+                }
+
+                notificationCountTextView.setOnClickListener {
+                    startActivity(Intent(this@MainActivity, SystemOptionsActivity::class.java))
+                }
+
+                setupVpnButton()
+
+                val assistIntent = Intent(Intent.ACTION_ASSIST)
+                assistIntent.resolveActivity(packageManager)?.also {
+                    setupAssistantButtons(assistIntent)
+                } ?: run {
+                    assistantHintImageView.isInvisible = true
+                    assistantButtonsContainer.isInvisible = true
+                }
+
+                favoritesAdapter.onFavoritesChangedCallback = {
+                    sharedPreferences.favoriteApps = it
+                }
+
+                settingButton.requestFocus()
+
+                permissionsGatedCallback.runAfterPermissionsCheck()
+
+                onBackPressedDispatcher.addCallback(object: OnBackPressedCallback(true) {
+                    override fun handleOnBackPressed() {
+                    }
+                })
+
+                lifecycleScope.launch {
+                    repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        notificationViewModel.state.collect { state ->
+                            when (state) {
+                                ServiceConnectionState.Connected -> {}
+                                ServiceConnectionState.Disconnected -> {
+                                    notificationCountTextView.text = ""
+                                }
+                                is ServiceConnectionState.Notifications -> {
+                                    if (state.notifications.isNotEmpty()) {
+                                        notificationCountTextView.text = String.format(
+                                            Locale.getDefault(),
+                                            "%d",
+                                            state.notifications.count()
+                                        )
+                                    } else {
+                                        notificationCountTextView.text = ""
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
     }
 
     override fun onStart() {
@@ -346,7 +367,24 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         lastResumedTime = System.currentTimeMillis()
         applyBackground()
         checkCardSizeChanges()
-        showTopBar()
+        mainVerticalGridView.post {
+            mainVerticalGridView.upFocusFallback = findTopBarFocusable()
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        applyBackground()
+        checkCardSizeChanges()
+        mainVerticalGridView.post {
+            applyMainGridTopInset()
+            mainVerticalGridView.requestLayout()
+            refreshAllRows()
+            val currentFocus = currentFocus
+            if (currentFocus == null || !isMainDescendant(currentFocus)) {
+                mainVerticalGridView.setSelectedPosition(0)
+            }
+        }
     }
 
     override fun onPause() {
@@ -405,70 +443,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         favoritesAdapter.notifyDataSetChanged()
         watchNextAdapter.notifyDataSetChanged()
         mainVerticalAdapter.notifyDataSetChanged()
-    }
-
-    private fun setupFocusTrackingForTopBar() {
-        mainVerticalGridView.viewTreeObserver.addOnGlobalFocusChangeListener { _, newFocus ->
-            if (newFocus != null) {
-                updateTopBarVisibilityBasedOnFocus(newFocus)
-            }
-        }
-    }
-
-    private fun updateTopBarVisibilityBasedOnFocus(focusedView: View) {
-        val position = findRowPositionForView(focusedView)
-        if (position != -1) {
-            if (position > favoritesRowPosition && !isTopBarHidden) {
-                hideTopBar()
-            } else if (position <= favoritesRowPosition && isTopBarHidden) {
-                showTopBar()
-            }
-        }
-    }
-
-    private fun findRowPositionForView(view: View): Int {
-        for (i in 0 until mainVerticalGridView.childCount) {
-            val rowView = mainVerticalGridView.getChildAt(i)
-            if (isDescendant(rowView, view) || rowView == view) {
-                return mainVerticalGridView.getChildAdapterPosition(rowView)
-            }
-        }
-        return -1
-    }
-
-    private fun isDescendant(parent: View, child: View): Boolean {
-        if (child == parent) return true
-        var parentOfChild = child.parent
-        while (parentOfChild != null) {
-            if (parentOfChild == parent) return true
-            parentOfChild = parentOfChild.parent
-        }
-        return false
-    }
-
-    private fun hideTopBar() {
-        if (topBarAnimator?.isRunning == true) {
-            topBarAnimator?.cancel()
-        }
-        val topBarHeight = topBarContainer.height.toFloat()
-        topBarAnimator = ObjectAnimator.ofFloat(topBarContainer, "translationY", 0f, -topBarHeight).apply {
-            duration = 250
-            interpolator = DecelerateInterpolator()
-            start()
-        }
-        isTopBarHidden = true
-    }
-
-    private fun showTopBar() {
-        if (topBarAnimator?.isRunning == true) {
-            topBarAnimator?.cancel()
-        }
-        topBarAnimator = ObjectAnimator.ofFloat(topBarContainer, "translationY", topBarContainer.translationY, 0f).apply {
-            duration = 250
-            interpolator = DecelerateInterpolator()
-            start()
-        }
-        isTopBarHidden = false
     }
 
     private fun setupVpnButton() {
@@ -561,6 +535,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     }
 
     override fun onDestroy() {
+        if (mainVerticalGridView.viewTreeObserver.isAlive) {
+            mainVerticalGridView.viewTreeObserver.removeOnGlobalFocusChangeListener(mainFocusScrollListener)
+        }
         super.onDestroy()
 
         vpnNetworkCallback?.let {
@@ -571,6 +548,96 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         if (NotificationUtils.notificationPermissionGranted(this)) {
             notificationViewModel.unbindService(this)
         }
+    }
+
+    private fun isMainDescendant(target: View): Boolean {
+        var parent = target.parent
+        while (parent != null) {
+            if (parent === mainVerticalGridView) return true
+            parent = parent.parent
+        }
+        return false
+    }
+
+    private fun isTopBarDescendant(target: View): Boolean {
+        var parent = target.parent
+        while (parent != null) {
+            if (parent === topBarContainer) return true
+            parent = parent.parent
+        }
+        return false
+    }
+
+    private fun setupTopBarScrim() {
+        val background = getColor(R.color.default_background)
+        val topColor = (background and 0x00FFFFFF) or (0xF2 shl 24)
+        val bottomColor = background and 0x00FFFFFF
+        topBarContainer.background = GradientDrawable(
+            GradientDrawable.Orientation.TOP_BOTTOM,
+            intArrayOf(topColor, bottomColor)
+        )
+    }
+
+    private fun applyMainGridTopInset() {
+        val inset = topBarContainer.height
+        if (mainVerticalGridView.paddingTop != inset) {
+            mainVerticalGridView.setPadding(
+                mainVerticalGridView.paddingLeft,
+                inset,
+                mainVerticalGridView.paddingRight,
+                mainVerticalGridView.paddingBottom
+            )
+        }
+    }
+
+    private fun findTopBarFocusable(view: View = topBarContainer): View? {
+        val preferred = listOf(
+            settingButton,
+            vpnButton,
+            notificationCountTextView,
+            keyboardAssistantButton,
+            voiceAssistantButton,
+            assistantHintImageView,
+        ).firstOrNull { isTopBarCandidate(it) }
+        if (preferred != null) return preferred
+
+        return findTopBarFocusableDescendant(view)
+    }
+
+    private fun findTopBarFocusableDescendant(view: View): View? {
+        if (!isTopBarCandidate(view)) return null
+        if (view.isFocusable || view.isClickable) return view
+        if (view is ViewGroup) {
+            for (index in 0 until view.childCount) {
+                val child = view.getChildAt(index)
+                val candidate = findTopBarFocusableDescendant(child)
+                if (candidate != null) return candidate
+            }
+        }
+        return null
+    }
+
+    private fun isTopBarCandidate(view: View): Boolean =
+        view.isEnabled && view.visibility == View.VISIBLE
+
+    private fun expandAssistantPanel() {
+        assistantTransition.removeTarget(assistantHintImageView)
+        assistantTransition.addTarget(assistantButtonsContainer)
+        TransitionManager.beginDelayedTransition(topBarContainer, assistantTransition)
+        assistantHintImageView.isVisible = false
+        assistantButtonsContainer.isVisible = true
+
+        voiceAssistantButton.post {
+            voiceAssistantButton.requestFocus()
+        }
+    }
+
+    private fun collapseAssistantPanel() {
+        assistantTransition.removeTarget(assistantButtonsContainer)
+        assistantTransition.addTarget(assistantHintImageView)
+        TransitionManager.beginDelayedTransition(topBarContainer, assistantTransition)
+        assistantButtonsContainer.isVisible = false
+        assistantHintImageView.isVisible = true
     }
 
     private fun setupAssistantButtons(assistIntent: Intent) {
@@ -585,28 +652,16 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             startActivity(keyboardAssistantIntent)
         }
 
-        val transition = Slide().apply {
-            slideEdge = Gravity.START
-            duration = 400
-        }
         assistantHintImageView.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                transition.removeTarget(assistantHintImageView)
-                transition.addTarget(assistantButtonsContainer)
-                TransitionManager.beginDelayedTransition(topBarContainer, transition)
-                assistantHintImageView.isVisible = false
-                assistantButtonsContainer.isVisible = true
+                expandAssistantPanel()
             }
         }
 
         val assistantButtonFocusListener = View.OnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 if (!keyboardAssistantButton.hasFocus() && !voiceAssistantButton.hasFocus()) {
-                    transition.removeTarget(assistantButtonsContainer)
-                    transition.addTarget(assistantHintImageView)
-                    TransitionManager.beginDelayedTransition(topBarContainer, transition)
-                    assistantButtonsContainer.isVisible = false
-                    assistantHintImageView.isVisible = true
+                    collapseAssistantPanel()
                 }
             }
         }
@@ -701,5 +756,237 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
         }
         return inSampleSize
+    }
+}
+
+class MainVerticalGridView @JvmOverloads constructor(
+    context: android.content.Context,
+    attrs: android.util.AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : androidx.leanback.widget.VerticalGridView(context, attrs, defStyleAttr) {
+    private val mainFocusSearchUp = 0x00000004
+    private val mainFocusSearchDown = 0x00000008
+
+    var upFocusFallback: View? = null
+
+    override fun requestChildFocus(child: View, focused: View) {
+        val inGrid = isInMainGrid(focused)
+        if (inGrid) stopScroll()
+        super.requestChildFocus(child, focused)
+        if (inGrid) {
+            stopScroll()
+            ensureFocusedVisible(focused)
+        }
+    }
+
+    private fun ensureFocusedVisible(focused: View) {
+        if (width == 0 || height == 0) return
+        val rect = Rect()
+        focused.getFocusedRect(rect)
+        (focused.findViewById<View>(R.id.app_name) ?: focused.findViewById(R.id.title))?.let { name ->
+            rect.bottom += name.height + (8f * resources.displayMetrics.density).toInt()
+        }
+        val sx = focused.scaleX
+        val sy = focused.scaleY
+        if (sx != 1f || sy != 1f) {
+            val px = focused.pivotX
+            val py = focused.pivotY
+            rect.left = (px + (rect.left - px) * sx).toInt()
+            rect.right = (px + (rect.right - px) * sx).toInt()
+            rect.top = (py + (rect.top - py) * sy).toInt()
+            rect.bottom = (py + (rect.bottom - py) * sy).toInt()
+        }
+        offsetDescendantRectToMyCoords(focused, rect)
+        val delta = when {
+            rect.top < paddingTop -> rect.top - paddingTop
+            rect.bottom > height - paddingBottom -> rect.bottom - (height - paddingBottom)
+            else -> 0
+        }
+        if (delta != 0) {
+            scrollBy(0, delta)
+        }
+    }
+
+    override fun focusSearch(focused: View?, direction: Int): View? {
+        val target = focused ?: return null
+        if (!isInMainGrid(target)) {
+            return super.focusSearch(target, direction)
+        }
+
+        return when (direction) {
+            mainFocusSearchUp -> {
+                verticalFocusSearch(target, direction)
+                    ?: super.focusSearch(target, direction).takeUnless { it === target }
+                    ?: if (isFirstMainRow(target)) mainFocusFallback(target, direction) else null
+            }
+            mainFocusSearchDown -> verticalFocusSearch(target, direction)
+            else -> super.focusSearch(target, direction)
+        }
+    }
+
+    private fun isFirstMainRow(target: View): Boolean {
+        val row = findMainGridChild(target) ?: return false
+        return indexOfMainGridChild(row) == 0
+    }
+
+    private fun mainFocusFallback(target: View, direction: Int): View? {
+        val fallback = upFocusFallback?.takeIf {
+            it.visibility == View.VISIBLE && (it.isFocusable || it.isClickable)
+        }
+        return fallback ?: parent?.focusSearch(target, direction)
+    }
+
+    private fun isInMainGrid(view: View): Boolean {
+        var current = view.parent
+        while (current != null) {
+            if (current === this) return true
+            current = current.parent
+        }
+        return false
+    }
+
+    private fun verticalFocusSearch(focused: View, direction: Int): View? {
+        val focusedRect = Rect()
+        focused.getFocusedRect(focusedRect)
+        this.offsetDescendantRectToMyCoords(focused, focusedRect)
+        if (focusedRect.bottom <= focusedRect.top || focusedRect.right <= focusedRect.left) return null
+
+        val row = findMainGridChild(focused) ?: return super.focusSearch(focused, direction)
+        val rowIndexOf = indexOfMainGridChild(row) ?: return super.focusSearch(focused, direction)
+
+        val sameRowCandidates = mutableListOf<View>()
+        collectCardCandidates(row, focused, sameRowCandidates)
+        val sameRow = chooseBestVerticalCandidate(sameRowCandidates, focusedRect, direction, allowRelaxed = false)
+        if (sameRow != null) return sameRow
+
+        val nextIndex = if (direction == mainFocusSearchUp) rowIndexOf - 1 else rowIndexOf + 1
+        if (nextIndex >= 0 && nextIndex < childCount) {
+            val neighbors = mutableListOf<View>()
+            val neighbor = getChildAt(nextIndex)
+            if (neighbor != null) {
+                collectCardCandidates(neighbor, focused, neighbors)
+            }
+            val rowCandidate = chooseBestVerticalCandidate(neighbors, focusedRect, direction, allowRelaxed = true)
+            if (rowCandidate != null) return rowCandidate
+        }
+
+        return null
+    }
+
+    private fun findMainGridChild(view: View): View? {
+        var current = view
+        while (current.parent != null) {
+            val parent = current.parent ?: return null
+            if (parent === this) return current
+            current = parent as android.view.View
+        }
+        return null
+    }
+
+    private fun indexOfMainGridChild(child: View): Int? {
+        var index = 0
+        while (index < childCount) {
+            if (getChildAt(index) === child) return index
+            index++
+        }
+        return null
+    }
+
+    private fun collectCardCandidates(view: View, focused: View, result: MutableList<View>) {
+        if (!view.isVisible || view.alpha == 0f) return
+        if (view === focused) return
+
+        if (view is Card) {
+            result.add(view)
+            return
+        }
+
+        if (view is ViewGroup) {
+            var childIndex = 0
+            while (childIndex < view.childCount) {
+                val child = view.getChildAt(childIndex)
+                if (child != null) {
+                    collectCardCandidates(child, focused, result)
+                }
+                childIndex++
+            }
+        }
+    }
+
+    private fun chooseBestVerticalCandidate(
+        candidates: MutableList<View>,
+        focusedRect: Rect,
+        direction: Int,
+        allowRelaxed: Boolean
+    ): View? {
+        var best: View? = null
+        var bestScore: Long = 0L
+
+        for (candidate in candidates) {
+            val rect = Rect()
+            candidate.getFocusedRect(rect)
+            this.offsetDescendantRectToMyCoords(candidate, rect)
+            if (rect.bottom <= rect.top || rect.right <= rect.left) continue
+
+            var valid = false
+            var gap = 0
+            if (direction == mainFocusSearchUp) {
+                if (rect.bottom <= focusedRect.top) {
+                    valid = true
+                    gap = focusedRect.top - rect.bottom
+                }
+            } else if (direction == mainFocusSearchDown) {
+                if (rect.top >= focusedRect.bottom) {
+                    valid = true
+                    gap = rect.top - focusedRect.bottom
+                }
+            }
+            if (!valid) continue
+
+            val focusedCenterX = (focusedRect.left + focusedRect.right) / 2
+            val candidateCenterX = (rect.left + rect.right) / 2
+            val centerDelta = focusedCenterX - candidateCenterX
+            val centerDistance = if (centerDelta >= 0) centerDelta else -centerDelta
+            val score = gap.toLong() * 100_000L + centerDistance
+
+            if (best == null || score < bestScore) {
+                bestScore = score
+                best = candidate
+            }
+        }
+
+        if (best != null) return best
+        if (!allowRelaxed) return null
+
+        val focusedCenterY = (focusedRect.top + focusedRect.bottom) / 2
+        val focusedCenterX = (focusedRect.left + focusedRect.right) / 2
+        var relaxedBest: View? = null
+        var relaxedBestDistance = Int.MAX_VALUE
+
+        for (candidate in candidates) {
+            val rect = Rect()
+            candidate.getFocusedRect(rect)
+            this.offsetDescendantRectToMyCoords(candidate, rect)
+            if (rect.bottom <= rect.top || rect.right <= rect.left) continue
+
+            val candidateCenterY = (rect.top + rect.bottom) / 2
+            if (direction == mainFocusSearchUp) {
+                if (candidateCenterY > focusedCenterY) continue
+            } else if (direction == mainFocusSearchDown) {
+                if (candidateCenterY < focusedCenterY) continue
+            } else {
+                continue
+            }
+
+            val candidateCenterX = (rect.left + rect.right) / 2
+            val centerDelta = focusedCenterX - candidateCenterX
+            val centerDistance = if (centerDelta >= 0) centerDelta else -centerDelta
+            if (centerDistance < relaxedBestDistance) {
+                relaxedBestDistance = centerDistance
+                relaxedBest = candidate
+            }
+        }
+
+        return relaxedBest
     }
 }
