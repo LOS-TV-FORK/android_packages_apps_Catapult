@@ -164,21 +164,6 @@ class MainRowItemView @JvmOverloads constructor(
         PreferenceManager.getDefaultSharedPreferences(context).registerOnSharedPreferenceChangeListener(prefsListener)
     }
     
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        if (verticalGridRecyclerView.visibility != View.VISIBLE) return
-        val content = getChildAt(0) as? ViewGroup ?: return
-        var needed = 0
-        for (i in 0 until content.childCount) {
-            val child = content.getChildAt(i)
-            val lp = child.layoutParams as? ViewGroup.MarginLayoutParams
-            needed += child.measuredHeight + (lp?.topMargin ?: 0) + (lp?.bottomMargin ?: 0)
-        }
-        if (needed > measuredHeight) {
-            setMeasuredDimension(measuredWidth, needed)
-        }
-    }
-
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         PreferenceManager.getDefaultSharedPreferences(context).unregisterOnSharedPreferenceChangeListener(prefsListener)
