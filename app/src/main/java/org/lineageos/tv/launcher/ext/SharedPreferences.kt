@@ -129,7 +129,7 @@ var SharedPreferences.watchNextCardSize: Int
 const val ALL_APPS_GRID_KEY = "all_apps_grid"
 
 var SharedPreferences.allAppsGrid: Boolean
-    get() = getBoolean(ALL_APPS_GRID_KEY, false)
+    get() = getBoolean(ALL_APPS_GRID_KEY, true)
     set(value) = edit {
         putBoolean(ALL_APPS_GRID_KEY, value)
     }
@@ -137,7 +137,7 @@ var SharedPreferences.allAppsGrid: Boolean
 const val ALL_APPS_GRID_COLUMNS_KEY = "all_apps_grid_columns"
 
 var SharedPreferences.allAppsGridColumns: Int
-    get() = getInt(ALL_APPS_GRID_COLUMNS_KEY, 4)
+    get() = getInt(ALL_APPS_GRID_COLUMNS_KEY, 5)
     set(value) = edit {
         putInt(ALL_APPS_GRID_COLUMNS_KEY, value)
     }

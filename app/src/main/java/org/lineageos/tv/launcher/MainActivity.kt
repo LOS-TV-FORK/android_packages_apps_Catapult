@@ -22,6 +22,7 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Bundle
+import android.os.Handler
 import android.util.AttributeSet
 import android.content.Context
 import android.view.ViewGroup
@@ -54,7 +55,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import java.net.NetworkInterface
 import org.lineageos.tv.launcher.adapter.AllAppsAdapter
 import org.lineageos.tv.launcher.adapter.FavoritesAdapter
 import org.lineageos.tv.launcher.adapter.MainVerticalAdapter
@@ -136,6 +136,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private val settingButton by lazy { findViewById<ImageButton>(R.id.settingsMaterialButton)!! }
     private val vpnButton by lazy { findViewById<ImageButton>(R.id.vpnButton)!! }
     private val notificationCountTextView by lazy { findViewById<TextView>(R.id.notificationCountTextView)!! }
+    private val notificationContainer by lazy { findViewById<LinearLayout>(R.id.notificationContainer)!! }
+    private val notificationBellIcon by lazy { findViewById<ImageView>(R.id.notificationBellIcon)!! }
     private val topBarContainer by lazy { findViewById<LinearLayout>(R.id.top_bar)!! }
     private val assistantTransition by lazy {
         Slide().apply {
@@ -158,8 +160,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private val connectivityManager by lazy { getSystemService(ConnectivityManager::class.java)!! }
 
     // VPN status tracking
-    private val vpnNetworks = mutableSetOf<Network>()
     private var vpnNetworkCallback: ConnectivityManager.NetworkCallback? = null
+    private var vpnDefaultCallback: ConnectivityManager.NetworkCallback? = null
 
     // Activity request launchers
     private val homeRoleActivityRequestLauncher = registerForActivityResult(
@@ -313,7 +315,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                     dialog.show()
                 }
 
-                notificationCountTextView.setOnClickListener {
+                notificationContainer.setOnClickListener {
                     startActivity(Intent(this@MainActivity, SystemOptionsActivity::class.java))
                 }
 
@@ -345,9 +347,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                         notificationViewModel.state.collect { state ->
                             when (state) {
                                 ServiceConnectionState.Connected -> {}
-                                ServiceConnectionState.Disconnected -> {
-                                    notificationCountTextView.text = ""
-                                }
                                 is ServiceConnectionState.Notifications -> {
                                     if (state.notifications.isNotEmpty()) {
                                         notificationCountTextView.text = String.format(
@@ -355,9 +354,15 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                                             "%d",
                                             state.notifications.count()
                                         )
+                                        updateBellHighlight(true)
                                     } else {
                                         notificationCountTextView.text = ""
+                                        updateBellHighlight(false)
                                     }
+                                }
+                                ServiceConnectionState.Disconnected -> {
+                                    notificationCountTextView.text = ""
+                                    updateBellHighlight(false)
                                 }
                             }
                         }
@@ -459,37 +464,74 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private fun setupVpnButton() {
         vpnButton.setOnClickListener { launchVpn() }
 
+        // Idempotent: never stack duplicate callbacks if called again.
+        vpnNetworkCallback?.let {
+            runCatching { connectivityManager.unregisterNetworkCallback(it) }
+            vpnNetworkCallback = null
+        }
+        vpnDefaultCallback?.let {
+            runCatching { connectivityManager.unregisterNetworkCallback(it) }
+            vpnDefaultCallback = null
+        }
+
+        // NetworkRequest.Builder() starts with default capabilities that include
+        // NOT_VPN; a VPN network never has that capability. Remove it, otherwise a
+        // TRANSPORT_VPN listener can never match any VPN (AOSP: ConnectivityService
+        // createVpnRequest/createDefaultNetworkCapabilitiesForUidRangeSet do the same).
         vpnNetworkCallback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
-                vpnNetworks += network
                 updateVpnIcon()
             }
 
             override fun onLost(network: Network) {
-                vpnNetworks -= network
                 updateVpnIcon()
             }
         }.also {
             val request = NetworkRequest.Builder()
+                .removeCapability(NetworkCapabilities.NET_CAPABILITY_NOT_VPN)
                 .addTransportType(NetworkCapabilities.TRANSPORT_VPN)
                 .build()
-            connectivityManager.registerNetworkCallback(request, it)
+            connectivityManager.registerNetworkCallback(request, it, Handler(mainLooper))
+        }
+
+        // Backup signal: a VPN that takes over the default route (any client) also
+        // changes the default network; documented to fire for virtual networks.
+        vpnDefaultCallback = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                updateVpnIcon()
+            }
+
+            override fun onLost(network: Network) {
+                updateVpnIcon()
+            }
+
+            override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {
+                updateVpnIcon()
+            }
+        }.also {
+            connectivityManager.registerDefaultNetworkCallback(it, Handler(mainLooper))
         }
         updateVpnIcon()
     }
 
     private fun isVpnActive(): Boolean {
-        if (vpnNetworks.isEmpty()) return false
-        return try {
-            NetworkInterface.getNetworkInterfaces().toList().any { it.isUp && it.name.startsWith("tun") }
-        } catch (_: Exception) {
-            true
+        return connectivityManager.allNetworks.any { network ->
+            connectivityManager.getNetworkCapabilities(network)
+                ?.hasTransport(NetworkCapabilities.TRANSPORT_VPN) == true
         }
     }
 
     private fun updateVpnIcon() {
         vpnButton.imageTintList = if (isVpnActive()) {
             ColorStateList.valueOf(MaterialColors.getColor(vpnButton, com.google.android.material.R.attr.colorPrimary))
+        } else {
+            ColorStateList.valueOf(Color.argb(0xB0, 128, 128, 128))
+        }
+    }
+
+    private fun updateBellHighlight(hasNotifications: Boolean) {
+        notificationBellIcon.imageTintList = if (hasNotifications) {
+            ColorStateList.valueOf(MaterialColors.getColor(notificationBellIcon, com.google.android.material.R.attr.colorPrimary))
         } else {
             ColorStateList.valueOf(Color.argb(0xB0, 128, 128, 128))
         }
@@ -555,6 +597,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             runCatching { connectivityManager.unregisterNetworkCallback(it) }
             vpnNetworkCallback = null
         }
+        vpnDefaultCallback?.let {
+            runCatching { connectivityManager.unregisterNetworkCallback(it) }
+            vpnDefaultCallback = null
+        }
 
         if (NotificationUtils.notificationPermissionGranted(this)) {
             notificationViewModel.unbindService(this)
@@ -605,7 +651,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         val preferred = listOf(
             settingButton,
             vpnButton,
-            notificationCountTextView,
+            notificationContainer,
             keyboardAssistantButton,
             voiceAssistantButton,
             assistantHintImageView,

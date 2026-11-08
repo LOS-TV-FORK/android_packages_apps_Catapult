@@ -74,19 +74,33 @@
             android:nextFocusRight="@id/notificationCountTextView"
             style="@style/TopBarImageButton" />
 
-        <TextView
-            android:id="@+id/notificationCountTextView"
+        <LinearLayout
+            android:id="@+id/notificationContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:focusable="true"
             android:clickable="true"
             android:nextFocusLeft="@id/vpnButton"
             android:nextFocusRight="@id/settingsMaterialButton"
-            style="@style/TopBarImageButton"
-            android:drawablePadding="5dp"
-            app:drawableLeftCompat="@drawable/ic_bell" />
+            style="@style/TopBarImageButton">
+
+            <ImageView
+                android:id="@+id/notificationBellIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_bell"
+                android:importantForAccessibility="no" />
+
+            <TextView
+                android:id="@+id/notificationCountTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:textAppearance="?attr/textAppearanceTitleMedium" />
+        </LinearLayout>
 
         <ImageButton
             android:id="@+id/settingsMaterialButton"
