@@ -20,12 +20,12 @@ class PreviewChannelsFlow(private val context: Context) : QueryFlow<PreviewChann
         PreviewChannel.Columns.PROJECTION,
         bundleOf(),
     ).mapEachRow { it, _ ->
-        it.takeUnless {
-            // TODO: Google bug, to report to them... https://nekobin.com/rolulodudo
-            it.getString(PreviewChannel.Columns.COL_APP_LINK_INTENT_URI).isNullOrEmpty() ||
-                    it.getString(PreviewChannel.Columns.COL_DESCRIPTION) == null
-        }?.let {
+        // Only preview (suggestion) channels belong to the launcher; regular
+        // TV input channels must not appear as rows.
+        if (it.getString(PreviewChannel.Columns.COL_TYPE) == TvContractCompat.Channels.TYPE_PREVIEW) {
             PreviewChannel.fromCursor(it)
+        } else {
+            null
         }
     }.map { it.filterNotNull() }
 }

@@ -126,6 +126,8 @@ class ModifyChannelsAdapter :
 
             if (channel.first.id == InternalChannel.FAVORITE_APPS.id) {
                 toggleChannelView.disableToggle()
+            } else {
+                toggleChannelView.enableToggle()
             }
         }
     }

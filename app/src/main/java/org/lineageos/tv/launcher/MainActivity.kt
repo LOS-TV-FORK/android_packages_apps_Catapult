@@ -195,6 +195,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                                 // Check if "Watch Next" should be skipped
                                 if (channel.first.id == InternalChannel.WATCH_NEXT.id && watchNextPrograms.isEmpty()) {
                                     null
+                                } else if (channel.first.previewChannel != null
+                                    && channel.second.isNullOrEmpty()
+                                ) {
+                                    // Don't show a row until the provider publishes programs
+                                    null
                                 } else {
                                     channel.first.id to MainRowItem(
                                         channel.first.title,
