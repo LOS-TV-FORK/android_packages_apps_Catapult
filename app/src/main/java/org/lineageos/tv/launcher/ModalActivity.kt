@@ -23,10 +23,8 @@ abstract class ModalActivity(layout: Int) : AppCompatActivity(layout) {
         }
     }
 
-    override fun onUserLeaveHint() {
-        super.onUserLeaveHint()
-        // Home/recents must dismiss the panel: as a separate NEW_TASK it would otherwise
-        // linger in background and be re-raised above anything else in this app.
-        finish()
-    }
+    // No onUserLeaveHint finish: the hint also fires when this modal starts another
+    // activity (child settings screen, photo picker), which would destroy the back
+    // stack and drop activity results. Stale modal tasks are dismissed by MainActivity
+    // when the user returns home, so nothing lingers in the background.
 }

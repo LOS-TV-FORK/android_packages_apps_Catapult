@@ -36,11 +36,16 @@ class BackgroundActivity : ModalActivity(R.layout.activity_background) {
     private fun copyImageToInternalStorage(uri: Uri): File? {
         return try {
             val inputStream = contentResolver.openInputStream(uri) ?: return null
-            val file = File(filesDir, "background_image.jpg")
+            // Unique file name per pick: SharedPreferences would not notify listeners
+            // when the stored path string stays identical across picks.
+            val file = File(filesDir, "background_image_${System.currentTimeMillis()}.jpg")
             file.outputStream().use { output ->
                 inputStream.copyTo(output)
             }
             inputStream.close()
+            filesDir.listFiles()?.forEach { old ->
+                if (old.name.startsWith("background_image_") && old != file) old.delete()
+            }
             file
         } catch (e: Exception) {
             e.printStackTrace()
