@@ -56,7 +56,7 @@ class ModifyChannelsActivity : ModalActivity(R.layout.activity_modify_channels) 
         super.onCreate(savedInstanceState)
 
         modifyChannelsAdapter.onChannelToggled = { channel, enabled ->
-            Suggestions.toggleChannel(this, channel.id, enabled)
+            Suggestions.toggleChannel(this, channel, enabled)
         }
         modifyChannelsAdapter.onOrderChanged = {
             sharedPreferences.knownChannels = it.map { channel -> channel.id }

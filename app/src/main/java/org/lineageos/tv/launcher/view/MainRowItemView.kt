@@ -20,6 +20,7 @@ import org.lineageos.tv.launcher.R
 import org.lineageos.tv.launcher.model.MainRowItem
 import org.lineageos.tv.launcher.adapter.AllAppsAdapter
 import org.lineageos.tv.launcher.adapter.FavoritesAdapter
+import org.lineageos.tv.launcher.adapter.PreviewProgramsAdapter
 import org.lineageos.tv.launcher.adapter.WatchNextAdapter
 import org.lineageos.tv.launcher.ext.allAppsGrid
 import org.lineageos.tv.launcher.ext.allAppsGridColumns
@@ -49,7 +50,7 @@ class MainRowItemView @JvmOverloads constructor(
         val (baseCardHeightDp, cardSizePercent) = when (adapter) {
             is AllAppsAdapter -> Pair(100f, prefs.appCardSize)
             is FavoritesAdapter -> Pair(71f, prefs.favoriteCardSize)
-            is WatchNextAdapter -> Pair(138f, prefs.watchNextCardSize)
+            is WatchNextAdapter, is PreviewProgramsAdapter -> Pair(138f, prefs.watchNextCardSize)
             else -> return
         }
         
@@ -128,7 +129,7 @@ class MainRowItemView @JvmOverloads constructor(
         val cardSizePercent = when (adapter) {
             is AllAppsAdapter -> prefs.appCardSize
             is FavoritesAdapter -> prefs.favoriteCardSize
-            is WatchNextAdapter -> prefs.watchNextCardSize
+            is WatchNextAdapter, is PreviewProgramsAdapter -> prefs.watchNextCardSize
             else -> 100
         }
         val density = context.resources.displayMetrics.density
@@ -142,7 +143,7 @@ class MainRowItemView @JvmOverloads constructor(
         val (baseCardHeightDp, cardSizePercent, textAreaDp) = when (adapter) {
             is AllAppsAdapter -> Triple(100f, prefs.appCardSize, 20f)
             is FavoritesAdapter -> Triple(71f, prefs.favoriteCardSize, 20f)
-            is WatchNextAdapter -> Triple(138f, prefs.watchNextCardSize, 28f)
+            is WatchNextAdapter, is PreviewProgramsAdapter -> Triple(138f, prefs.watchNextCardSize, 28f)
             else -> Triple(100f, 100, 20f)
         }
         val density = context.resources.displayMetrics.density

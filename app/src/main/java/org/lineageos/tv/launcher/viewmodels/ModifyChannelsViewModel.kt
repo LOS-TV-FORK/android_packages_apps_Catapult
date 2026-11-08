@@ -36,8 +36,17 @@ class ModifyChannelsViewModel(application: Application) : AndroidViewModel(appli
                 Channel.getAllAppsChannel(context),
             )
         }
-        .combine(LauncherRepository.hiddenChannels(context)) { previewChannels, hiddenChannels ->
-            previewChannels.map { it to !hiddenChannels.contains(it.id) }
+        .combine(LauncherRepository.hiddenChannels(context)) { channels, hiddenChannels ->
+            channels.map { channel ->
+                channel to (channel.previewChannel != null || !hiddenChannels.contains(channel.id))
+            }
+        }
+        .combine(LauncherRepository.enabledChannels(context)) { channelsToEnabled, enabledChannels ->
+            channelsToEnabled.map { (channel, enabled) ->
+                channel to
+                        if (channel.previewChannel != null) enabledChannels.contains(channel.id)
+                        else enabled
+            }
         }
         .combine(LauncherRepository.knownChannels(context)) { previewChannels, knownChannels ->
             previewChannels.orderSuggestions(knownChannels) { it.first.id }

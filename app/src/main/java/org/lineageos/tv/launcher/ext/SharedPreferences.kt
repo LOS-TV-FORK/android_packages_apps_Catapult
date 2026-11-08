@@ -57,7 +57,7 @@ var SharedPreferences.knownChannels: List<Long>
 const val HIDDEN_CHANNELS_KEY = "hidden_channels"
 
 /**
- * The list of channels' IDs hidden by the user.
+ * The list of internal channels' IDs hidden by the user.
  */
 var SharedPreferences.hiddenChannels: Set<Long>
     get() = getStringSet(HIDDEN_CHANNELS_KEY, setOf())?.map {
@@ -65,6 +65,20 @@ var SharedPreferences.hiddenChannels: Set<Long>
     }?.toSet() ?: setOf()
     set(value) = edit {
         putStringSet(HIDDEN_CHANNELS_KEY, value.map { it.toString() }.toSet())
+    }
+
+const val ENABLED_CHANNELS_KEY = "enabled_channels"
+
+/**
+ * The list of content provider channels' IDs explicitly enabled by the user.
+ * Provider channels are opt-in: hidden until enabled in the channel settings.
+ */
+var SharedPreferences.enabledChannels: Set<Long>
+    get() = getStringSet(ENABLED_CHANNELS_KEY, setOf())?.map {
+        it.toLong()
+    }?.toSet() ?: setOf()
+    set(value) = edit {
+        putStringSet(ENABLED_CHANNELS_KEY, value.map { it.toString() }.toSet())
     }
 
 const val HOME_ROLE_REQUEST_DIALOG_DISMISSED = "home_role_request_dialog_dismissed"

@@ -43,6 +43,10 @@ class ToggleChannelView @JvmOverloads constructor(
         switch.isEnabled = false
     }
 
+    fun enableToggle() {
+        switch.isEnabled = true
+    }
+
     fun setMoving() {
         if (moving) return
         moving = true

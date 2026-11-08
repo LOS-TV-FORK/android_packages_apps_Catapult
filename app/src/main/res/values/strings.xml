@@ -15,6 +15,8 @@
     <string name="move">Move</string>
     <string name="remove_favorite">Remove favorite</string>
     <string name="watch_next">Watch next</string>
+    <string name="remove_from_watch_next">Remove from Watch next</string>
+    <string name="remove_program_failed">Could not remove this item</string>
     <string name="modify_channels">Modify channels</string>
     <string name="empty" translatable="false"></string>
     <string name="channel_title">%1$s: %2$s</string>

@@ -10,20 +10,34 @@ import android.content.pm.PackageManager
 import androidx.preference.PreferenceManager
 import androidx.tvprovider.media.tv.PreviewChannel
 import org.lineageos.tv.launcher.R
+import org.lineageos.tv.launcher.ext.enabledChannels
 import org.lineageos.tv.launcher.ext.hiddenChannels
+import org.lineageos.tv.launcher.model.Channel
 import org.lineageos.tv.launcher.model.InternalChannel
 
 @Suppress("RestrictedApi")
 object Suggestions {
-    fun toggleChannel(context: Context, channelId: Long, enabled: Boolean) {
+    fun toggleChannel(context: Context, channel: Channel, enabled: Boolean) {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-        sharedPreferences.hiddenChannels = sharedPreferences.hiddenChannels.toMutableSet().apply {
-            if (enabled) {
-                remove(channelId)
-            } else {
-                if (!contains(channelId)) {
-                    add(channelId)
+        if (channel.previewChannel != null) {
+            // Provider channels are opt-in
+            sharedPreferences.enabledChannels = sharedPreferences.enabledChannels.toMutableSet().apply {
+                if (enabled) {
+                    add(channel.id)
+                } else {
+                    remove(channel.id)
+                }
+            }
+        } else {
+            // Internal channels stay visible unless explicitly hidden
+            sharedPreferences.hiddenChannels = sharedPreferences.hiddenChannels.toMutableSet().apply {
+                if (enabled) {
+                    remove(channel.id)
+                } else {
+                    if (!contains(channel.id)) {
+                        add(channel.id)
+                    }
                 }
             }
         }
