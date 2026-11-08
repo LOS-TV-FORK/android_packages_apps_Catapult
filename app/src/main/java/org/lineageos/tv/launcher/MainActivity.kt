@@ -5,6 +5,7 @@
 
 package org.lineageos.tv.launcher
 
+import android.app.ActivityManager
 import android.app.Dialog
 import android.app.role.RoleManager
 import android.content.DialogInterface
@@ -66,6 +67,8 @@ import org.lineageos.tv.launcher.ext.roleCanBeRequested
 import org.lineageos.tv.launcher.ext.backgroundType
 import org.lineageos.tv.launcher.ext.backgroundColor
 import org.lineageos.tv.launcher.ext.backgroundImageUri
+import org.lineageos.tv.launcher.ext.BACKGROUND_IMAGE_URI_KEY
+import org.lineageos.tv.launcher.ext.BACKGROUND_TYPE_KEY
 import org.lineageos.tv.launcher.ext.allAppsGrid
 import org.lineageos.tv.launcher.ext.allAppsGridColumns
 import org.lineageos.tv.launcher.ext.appCardSize
@@ -342,6 +345,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                     }
                 })
 
+                // Redraw the wallpaper the moment the background settings write it,
+                // so the change is visible behind the still-open settings panel.
+                sharedPreferences.registerOnSharedPreferenceChangeListener(backgroundPrefsListener)
+
                 lifecycleScope.launch {
                     repeatOnLifecycle(Lifecycle.State.STARTED) {
                         notificationViewModel.state.collect { state ->
@@ -372,10 +379,21 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     override fun onStart() {
         super.onStart()
+        // Re-apply the background: while stopped (e.g. a photo picker was on top),
+        // view changes are not rendered; re-setting it here forces a fresh frame
+        // as soon as the launcher becomes visible behind the settings panel again.
+        applyBackground()
         if (NotificationUtils.notificationPermissionGranted(this)) {
             notificationViewModel.bindService(this)
         }
     }
+
+    private val backgroundPrefsListener =
+        SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            if (key == BACKGROUND_TYPE_KEY || key == BACKGROUND_IMAGE_URI_KEY) {
+                applyBackground()
+            }
+        }
 
     override fun onResume() {
         super.onResume()
@@ -383,8 +401,25 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         lastResumedTime = System.currentTimeMillis()
         applyBackground()
         checkCardSizeChanges()
+        dismissStaleModalTasks()
         mainVerticalGridView.post {
             mainVerticalGridView.upFocusFallback = findTopBarFocusable()
+        }
+    }
+
+    private fun dismissStaleModalTasks() {
+        // The modal panels run as separate tasks of this app. Whenever home becomes
+        // interactive again (HOME press, recents to home, restart after a crash),
+        // drop them: no stale panel is restored over other apps, it cannot skew focus,
+        // and the next settings entry starts fresh at the root screen.
+        val activityManager = getSystemService(ActivityManager::class.java)
+        activityManager.appTasks.forEach { task ->
+            val top = task.taskInfo?.topActivity ?: return@forEach
+            if (top.packageName == packageName &&
+                top.className != MainActivity::class.java.name
+            ) {
+                runCatching { task.finishAndRemoveTask() }
+            }
         }
     }
 
@@ -588,6 +623,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     }
 
     override fun onDestroy() {
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(backgroundPrefsListener)
         if (mainVerticalGridView.viewTreeObserver.isAlive) {
             mainVerticalGridView.viewTreeObserver.removeOnGlobalFocusChangeListener(mainFocusScrollListener)
         }
