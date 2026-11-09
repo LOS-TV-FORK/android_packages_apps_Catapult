@@ -61,8 +61,9 @@
     <string name="app_cards">App-kaarten</string>
     <string name="app_cards_size">Grootte van de app-kaarten</string>
     <string name="favorite_cards_size">Grootte van de favoritenkaarten</string>
-    <string name="watch_next_cards_size">Grootte van de kaarten van \'Bekijk volgende\'</string>
+    <string name="watch_next_cards_size">Grootte van kanaarkaarten</string>
     <string name="card_corner_radius">Hoekstraal van kaarten</string>
     <string name="all_apps_grid_view">Rasterweergave van alle apps</string>
     <string name="all_apps_grid_columns">Rasterkolommen</string>
+    <string name="remove_from_channel">Verwijderen uit %1$s</string>
 </resources>

@@ -52,11 +52,12 @@
     <string name="app_cards">செயலின் கார்டுகள்</string>
     <string name="app_cards_size">செயலின் கார்டுகளின் அளவு</string>
     <string name="favorite_cards_size">பிடித்த கார்டுகளின் அளவு</string>
-    <string name="watch_next_cards_size">"அடுத்துப் பார்க்க" கார்டுகளின் அளவு</string>
+    <string name="watch_next_cards_size">சேனல் அட்டைகளின் அளவு</string>
     <string name="card_corner_radius">கார்டின் மூலை வளைவளவு</string>
     <string name="all_apps_grid_view">அனைத்து செயலிகளின் கட்டகம்</string>
     <string name="all_apps_grid_columns">கட்டக நிரல்கள்</string>
 
     <string name="recent_apps_thumbnails">சிறுபடங்களைக் காட்டு</string>
     <string name="recent_apps_thumbnails_hint">அட்டைகளில் செயலியின் கடைசி திரையின் முன்தோற்றம்</string>
+    <string name="remove_from_channel">%1$s-இலிருந்து நீக்கு</string>
 </resources>

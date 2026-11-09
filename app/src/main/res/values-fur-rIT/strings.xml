@@ -46,11 +46,12 @@
     <string name="app_cards">Schedis des aplicazions</string>
     <string name="app_cards_size">Dimension des schedis des aplicazions</string>
     <string name="favorite_cards_size">Dimension des schedis "Preferîts"</string>
-    <string name="watch_next_cards_size">Dimension des schedis "Cjale il sucessîf"</string>
+    <string name="watch_next_cards_size">Misure des cartelutis dal canal</string>
     <string name="card_corner_radius">Radius dai cûi des schedis</string>
     <string name="all_apps_grid_view">Grilie des dutis lis aplicazions</string>
     <string name="all_apps_grid_columns">Colons de grilie</string>
 
     <string name="recent_apps_thumbnails">Mostre miniaturis</string>
     <string name="recent_apps_thumbnails_hint">Anteprime dal ultin schermi de aplicazion tes schedis</string>
+    <string name="remove_from_channel">Gava di %1$s</string>
 </resources>

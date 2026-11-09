@@ -49,11 +49,12 @@
     <string name="app_cards">Kartat e aplikacioneve</string>
     <string name="app_cards_size">Madhësia e kartave të aplikacioneve</string>
     <string name="favorite_cards_size">Madhësia e kartave të preferuara</string>
-    <string name="watch_next_cards_size">Madhësia e kartave "Shiko tjetër"</string>
+    <string name="watch_next_cards_size">Madhësia e kartave të kanalit</string>
     <string name="card_corner_radius">Rrezja e qosheve të kartave</string>
     <string name="all_apps_grid_view">Pamja me rrjetë e të gjitha aplikacioneve</string>
     <string name="all_apps_grid_columns">Kolonat e rrjetës</string>
 
     <string name="recent_apps_thumbnails">Shfaq pamjet e vogla</string>
     <string name="recent_apps_thumbnails_hint">Paraqitje e ekranit të fundit të aplikacionit në karta</string>
+    <string name="remove_from_channel">Hiqe nga %1$s</string>
 </resources>

@@ -63,8 +63,9 @@
     <string name="app_cards">Κάρτες εφαρμογών</string>
     <string name="app_cards_size">Μέγεθος καρτών εφαρμογών</string>
     <string name="favorite_cards_size">Μέγεθος καρτών αγαπημένων</string>
-    <string name="watch_next_cards_size">Μέγεθος καρτών «Δείτε στη συνέχεια»</string>
+    <string name="watch_next_cards_size">Μέγεθος καρτών καναλιού</string>
     <string name="card_corner_radius">Ακτίνα γωνιών των καρτών</string>
     <string name="all_apps_grid_view">Πλέγμα όλων των εφαρμογών</string>
     <string name="all_apps_grid_columns">Στήλες πλέγματος</string>
+    <string name="remove_from_channel">Κατάργηση από %1$s</string>
 </resources>

@@ -64,8 +64,9 @@
     <string name="app_cards">Carduri aplicații</string>
     <string name="app_cards_size">Dimensiune carduri aplicații</string>
     <string name="favorite_cards_size">Dimensiune carduri favorite</string>
-    <string name="watch_next_cards_size">Dimensiune carduri „Urmărește în continuare”</string>
+    <string name="watch_next_cards_size">Dimensiunea cardurilor de canal</string>
     <string name="card_corner_radius">Raza colțurilor cardurilor</string>
     <string name="all_apps_grid_view">Grilă cu toate aplicațiile</string>
     <string name="all_apps_grid_columns">Coloanele grilei</string>
+    <string name="remove_from_channel">Elimină din %1$s</string>
 </resources>

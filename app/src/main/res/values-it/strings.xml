@@ -64,8 +64,9 @@
     <string name="app_cards">Schede delle app</string>
     <string name="app_cards_size">Dimensione delle schede delle app</string>
     <string name="favorite_cards_size">Dimensione delle schede dei preferiti</string>
-    <string name="watch_next_cards_size">Dimensione delle schede "Guarda il prossimo"</string>
+    <string name="watch_next_cards_size">Dimensione delle carte del canale</string>
     <string name="card_corner_radius">Raggio degli angoli delle schede</string>
     <string name="all_apps_grid_view">Griglia di tutte le app</string>
     <string name="all_apps_grid_columns">Colonne della griglia</string>
+    <string name="remove_from_channel">Rimuovi da %1$s</string>
 </resources>

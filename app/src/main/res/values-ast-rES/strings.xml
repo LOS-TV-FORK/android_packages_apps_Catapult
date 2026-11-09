@@ -15,11 +15,12 @@
     <string name="app_cards">Tarxetes d\'aplicaciones</string>
     <string name="app_cards_size">Tamañu de les tarxetes d\'aplicaciones</string>
     <string name="favorite_cards_size">Tamañu de les tarxetes de favoritos</string>
-    <string name="watch_next_cards_size">Tamañu de tarxetes «Ver lo siguiente»</string>
+    <string name="watch_next_cards_size">Tamañu de les tarxetes de canales</string>
     <string name="card_corner_radius">Radiu d\'esquina de les tarxetes</string>
     <string name="all_apps_grid_view">Rejilla de toes les aplicaciones</string>
     <string name="all_apps_grid_columns">Columnes de la rejilla</string>
 
     <string name="recent_apps_thumbnails">Amosar miniatures</string>
     <string name="recent_apps_thumbnails_hint">Previsualización de la postrera pantalla de l\'aplicación en les tarxetes</string>
+    <string name="remove_from_channel">Desaniciar de %1$s</string>
 </resources>

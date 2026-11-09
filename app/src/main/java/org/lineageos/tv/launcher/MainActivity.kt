@@ -49,6 +49,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
+import androidx.palette.graphics.Palette
 import androidx.leanback.widget.VerticalGridView
 import androidx.preference.PreferenceManager
 import androidx.appcompat.content.res.AppCompatResources
@@ -71,6 +72,10 @@ import org.lineageos.tv.launcher.ext.BACKGROUND_IMAGE_URI_KEY
 import org.lineageos.tv.launcher.ext.BACKGROUND_TYPE_KEY
 import org.lineageos.tv.launcher.ext.allAppsGrid
 import org.lineageos.tv.launcher.ext.allAppsGridColumns
+import org.lineageos.tv.launcher.ext.APP_CARD_SIZE_KEY
+import org.lineageos.tv.launcher.ext.CARD_CORNER_RADIUS_KEY
+import org.lineageos.tv.launcher.ext.FAVORITE_CARD_SIZE_KEY
+import org.lineageos.tv.launcher.ext.WATCH_NEXT_CARD_SIZE_KEY
 import org.lineageos.tv.launcher.ext.appCardSize
 import org.lineageos.tv.launcher.ext.favoriteCardSize
 import org.lineageos.tv.launcher.ext.watchNextCardSize
@@ -207,7 +212,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                                             InternalChannel.WATCH_NEXT.id -> watchNextAdapter
                                             InternalChannel.ALL_APPS.id -> allAppsAdapter
                                             else -> previewChannelAdapters.getOrPut(channel.first.id) {
-                                                PreviewProgramsAdapter()
+                                                PreviewProgramsAdapter(channel.first.title)
                                             }.apply {
                                                 channel.second?.let { previewPrograms ->
                                                     submitList(previewPrograms)
@@ -391,10 +396,29 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private val backgroundPrefsListener =
         SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-            if (key == BACKGROUND_TYPE_KEY || key == BACKGROUND_IMAGE_URI_KEY) {
-                applyBackground()
+            when (key) {
+                BACKGROUND_TYPE_KEY, BACKGROUND_IMAGE_URI_KEY -> applyBackground()
+                APP_CARD_SIZE_KEY, FAVORITE_CARD_SIZE_KEY, WATCH_NEXT_CARD_SIZE_KEY,
+                CARD_CORNER_RADIUS_KEY ->
+                    scheduleLiveCardResize()
             }
         }
+
+    private val cardSizeHandler by lazy { android.os.Handler(mainLooper) }
+    private var cardSizeResizeRunnable: Runnable? = null
+
+    // Applies card size changes while the settings slider is still open,
+    // coalescing the rapid slider updates into one rebinding.
+    private fun scheduleLiveCardResize() {
+        cardSizeResizeRunnable?.let { cardSizeHandler.removeCallbacks(it) }
+        cardSizeResizeRunnable = Runnable {
+            lastAppCardSize = sharedPreferences.appCardSize
+            lastFavoriteCardSize = sharedPreferences.favoriteCardSize
+            lastWatchNextCardSize = sharedPreferences.watchNextCardSize
+            lastCardCornerRadius = sharedPreferences.cardCornerRadius
+            refreshAllRows()
+        }.also { cardSizeHandler.postDelayed(it, 120) }
+    }
 
     override fun onResume() {
         super.onResume()
@@ -494,6 +518,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         allAppsAdapter.notifyDataSetChanged()
         favoritesAdapter.notifyDataSetChanged()
         watchNextAdapter.notifyDataSetChanged()
+        previewChannelAdapters.values.forEach { it.notifyDataSetChanged() }
         mainVerticalAdapter.notifyDataSetChanged()
     }
 
@@ -617,6 +642,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     override fun onDestroy() {
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(backgroundPrefsListener)
+        cardSizeResizeRunnable?.let { cardSizeHandler.removeCallbacks(it) }
         if (mainVerticalGridView.viewTreeObserver.isAlive) {
             mainVerticalGridView.viewTreeObserver.removeOnGlobalFocusChangeListener(mainFocusScrollListener)
         }
@@ -783,6 +809,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private fun applyBackground() {
         val backgroundType = sharedPreferences.backgroundType
         val decorView = window.decorView
+        applyPillTint(null)
         
         when (backgroundType) {
             0, 1 -> {
@@ -812,6 +839,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                                 val drawable = BitmapDrawable(resources, bitmap)
                                 drawable.gravity = android.view.Gravity.FILL
                                 decorView.background = drawable
+                                applyPillTint(bitmap)
                             } else {
                                 decorView.setBackgroundColor(getColor(R.color.default_background))
                             }
@@ -829,8 +857,46 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
     }
 
-    private fun calculateInSampleSize(options: android.graphics.BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
-        val (height: Int, width: Int) = options.outHeight to options.outWidth
+    private val topBarButtonsGroup by lazy { findViewById<View>(R.id.topBarButtonsGroup)!! }
+
+    private var pillTintGeneration = 0
+
+    // Material-You-style pill background: take the wallpaper's hue from a vivid
+    // swatch and build a dark, moderately saturated tone with it (fixed value in
+    // HSV), so the pill reads as part of the wallpaper's palette yet stays dark
+    // and legible over any background.
+    private fun applyPillTint(wallpaper: android.graphics.Bitmap?) {
+        val generation = ++pillTintGeneration
+        if (wallpaper == null) {
+            assistantButtonsContainer.backgroundTintList = null
+            topBarButtonsGroup.backgroundTintList = null
+            return
+        }
+        Thread {
+            val default = getColor(R.color.toggleButtonBackground)
+            val palette = Palette.from(wallpaper).generate()
+            val seed = palette.mutedSwatch?.rgb
+                ?: palette.vibrantSwatch?.rgb
+                ?: palette.darkMutedSwatch?.rgb
+                ?: palette.dominantSwatch?.rgb
+                ?: default
+            val hsv = FloatArray(3)
+            Color.colorToHSV(seed, hsv)
+            hsv[1] = hsv[1].coerceIn(0.3f, 0.6f)
+            hsv[2] = 0.17f
+            val pillColor = Color.HSVToColor(hsv)
+            runOnUiThread {
+                if (generation != pillTintGeneration) {
+                    return@runOnUiThread
+                }
+                val tint = ColorStateList.valueOf(pillColor)
+                assistantButtonsContainer.backgroundTintList = tint
+                topBarButtonsGroup.backgroundTintList = tint
+            }
+        }.start()
+    }
+
+    private fun calculateInSampleSize(options: android.graphics.BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {        val (height: Int, width: Int) = options.outHeight to options.outWidth
         var inSampleSize = 1
 
         if (height > reqHeight || width > reqWidth) {

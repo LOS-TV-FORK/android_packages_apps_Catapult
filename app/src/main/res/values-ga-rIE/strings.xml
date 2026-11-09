@@ -46,11 +46,12 @@
     <string name="app_cards">Cártaí aipeanna</string>
     <string name="app_cards_size">Méid na gcártaí aipeanna</string>
     <string name="favorite_cards_size">Méid na gcártaí Ceanán</string>
-    <string name="watch_next_cards_size">Méid na gcártaí "Féach ar seo chugainn"</string>
+    <string name="watch_next_cards_size">Méid na gcluaisíní cainéil</string>
     <string name="card_corner_radius">Ga na gcúinní den chárta</string>
     <string name="all_apps_grid_view">Greilleán na n-aipeanna uile</string>
     <string name="all_apps_grid_columns">Gcolúin an ghreilléin</string>
 
     <string name="recent_apps_thumbnails">Taispeáin mionsamhlacha</string>
     <string name="recent_apps_thumbnails_hint">Réamhamharc ar dheireadh-scráidein an aip sna cártaí</string>
+    <string name="remove_from_channel">Bain as %1$s</string>
 </resources>

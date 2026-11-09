@@ -8,5 +8,5 @@
         android:id="@+id/menu_remove_program"
         android:icon="@drawable/ic_delete"
         android:iconTint="@android:color/white"
-        android:title="@string/remove_from_watch_next" />
+        android:title="@string/remove_from_channel" />
 </menu>

@@ -64,8 +64,9 @@
     <string name="app_cards">Alkalmazáskártyák</string>
     <string name="app_cards_size">Alkalmazáskártyák mérete</string>
     <string name="favorite_cards_size">Kedvencek kártyáinak mérete</string>
-    <string name="watch_next_cards_size">„A következő megtekintése” kártyáinak mérete</string>
+    <string name="watch_next_cards_size">Csatornakártyák mérete</string>
     <string name="card_corner_radius">Kártyák sarokkerekítése</string>
     <string name="all_apps_grid_view">Rács a teljes alkalmazáslistához</string>
     <string name="all_apps_grid_columns">Rácsoszlopok</string>
+    <string name="remove_from_channel">Eltávolítás innen: %1$s</string>
 </resources>

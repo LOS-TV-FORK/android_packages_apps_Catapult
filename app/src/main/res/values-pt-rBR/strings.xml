@@ -64,8 +64,9 @@
     <string name="app_cards">Cartões de apps</string>
     <string name="app_cards_size">Tamanho dos cartões de apps</string>
     <string name="favorite_cards_size">Tamanho dos cartões de favoritos</string>
-    <string name="watch_next_cards_size">Tamanho dos cartões "Assistir a seguir"</string>
+    <string name="watch_next_cards_size">Tamanho dos cartões do canal</string>
     <string name="card_corner_radius">Arredondamento dos cantos dos cartões</string>
     <string name="all_apps_grid_view">Grade de todos os apps</string>
     <string name="all_apps_grid_columns">Colunas da grade</string>
+    <string name="remove_from_channel">Remover de %1$s</string>
 </resources>

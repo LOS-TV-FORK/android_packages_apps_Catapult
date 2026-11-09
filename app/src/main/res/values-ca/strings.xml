@@ -64,8 +64,9 @@
     <string name="app_cards">Targetes d\'aplicacions</string>
     <string name="app_cards_size">Mida de les targetes d\'aplicacions</string>
     <string name="favorite_cards_size">Mida de les targetes de preferits</string>
-    <string name="watch_next_cards_size">Mida de les targetes «Veure el següent»</string>
+    <string name="watch_next_cards_size">Mida de les targetes de canal</string>
     <string name="card_corner_radius">Radi de les cantonades de les targetes</string>
     <string name="all_apps_grid_view">Quadrícula de totes les aplicacions</string>
     <string name="all_apps_grid_columns">Columnes de la quadrícula</string>
+    <string name="remove_from_channel">Suprimeix de %1$s</string>
 </resources>

@@ -53,6 +53,9 @@ class WatchNextAdapter : ListAdapter<WatchNextProgram, WatchNextAdapter.ViewHold
             val program = getItem(position)
             val popupMenu = PopupMenu(card.context, card, Gravity.START, 0, R.style.PopupMenu)
             popupMenu.menuInflater.inflate(R.menu.preview_program_long_press, popupMenu.menu)
+            popupMenu.menu.findItem(R.id.menu_remove_program).title =
+                card.context.getString(R.string.remove_from_channel,
+                    card.context.getString(R.string.watch_next))
             popupMenu.setForceShowIcon(true)
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 if (menuItem.itemId == R.id.menu_remove_program) {
@@ -84,6 +87,8 @@ class WatchNextAdapter : ListAdapter<WatchNextProgram, WatchNextAdapter.ViewHold
         }
 
         fun bind(watchNextProgram: WatchNextProgram) {
+            card.applyCardSizeScaling()
+            card.applyCornerRadius()
             card.setInfo(watchNextProgram)
         }
     }

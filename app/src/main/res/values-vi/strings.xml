@@ -64,8 +64,9 @@
     <string name="app_cards">Thẻ ứng dụng</string>
     <string name="app_cards_size">Kích thước thẻ ứng dụng</string>
     <string name="favorite_cards_size">Kích thước thẻ yêu thích</string>
-    <string name="watch_next_cards_size">Kích thước thẻ "Xem tiếp"</string>
+    <string name="watch_next_cards_size">Kích thước thẻ kênh</string>
     <string name="card_corner_radius">Độ bo góc của thẻ</string>
     <string name="all_apps_grid_view">Lưới tất cả ứng dụng</string>
     <string name="all_apps_grid_columns">Cột của lưới</string>
+    <string name="remove_from_channel">Xóa khỏi %1$s</string>
 </resources>

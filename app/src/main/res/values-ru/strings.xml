@@ -66,8 +66,9 @@
     <string name="app_cards">Карточки приложений</string>
     <string name="app_cards_size">Размер карточек приложений</string>
     <string name="favorite_cards_size">Размер карточек избранного</string>
-    <string name="watch_next_cards_size">Размер карточек «Смотреть далее»</string>
+    <string name="watch_next_cards_size">Размер карточек каналов</string>
     <string name="card_corner_radius">Радиус скругления карточек</string>
     <string name="all_apps_grid_view">Сетка всех приложений</string>
     <string name="all_apps_grid_columns">Столбцов в сетке</string>
+    <string name="remove_from_channel">Удалить из «%1$s»</string>
 </resources>

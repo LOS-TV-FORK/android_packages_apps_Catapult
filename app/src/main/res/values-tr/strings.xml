@@ -64,8 +64,9 @@
     <string name="app_cards">Uygulama kartları</string>
     <string name="app_cards_size">Uygulama kartlarının boyutu</string>
     <string name="favorite_cards_size">Favori kartların boyutu</string>
-    <string name="watch_next_cards_size">"Sıradaki" kartlarının boyutu</string>
+    <string name="watch_next_cards_size">Kanal kartı boyutu</string>
     <string name="card_corner_radius">Kart köşe yarıçapı</string>
     <string name="all_apps_grid_view">Tüm uygulamalar ızgarası</string>
     <string name="all_apps_grid_columns">Izgara sütunları</string>
+    <string name="remove_from_channel">%1$s listesinden kaldır</string>
 </resources>

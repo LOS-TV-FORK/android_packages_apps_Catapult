@@ -64,8 +64,9 @@
     <string name="app_cards">Карти на приложенията</string>
     <string name="app_cards_size">Размер на картите на приложенията</string>
     <string name="favorite_cards_size">Размер на картите на любими</string>
-    <string name="watch_next_cards_size">Размер на картите „Пусни следващ“</string>
+    <string name="watch_next_cards_size">Размер на картите на каналите</string>
     <string name="card_corner_radius">Радиус на ъглите на картите</string>
     <string name="all_apps_grid_view">Мрежа с всички приложения</string>
     <string name="all_apps_grid_columns">Колони на мрежата</string>
+    <string name="remove_from_channel">Премахване от %1$s</string>
 </resources>

@@ -64,8 +64,9 @@
     <string name="app_cards">Kartice aplikacij</string>
     <string name="app_cards_size">Velikost kartic aplikacij</string>
     <string name="favorite_cards_size">Velikost kartic priljubljenih</string>
-    <string name="watch_next_cards_size">Velikost kartic »Glej naslednje«</string>
+    <string name="watch_next_cards_size">Velikost kartic kanala</string>
     <string name="card_corner_radius">Polmer kotov kartic</string>
     <string name="all_apps_grid_view">Mreža vseh aplikacij</string>
     <string name="all_apps_grid_columns">Stolpci mreže</string>
+    <string name="remove_from_channel">Odstrani iz %1$s</string>
 </resources>

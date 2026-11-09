@@ -64,8 +64,9 @@
     <string name="app_cards">כרטיסי אפליקציות</string>
     <string name="app_cards_size">גודל כרטיסי אפליקציות</string>
     <string name="favorite_cards_size">גודל כרטיסי מועדפים</string>
-    <string name="watch_next_cards_size">גודל כרטיסי \u0027צפה בבא\u0027</string>
+    <string name="watch_next_cards_size">גודל כרטיסי ערוץ</string>
     <string name="card_corner_radius">רדיוס פינות הכרטיסים</string>
     <string name="all_apps_grid_view">תצוגת רשת של כל היישומונים</string>
     <string name="all_apps_grid_columns">עמודות הרשת</string>
+    <string name="remove_from_channel">הסרה מ־%1$s</string>
 </resources>

@@ -64,8 +64,9 @@
     <string name="app_cards">کارت‌های برنامه</string>
     <string name="app_cards_size">اندازه کارت‌های برنامه</string>
     <string name="favorite_cards_size">اندازه کارت‌های دلخواه</string>
-    <string name="watch_next_cards_size">اندازه کارت‌های «تماشای بعدی»</string>
+    <string name="watch_next_cards_size">اندازه کارت‌های کانال</string>
     <string name="card_corner_radius">شعاع گوشه‌های کارت</string>
     <string name="all_apps_grid_view">نمای شبکه‌ای همهٔ برنامه‌ها</string>
     <string name="all_apps_grid_columns">ستون‌های شبکه</string>
+    <string name="remove_from_channel">حذف از %1$s</string>
 </resources>
