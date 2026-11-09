@@ -51,7 +51,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.leanback.widget.VerticalGridView
 import androidx.preference.PreferenceManager
-import com.google.android.material.color.MaterialColors
+import androidx.appcompat.content.res.AppCompatResources
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
@@ -140,7 +140,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private val vpnButton by lazy { findViewById<ImageButton>(R.id.vpnButton)!! }
     private val notificationCountTextView by lazy { findViewById<TextView>(R.id.notificationCountTextView)!! }
     private val notificationContainer by lazy { findViewById<LinearLayout>(R.id.notificationContainer)!! }
-    private val notificationBellIcon by lazy { findViewById<ImageView>(R.id.notificationBellIcon)!! }
     private val topBarContainer by lazy { findViewById<LinearLayout>(R.id.top_bar)!! }
     private val assistantTransition by lazy {
         Slide().apply {
@@ -366,15 +365,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                                             "%d",
                                             state.notifications.count()
                                         )
-                                        updateBellHighlight(true)
                                     } else {
                                         notificationCountTextView.text = ""
-                                        updateBellHighlight(false)
                                     }
                                 }
                                 ServiceConnectionState.Disconnected -> {
                                     notificationCountTextView.text = ""
-                                    updateBellHighlight(false)
                                 }
                             }
                         }
@@ -563,15 +559,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private fun updateVpnIcon() {
         vpnButton.imageTintList = if (isVpnActive()) {
-            ColorStateList.valueOf(MaterialColors.getColor(vpnButton, com.google.android.material.R.attr.colorPrimary))
-        } else {
-            ColorStateList.valueOf(Color.argb(0xB0, 128, 128, 128))
-        }
-    }
-
-    private fun updateBellHighlight(hasNotifications: Boolean) {
-        notificationBellIcon.imageTintList = if (hasNotifications) {
-            ColorStateList.valueOf(MaterialColors.getColor(notificationBellIcon, com.google.android.material.R.attr.colorPrimary))
+            AppCompatResources.getColorStateList(this, R.color.search_button_icon_color)
         } else {
             ColorStateList.valueOf(Color.argb(0xB0, 128, 128, 128))
         }

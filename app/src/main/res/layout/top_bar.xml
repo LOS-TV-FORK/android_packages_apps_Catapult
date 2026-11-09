@@ -64,49 +64,64 @@
             android:shadowDy="2"
             android:textAppearance="?attr/textAppearanceTitleMedium" />
 
-        <ImageButton
-            android:id="@+id/vpnButton"
-            android:contentDescription="@string/vpn"
-            android:src="@drawable/ic_vpn"
-            android:focusable="true"
-            android:clickable="true"
-            android:nextFocusLeft="@id/assistantHintImageView"
-            android:nextFocusRight="@id/notificationCountTextView"
-            style="@style/TopBarImageButton" />
-
         <LinearLayout
-            android:id="@+id/notificationContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/topBarButtonsGroup"
+            android:layout_width="180dp"
+            android:layout_height="40dp"
             android:layout_gravity="center_vertical"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:focusable="true"
-            android:clickable="true"
-            android:nextFocusLeft="@id/vpnButton"
-            android:nextFocusRight="@id/settingsMaterialButton"
-            style="@style/TopBarImageButton">
+            android:background="@drawable/search_background"
+            android:padding="0dp"
+            android:clipToOutline="true">
 
-            <ImageView
-                android:id="@+id/notificationBellIcon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_bell"
-                android:importantForAccessibility="no" />
+            <ImageButton
+                android:id="@+id/vpnButton"
+                android:contentDescription="@string/vpn"
+                android:src="@drawable/ic_vpn"
+                android:focusable="true"
+                android:clickable="true"
+                android:nextFocusLeft="@id/assistantHintImageView"
+                android:nextFocusRight="@id/notificationCountTextView"
+                style="@style/TopBarSearchButton" />
 
-            <TextView
-                android:id="@+id/notificationCountTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:textAppearance="?attr/textAppearanceTitleMedium" />
+            <LinearLayout
+                android:id="@+id/notificationContainer"
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:focusable="true"
+                android:clickable="true"
+                android:background="@drawable/search_button_background"
+                android:nextFocusLeft="@id/vpnButton"
+                android:nextFocusRight="@id/settingsMaterialButton">
+
+                <ImageView
+                    android:id="@+id/notificationBellIcon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_bell"
+                    android:tint="@color/search_button_icon_color"
+                    android:duplicateParentState="true"
+                    android:importantForAccessibility="no" />
+
+                <TextView
+                    android:id="@+id/notificationCountTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:textColor="@color/search_button_icon_color"
+                    android:duplicateParentState="true"
+                    android:textAppearance="?attr/textAppearanceTitleMedium" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/settingsMaterialButton"
+                android:contentDescription="@string/settings"
+                android:src="@drawable/ic_settings"
+                style="@style/TopBarSearchButton" />
+
         </LinearLayout>
-
-        <ImageButton
-            android:id="@+id/settingsMaterialButton"
-            android:contentDescription="@string/settings"
-            android:src="@drawable/ic_settings"
-            style="@style/TopBarImageButton" />
 
     </LinearLayout>
 
