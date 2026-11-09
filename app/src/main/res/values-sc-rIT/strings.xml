@@ -44,7 +44,7 @@
     <string name="app_cards">Cartas de is aplicatziones</string>
     <string name="app_cards_size">Mannària de is cartas de is aplicatziones</string>
     <string name="favorite_cards_size">Mannària de is cartas preferidas</string>
-    <string name="watch_next_cards_size">Mannària de is cartas "Càstia cussu imbeniente"</string>
+    <string name="watch_next_cards_size">Mannàrgiu de is cartellas de su canal</string>
     <string name="card_corner_radius">Ràdiu de is cantones de is cartas</string>
     <string name="card_background">Fondo de is cartas</string>
     <string name="card_background_theme">Colore de su tema</string>
@@ -72,4 +72,5 @@
 
     <string name="recent_apps_thumbnails">Amustra miniaturas</string>
     <string name="recent_apps_thumbnails_hint">Antiprima de s\'ùrtima scrinada de s\'aplicatzione in is cartas</string>
+    <string name="remove_from_channel">Boga a contu de %1$s</string>
 </resources>

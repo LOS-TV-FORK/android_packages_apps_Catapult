@@ -64,7 +64,7 @@
     <string name="app_cards">Karty aplikacji</string>
     <string name="app_cards_size">Rozmiar kart aplikacji</string>
     <string name="favorite_cards_size">Rozmiar kart ulubionych</string>
-    <string name="watch_next_cards_size">Rozmiar kart „Obejrzyj następne”</string>
+    <string name="watch_next_cards_size">Rozmiar kart kanałów</string>
     <string name="card_corner_radius">Promień narożników kart</string>
     <string name="card_background">Tło kart</string>
     <string name="card_background_theme">Kolor motywu</string>
@@ -89,4 +89,5 @@
     <string name="cancel">Anuluj</string>
     <string name="all_apps_grid_view">Siatka wszystkich aplikacji</string>
     <string name="all_apps_grid_columns">Kolumny siatki</string>
+    <string name="remove_from_channel">Usuń z %1$s</string>
 </resources>

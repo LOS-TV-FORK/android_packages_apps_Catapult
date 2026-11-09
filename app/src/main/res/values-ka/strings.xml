@@ -44,7 +44,7 @@
     <string name="app_cards">აპლიკაციების ქართები</string>
     <string name="app_cards_size">აპლიკაციების ქართების ზომა</string>
     <string name="favorite_cards_size">რჩეულების ქართების ზომა</string>
-    <string name="watch_next_cards_size">«შემდეგის ყურება»-ის ქართების ზომა</string>
+    <string name="watch_next_cards_size">არხის ბარათების ზომა</string>
     <string name="card_corner_radius">ქარტების კუთხეების რადიუსი</string>
     <string name="card_background">ქარტების ფონი</string>
     <string name="card_background_theme">თემის ფერი</string>
@@ -72,4 +72,5 @@
 
     <string name="recent_apps_thumbnails">მინიატურების ჩვენება</string>
     <string name="recent_apps_thumbnails_hint">აპლიკაციის ბოლო ეკრანის გადახედვა ქარტებზე</string>
+    <string name="remove_from_channel">წაშლა %1$s-დან</string>
 </resources>

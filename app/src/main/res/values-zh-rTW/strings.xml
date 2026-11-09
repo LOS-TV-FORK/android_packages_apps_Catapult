@@ -61,7 +61,7 @@
     <string name="app_cards">應用程式卡片</string>
     <string name="app_cards_size">應用程式卡片大小</string>
     <string name="favorite_cards_size">我的最愛卡片大小</string>
-    <string name="watch_next_cards_size">"接下來觀看"卡片大小</string>
+    <string name="watch_next_cards_size">頻道卡片大小</string>
     <string name="card_corner_radius">卡片圓角半徑</string>
     <string name="card_background">卡片背景</string>
     <string name="card_background_theme">主題顏色</string>
@@ -86,4 +86,5 @@
     <string name="cancel">取消</string>
     <string name="all_apps_grid_view">所有應用程式網格</string>
     <string name="all_apps_grid_columns">網格欄數</string>
+    <string name="remove_from_channel">從 %1$s 中移除</string>
 </resources>

@@ -17,8 +17,9 @@ import androidx.tvprovider.media.tv.TvContractCompat
 import org.lineageos.tv.launcher.R
 import org.lineageos.tv.launcher.view.WatchNextCard
 
-class PreviewProgramsAdapter :
-    ListAdapter<PreviewProgram, PreviewProgramsAdapter.ViewHolder>(diffCallback) {
+class PreviewProgramsAdapter(
+    private val channelTitle: String = "",
+) : ListAdapter<PreviewProgram, PreviewProgramsAdapter.ViewHolder>(diffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
         WatchNextCard(parent.context).apply {
             layoutParams = ViewGroup.LayoutParams(
@@ -56,6 +57,8 @@ class PreviewProgramsAdapter :
             val program = getItem(position)
             val popupMenu = PopupMenu(card.context, card, Gravity.START, 0, R.style.PopupMenu)
             popupMenu.menuInflater.inflate(R.menu.preview_program_long_press, popupMenu.menu)
+            popupMenu.menu.findItem(R.id.menu_remove_program).title =
+                card.context.getString(R.string.remove_from_channel, channelTitle)
             popupMenu.setForceShowIcon(true)
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 if (menuItem.itemId == R.id.menu_remove_program) {
@@ -91,6 +94,8 @@ class PreviewProgramsAdapter :
         }
 
         fun bind(previewProgram: PreviewProgram) {
+            watchNextCard.applyCardSizeScaling()
+            watchNextCard.applyCornerRadius()
             watchNextCard.setInfo(previewProgram)
         }
     }

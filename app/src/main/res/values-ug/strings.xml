@@ -44,7 +44,7 @@
     <string name="app_cards">ئەپ كارتىلىرى</string>
     <string name="app_cards_size">ئەپ كارتىلىرىنىڭ چوڭلۇقى</string>
     <string name="favorite_cards_size">سۆيىدىغان كارتىلارنىڭ چوڭلۇقى</string>
-    <string name="watch_next_cards_size">"كېيىنكى مەزمۇن" كارتىلىرىنىڭ چوڭلۇقى</string>
+    <string name="watch_next_cards_size">قانال كارتىسى چوڭلۇقى</string>
     <string name="card_corner_radius">كارتا بۇلۇڭلىرىنىڭ چەمبىرىكى</string>
     <string name="card_background">كارتا تەگلىكى</string>
     <string name="card_background_theme">ئۇسلۇب رەڭگى</string>
@@ -72,4 +72,5 @@
 
     <string name="recent_apps_thumbnails">كىچىك رەسىملەرنى كۆرسەت</string>
     <string name="recent_apps_thumbnails_hint">ئەپنىڭ ئاخىرقى ئېكرانىنى كارتا ئۆچرەتلىرىدە كۆرسىتىدۇ</string>
+    <string name="remove_from_channel">%1$s دىن ئۆچۈرۈش</string>
 </resources>

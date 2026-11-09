@@ -64,7 +64,7 @@
     <string name="app_cards">Cartões de aplicações</string>
     <string name="app_cards_size">Tamanho dos cartões de aplicações</string>
     <string name="favorite_cards_size">Tamanho dos cartões de favoritas</string>
-    <string name="watch_next_cards_size">Tamanho dos cartões "Ver a seguir"</string>
+    <string name="watch_next_cards_size">Tamanho dos cartões do canal</string>
     <string name="card_corner_radius">Arredondamento dos cantos dos cartões</string>
     <string name="card_background">Fundo dos cartões</string>
     <string name="card_background_theme">Cor do tema</string>
@@ -89,4 +89,5 @@
     <string name="cancel">Cancelar</string>
     <string name="all_apps_grid_view">Grelha de todas as aplicações</string>
     <string name="all_apps_grid_columns">Colunas da grelha</string>
+    <string name="remove_from_channel">Remover de %1$s</string>
 </resources>

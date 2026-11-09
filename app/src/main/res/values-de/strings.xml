@@ -63,7 +63,7 @@
     <string name="app_cards">App-Karten</string>
     <string name="app_cards_size">Größe der App-Karten</string>
     <string name="favorite_cards_size">Größe der Favoriten-Karten</string>
-    <string name="watch_next_cards_size">Größe der „Als Nächstes ansehen“-Karten</string>
+    <string name="watch_next_cards_size">Kanalkartengröße</string>
     <string name="card_corner_radius">Eckradius der Karten</string>
     <string name="card_background">Kartenhintergrund</string>
     <string name="card_background_theme">Designfarbe</string>
@@ -88,4 +88,5 @@
     <string name="cancel">Abbrechen</string>
     <string name="all_apps_grid_view">Raster aller Apps</string>
     <string name="all_apps_grid_columns">Rasterspalten</string>
+    <string name="remove_from_channel">Aus %1$s entfernen</string>
 </resources>

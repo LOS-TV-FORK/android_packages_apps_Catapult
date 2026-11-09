@@ -44,7 +44,7 @@
     <string name="app_cards">App-kort</string>
     <string name="app_cards_size">Storleik på app-kort</string>
     <string name="favorite_cards_size">Storleik på favoritt-kort</string>
-    <string name="watch_next_cards_size">Storleik på «Sjå neste»-kort</string>
+    <string name="watch_next_cards_size">Kortstorleik for kanalar</string>
     <string name="card_corner_radius">Hjørneradius på kort</string>
     <string name="card_background">Kortbakgrunn</string>
     <string name="card_background_theme">Temafarge</string>
@@ -72,4 +72,5 @@
 
     <string name="recent_apps_thumbnails">Vis miniatyrar</string>
     <string name="recent_apps_thumbnails_hint">Førehandsvising av appen sin siste skjerm på korta</string>
+    <string name="remove_from_channel">Fjern frå %1$s</string>
 </resources>

@@ -11,7 +11,7 @@
     <string name="app_cards">Cerdiau apiau</string>
     <string name="app_cards_size">Maint y cerdiau apiau</string>
     <string name="favorite_cards_size">Maint y cerdiau ffefrynnau</string>
-    <string name="watch_next_cards_size">Maint y cerdiau „Gwylio nesaf“</string>
+    <string name="watch_next_cards_size">Maint cardiau sianel</string>
     <string name="card_corner_radius">Radiws corneli\'r cerdiau</string>
     <string name="card_background">Cefndir y cerdiau</string>
     <string name="card_background_theme">Lliw\'r thema</string>
@@ -35,4 +35,5 @@
 
     <string name="recent_apps_thumbnails">Dangos mân-luniau</string>
     <string name="recent_apps_thumbnails_hint">Rhagolwg o sgrin olaf yr ap ar y cerdiau</string>
+    <string name="remove_from_channel">Tynnu o %1$s</string>
 </resources>

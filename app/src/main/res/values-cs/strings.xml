@@ -56,7 +56,7 @@
     <string name="app_cards">Karty aplikací</string>
     <string name="app_cards_size">Velikost karet aplikací</string>
     <string name="favorite_cards_size">Velikost karet oblíbených</string>
-    <string name="watch_next_cards_size">Velikost karet „Zhlédnout další“</string>
+    <string name="watch_next_cards_size">Velikost karet kanálů</string>
     <string name="card_corner_radius">Zaoblení rohů karet</string>
     <string name="card_background">Pozadí karet</string>
     <string name="card_background_theme">Barva motivu</string>
@@ -81,4 +81,5 @@
     <string name="cancel">Zrušit</string>
     <string name="all_apps_grid_view">Mřížka všech aplikací</string>
     <string name="all_apps_grid_columns">Sloupce mřížky</string>
+    <string name="remove_from_channel">Odebrat z %1$s</string>
 </resources>

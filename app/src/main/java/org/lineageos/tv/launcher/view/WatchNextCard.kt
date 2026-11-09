@@ -13,6 +13,7 @@ import android.graphics.RenderEffect
 import android.graphics.Shader
 import android.util.AttributeSet
 import android.util.TypedValue
+import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -36,6 +37,7 @@ class WatchNextCard @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : Card(context, attrs, defStyleAttr) {
     // Views
+    private val cardContainer: View by lazy { findViewById(R.id.card_container)!! }
     private val cardFrame: FrameLayout by lazy { findViewById(R.id.card_frame)!! }
     private val bannerBackgroundView: ImageView by lazy { findViewById(R.id.app_banner_background)!! }
     private val bannerView: ImageView by lazy { findViewById(R.id.app_banner)!! }
@@ -61,7 +63,7 @@ class WatchNextCard @JvmOverloads constructor(
         bannerView.background.setTint(android.graphics.Color.BLACK)
     }
 
-    private fun applyCardSizeScaling() {
+    fun applyCardSizeScaling() {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val scale = prefs.watchNextCardSize / 100f
 
@@ -79,6 +81,14 @@ class WatchNextCard @JvmOverloads constructor(
         if (myLp != null) {
             myLp.width = newWidth
             layoutParams = myLp
+        }
+
+        // banner/card_frame are match_parent: the visible width follows card_container,
+        // so the container itself must be scaled, not just the outer card.
+        val containerLp = cardContainer.layoutParams
+        if (containerLp != null) {
+            containerLp.width = newWidth
+            cardContainer.layoutParams = containerLp
         }
 
         val frameLp = cardFrame.layoutParams
