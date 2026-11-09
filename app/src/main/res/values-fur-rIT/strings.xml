@@ -54,4 +54,10 @@
     <string name="recent_apps_thumbnails">Mostre miniaturis</string>
     <string name="recent_apps_thumbnails_hint">Anteprime dal ultin schermi de aplicazion tes schedis</string>
     <string name="remove_from_channel">Gava di %1$s</string>
+    <string name="top_bar">Barre in alt</string>
+    <string name="show_search_buttons">Mostre i botons di ricercje</string>
+    <string name="show_vpn_button">Mostre il boton VPN</string>
+    <string name="top_bar_auto_hide">Plate automatiche la barre in alt tal scoriment</string>
+    <string name="show_clock">Mostre il reliui</string>
+    <string name="clock_size">Grandece dal reliui</string>
 </resources>

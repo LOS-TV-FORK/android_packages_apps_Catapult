@@ -23,4 +23,10 @@
     <string name="recent_apps_thumbnails">Amosar miniatures</string>
     <string name="recent_apps_thumbnails_hint">Previsualización de la postrera pantalla de l\'aplicación en les tarxetes</string>
     <string name="remove_from_channel">Desaniciar de %1$s</string>
+    <string name="top_bar">Barra superior</string>
+    <string name="show_search_buttons">Amosar los botones de gueta</string>
+    <string name="show_vpn_button">Amosar el botón VPN</string>
+    <string name="top_bar_auto_hide">Anubrar automáticamente la barra superior al desplazase</string>
+    <string name="show_clock">Amosar el reló</string>
+    <string name="clock_size">Tamañu del reló</string>
 </resources>

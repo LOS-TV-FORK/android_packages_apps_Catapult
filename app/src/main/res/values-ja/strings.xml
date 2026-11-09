@@ -69,4 +69,10 @@
     <string name="all_apps_grid_view">すべてのアプリをグリッド表示</string>
     <string name="all_apps_grid_columns">グリッドの列数</string>
     <string name="remove_from_channel">%1$s から削除</string>
+    <string name="top_bar">上部バー</string>
+    <string name="show_search_buttons">検索ボタンを表示</string>
+    <string name="show_vpn_button">VPN ボタンを表示</string>
+    <string name="top_bar_auto_hide">スクロール時に上部バーを自動で隠す</string>
+    <string name="show_clock">時計を表示</string>
+    <string name="clock_size">時計のサイズ</string>
 </resources>

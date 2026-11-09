@@ -52,4 +52,10 @@
     <string name="recent_apps_thumbnails">Amustra miniaturas</string>
     <string name="recent_apps_thumbnails_hint">Antiprima de s\'ùrtima scrinada de s\'aplicatzione in is cartas</string>
     <string name="remove_from_channel">Boga a contu de %1$s</string>
+    <string name="top_bar">Barra in artu</string>
+    <string name="show_search_buttons">Ammustra is buttonus de circa</string>
+    <string name="show_vpn_button">Ammustra su button VPN</string>
+    <string name="top_bar_auto_hide">Ammuca in automaticu sa barra in artu in su iscurrere</string>
+    <string name="show_clock">Ammustra su rellògiu</string>
+    <string name="clock_size">Mannària de su rellògiu</string>
 </resources>

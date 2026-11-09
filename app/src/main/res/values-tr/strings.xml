@@ -69,4 +69,10 @@
     <string name="all_apps_grid_view">Tüm uygulamalar ızgarası</string>
     <string name="all_apps_grid_columns">Izgara sütunları</string>
     <string name="remove_from_channel">%1$s listesinden kaldır</string>
+    <string name="top_bar">Üst çubuk</string>
+    <string name="show_search_buttons">Arama düğmelerini göster</string>
+    <string name="show_vpn_button">VPN düğmesini göster</string>
+    <string name="top_bar_auto_hide">Kaydırırken üst çubuğu otomatik gizle</string>
+    <string name="show_clock">Saati göster</string>
+    <string name="clock_size">Saat boyutu</string>
 </resources>

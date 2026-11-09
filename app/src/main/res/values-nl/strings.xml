@@ -66,4 +66,10 @@
     <string name="all_apps_grid_view">Rasterweergave van alle apps</string>
     <string name="all_apps_grid_columns">Rasterkolommen</string>
     <string name="remove_from_channel">Verwijderen uit %1$s</string>
+    <string name="top_bar">Bovenbalk</string>
+    <string name="show_search_buttons">Zoekknoppen tonen</string>
+    <string name="show_vpn_button">VPN-knop tonen</string>
+    <string name="top_bar_auto_hide">Bovenbalk automatisch verbergen bij scrollen</string>
+    <string name="show_clock">Klok tonen</string>
+    <string name="clock_size">Grootte van de klok</string>
 </resources>

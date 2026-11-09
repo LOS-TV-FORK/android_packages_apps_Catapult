@@ -54,4 +54,10 @@
     <string name="recent_apps_thumbnails">Taispeáin mionsamhlacha</string>
     <string name="recent_apps_thumbnails_hint">Réamhamharc ar dheireadh-scráidein an aip sna cártaí</string>
     <string name="remove_from_channel">Bain as %1$s</string>
+    <string name="top_bar">Barrachair</string>
+    <string name="show_search_buttons">Taispeáin cnaipí cuardaigh</string>
+    <string name="show_vpn_button">Taispeáin cnaipe VPN</string>
+    <string name="top_bar_auto_hide">Folaigh an bharrachair go huathoibríoch agus tú ag scrollú</string>
+    <string name="show_clock">Taispeáin an clog</string>
+    <string name="clock_size">Méid an chloig</string>
 </resources>

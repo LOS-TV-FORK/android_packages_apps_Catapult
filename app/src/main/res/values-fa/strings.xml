@@ -69,4 +69,10 @@
     <string name="all_apps_grid_view">نمای شبکه‌ای همهٔ برنامه‌ها</string>
     <string name="all_apps_grid_columns">ستون‌های شبکه</string>
     <string name="remove_from_channel">حذف از %1$s</string>
+    <string name="top_bar">نوار بالا</string>
+    <string name="show_search_buttons">نمایش دکمه‌های جستجو</string>
+    <string name="show_vpn_button">نمایش دکمه VPN</string>
+    <string name="top_bar_auto_hide">نهفتن خودکار نوار بالا هنگام پیمایش</string>
+    <string name="show_clock">نمایش ساعت</string>
+    <string name="clock_size">اندازه ساعت</string>
 </resources>

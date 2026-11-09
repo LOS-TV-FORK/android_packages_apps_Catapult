@@ -60,4 +60,10 @@
     <string name="recent_apps_thumbnails">சிறுபடங்களைக் காட்டு</string>
     <string name="recent_apps_thumbnails_hint">அட்டைகளில் செயலியின் கடைசி திரையின் முன்தோற்றம்</string>
     <string name="remove_from_channel">%1$s-இலிருந்து நீக்கு</string>
+    <string name="top_bar">மேல் பட்டி</string>
+    <string name="show_search_buttons">தேடல் பொத்தான்களைக் காட்டு</string>
+    <string name="show_vpn_button">VPN பொத்தானைக் காட்டு</string>
+    <string name="top_bar_auto_hide">உருட்டும்போது மேல் பட்டியைத் தானாக மறை</string>
+    <string name="show_clock">கடிகாரத்தைக் காட்டு</string>
+    <string name="clock_size">கடிகாரத்தின் அளவு</string>
 </resources>

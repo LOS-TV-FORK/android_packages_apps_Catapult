@@ -68,4 +68,10 @@
     <string name="all_apps_grid_view">Πλέγμα όλων των εφαρμογών</string>
     <string name="all_apps_grid_columns">Στήλες πλέγματος</string>
     <string name="remove_from_channel">Κατάργηση από %1$s</string>
+    <string name="top_bar">Πάνω γραμμή</string>
+    <string name="show_search_buttons">Εμφάνιση κουμπιών αναζήτησης</string>
+    <string name="show_vpn_button">Εμφάνιση κουμπιού VPN</string>
+    <string name="top_bar_auto_hide">Αυτόματη απόκρυψη της πάνω γραμμής κατά την κύλιση</string>
+    <string name="show_clock">Εμφάνιση ρολογιού</string>
+    <string name="clock_size">Μέγεθος ρολογιού</string>
 </resources>

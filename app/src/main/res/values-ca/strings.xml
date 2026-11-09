@@ -69,4 +69,10 @@
     <string name="all_apps_grid_view">Quadrícula de totes les aplicacions</string>
     <string name="all_apps_grid_columns">Columnes de la quadrícula</string>
     <string name="remove_from_channel">Suprimeix de %1$s</string>
+    <string name="top_bar">Barra superior</string>
+    <string name="show_search_buttons">Mostra els botons de cerca</string>
+    <string name="show_vpn_button">Mostra el botó de VPN</string>
+    <string name="top_bar_auto_hide">Amaga automàticament la barra superior en desplaçar-se</string>
+    <string name="show_clock">Mostra el rellotge</string>
+    <string name="clock_size">Mida del rellotge</string>
 </resources>

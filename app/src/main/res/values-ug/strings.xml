@@ -52,4 +52,10 @@
     <string name="recent_apps_thumbnails">كىچىك رەسىملەرنى كۆرسەت</string>
     <string name="recent_apps_thumbnails_hint">ئەپنىڭ ئاخىرقى ئېكرانىنى كارتا ئۆچرەتلىرىدە كۆرسىتىدۇ</string>
     <string name="remove_from_channel">%1$s دىن ئۆچۈرۈش</string>
+    <string name="top_bar">ئۈستىكى بالداق</string>
+    <string name="show_search_buttons">ئىزدەش كۇنۇپكىلىرىنى كۆرسىتىش</string>
+    <string name="show_vpn_button">VPN كۇنۇپكىسىنى كۆرسىتىش</string>
+    <string name="top_bar_auto_hide">أيلاندراندا ئۈستىكى بالداقنى ئاپتوماتىك يوشۇرۇش</string>
+    <string name="show_clock">سائەتنى كۆرسىتىش</string>
+    <string name="clock_size">سائەت چوڭلۇقى</string>
 </resources>

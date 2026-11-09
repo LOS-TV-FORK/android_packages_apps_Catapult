@@ -140,6 +140,10 @@
             android:theme="@style/Theme.Catapult.SideActivity" />
 
         <activity
+            android:name=".TopBarSettingsActivity"
+            android:theme="@style/Theme.Catapult.SideActivity" />
+
+        <activity
             android:name=".RecentAppsSettingsActivity"
             android:theme="@style/Theme.Catapult.SideActivity" />
 

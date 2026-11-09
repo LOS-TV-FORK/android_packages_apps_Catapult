@@ -69,4 +69,10 @@
     <string name="all_apps_grid_view">Mreža vseh aplikacij</string>
     <string name="all_apps_grid_columns">Stolpci mreže</string>
     <string name="remove_from_channel">Odstrani iz %1$s</string>
+    <string name="top_bar">Zgornja vrstica</string>
+    <string name="show_search_buttons">Pokaži iskalne gumbe</string>
+    <string name="show_vpn_button">Pokaži gumb VPN</string>
+    <string name="top_bar_auto_hide">Samodejno skrij zgornjo vrstico med drsenjem</string>
+    <string name="show_clock">Pokaži uro</string>
+    <string name="clock_size">Velikost ure</string>
 </resources>
