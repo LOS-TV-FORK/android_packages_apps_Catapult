@@ -90,4 +90,10 @@
     <string name="all_apps_grid_view">Rács a teljes alkalmazáslistához</string>
     <string name="all_apps_grid_columns">Rácsoszlopok</string>
     <string name="remove_from_channel">Eltávolítás innen: %1$s</string>
+    <string name="top_bar">Felső sáv</string>
+    <string name="show_search_buttons">Keresés gombok megjelenítése</string>
+    <string name="show_vpn_button">VPN gomb megjelenítése</string>
+    <string name="top_bar_auto_hide">Felső sáv automatikus elrejtése görgetéskor</string>
+    <string name="show_clock">Óra megjelenítése</string>
+    <string name="clock_size">Óra mérete</string>
 </resources>

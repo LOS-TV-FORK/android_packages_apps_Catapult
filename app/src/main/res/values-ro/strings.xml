@@ -90,4 +90,10 @@
     <string name="all_apps_grid_view">Grilă cu toate aplicațiile</string>
     <string name="all_apps_grid_columns">Coloanele grilei</string>
     <string name="remove_from_channel">Elimină din %1$s</string>
+    <string name="top_bar">Bara superioară</string>
+    <string name="show_search_buttons">Afișează butoanele de căutare</string>
+    <string name="show_vpn_button">Afișează butonul VPN</string>
+    <string name="top_bar_auto_hide">Ascunde automat bara superioară la derulare</string>
+    <string name="show_clock">Afișează ceasul</string>
+    <string name="clock_size">Dimensiunea ceasului</string>
 </resources>

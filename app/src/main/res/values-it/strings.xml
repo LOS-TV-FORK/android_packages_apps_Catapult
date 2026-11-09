@@ -90,4 +90,10 @@
     <string name="all_apps_grid_view">Griglia di tutte le app</string>
     <string name="all_apps_grid_columns">Colonne della griglia</string>
     <string name="remove_from_channel">Rimuovi da %1$s</string>
+    <string name="top_bar">Barra superiore</string>
+    <string name="show_search_buttons">Mostra i pulsanti di ricerca</string>
+    <string name="show_vpn_button">Mostra il pulsante VPN</string>
+    <string name="top_bar_auto_hide">Nascondi automaticamente la barra superiore allo scorrimento</string>
+    <string name="show_clock">Mostra l\'orologio</string>
+    <string name="clock_size">Dimensione dell\'orologio</string>
 </resources>

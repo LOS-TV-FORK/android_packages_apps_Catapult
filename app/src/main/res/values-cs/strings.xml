@@ -82,4 +82,10 @@
     <string name="all_apps_grid_view">Mřížka všech aplikací</string>
     <string name="all_apps_grid_columns">Sloupce mřížky</string>
     <string name="remove_from_channel">Odebrat z %1$s</string>
+    <string name="top_bar">Horní lišta</string>
+    <string name="show_search_buttons">Zobrazit tlačítka hledání</string>
+    <string name="show_vpn_button">Zobrazit tlačítko VPN</string>
+    <string name="top_bar_auto_hide">Automaticky skrývat horní lištu při scrollování</string>
+    <string name="show_clock">Zobrazit hodiny</string>
+    <string name="clock_size">Velikost hodin</string>
 </resources>

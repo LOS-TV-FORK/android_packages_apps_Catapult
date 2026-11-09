@@ -90,4 +90,10 @@
     <string name="all_apps_grid_view">Grade de todos os apps</string>
     <string name="all_apps_grid_columns">Colunas da grade</string>
     <string name="remove_from_channel">Remover de %1$s</string>
+    <string name="top_bar">Barra superior</string>
+    <string name="show_search_buttons">Mostrar os botões de pesquisa</string>
+    <string name="show_vpn_button">Mostrar o botão de VPN</string>
+    <string name="top_bar_auto_hide">Ocultar automaticamente a barra superior ao rolar</string>
+    <string name="show_clock">Mostrar o relógio</string>
+    <string name="clock_size">Tamanho do relógio</string>
 </resources>

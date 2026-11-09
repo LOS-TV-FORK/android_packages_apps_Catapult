@@ -243,3 +243,43 @@ var SharedPreferences.externalLauncherPkg: String?
     set(value) = edit {
         putString(EXTERNAL_LAUNCHER_PKG_KEY, value)
     }
+
+const val SHOW_ASSISTANT_BUTTONS_KEY = "show_assistant_buttons"
+
+var SharedPreferences.showAssistantButtons: Boolean
+    get() = getBoolean(SHOW_ASSISTANT_BUTTONS_KEY, false)
+    set(value) = edit {
+        putBoolean(SHOW_ASSISTANT_BUTTONS_KEY, value)
+    }
+
+const val SHOW_VPN_BUTTON_KEY = "show_vpn_button"
+
+var SharedPreferences.showVpnButton: Boolean
+    get() = getBoolean(SHOW_VPN_BUTTON_KEY, true)
+    set(value) = edit {
+        putBoolean(SHOW_VPN_BUTTON_KEY, value)
+    }
+
+const val TOP_BAR_AUTO_HIDE_KEY = "top_bar_auto_hide"
+
+var SharedPreferences.topBarAutoHide: Boolean
+    get() = getBoolean(TOP_BAR_AUTO_HIDE_KEY, true)
+    set(value) = edit {
+        putBoolean(TOP_BAR_AUTO_HIDE_KEY, value)
+    }
+
+const val SHOW_CLOCK_KEY = "show_clock"
+
+var SharedPreferences.showClock: Boolean
+    get() = getBoolean(SHOW_CLOCK_KEY, true)
+    set(value) = edit {
+        putBoolean(SHOW_CLOCK_KEY, value)
+    }
+
+const val CLOCK_TEXT_SIZE_KEY = "clock_text_size"
+
+var SharedPreferences.clockTextSize: Int
+    get() = getInt(CLOCK_TEXT_SIZE_KEY, 32)
+    set(value) = edit {
+        putInt(CLOCK_TEXT_SIZE_KEY, value)
+    }

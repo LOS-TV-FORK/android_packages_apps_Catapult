@@ -90,4 +90,10 @@
     <string name="all_apps_grid_view">Cuadrícula de todas las apps</string>
     <string name="all_apps_grid_columns">Columnas de la cuadrícula</string>
     <string name="remove_from_channel">Quitar de %1$s</string>
+    <string name="top_bar">Barra superior</string>
+    <string name="show_search_buttons">Mostrar los botones de búsqueda</string>
+    <string name="show_vpn_button">Mostrar el botón de VPN</string>
+    <string name="top_bar_auto_hide">Ocultar automáticamente la barra superior al desplazar</string>
+    <string name="show_clock">Mostrar el reloj</string>
+    <string name="clock_size">Tamaño del reloj</string>
 </resources>

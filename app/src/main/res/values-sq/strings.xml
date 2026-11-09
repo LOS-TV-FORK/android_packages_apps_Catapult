@@ -78,4 +78,10 @@
     <string name="recent_apps_thumbnails">Shfaq pamjet e vogla</string>
     <string name="recent_apps_thumbnails_hint">Paraqitje e ekranit të fundit të aplikacionit në karta</string>
     <string name="remove_from_channel">Hiqe nga %1$s</string>
+    <string name="top_bar">Shiriti i sipërm</string>
+    <string name="show_search_buttons">Shfaq butonat e kërkimit</string>
+    <string name="show_vpn_button">Shfaq butonin VPN</string>
+    <string name="top_bar_auto_hide">Fshih automatikisht shiritin e sipërm gjatë lëvizjes</string>
+    <string name="show_clock">Shfaq orën</string>
+    <string name="clock_size">Madhësia e orës</string>
 </resources>

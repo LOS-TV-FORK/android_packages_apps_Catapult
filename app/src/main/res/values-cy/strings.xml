@@ -36,4 +36,10 @@
     <string name="recent_apps_thumbnails">Dangos mân-luniau</string>
     <string name="recent_apps_thumbnails_hint">Rhagolwg o sgrin olaf yr ap ar y cerdiau</string>
     <string name="remove_from_channel">Tynnu o %1$s</string>
+    <string name="top_bar">Bar uchaf</string>
+    <string name="show_search_buttons">Dangos botymau chwilio</string>
+    <string name="show_vpn_button">Dangos botwm VPN</string>
+    <string name="top_bar_auto_hide">Cuddio\'r bar uchaf yn awtomatig wrth sgrolio</string>
+    <string name="show_clock">Dangos y cloc</string>
+    <string name="clock_size">Maint y cloc</string>
 </resources>

@@ -73,4 +73,10 @@
     <string name="recent_apps_thumbnails">Vis miniatyrar</string>
     <string name="recent_apps_thumbnails_hint">Førehandsvising av appen sin siste skjerm på korta</string>
     <string name="remove_from_channel">Fjern frå %1$s</string>
+    <string name="top_bar">Toppelinje</string>
+    <string name="show_search_buttons">Vis søkjeknappar</string>
+    <string name="show_vpn_button">Vis VPN-knapp</string>
+    <string name="top_bar_auto_hide">Skjul toppelinja automatisk ved rulling</string>
+    <string name="show_clock">Vis klokke</string>
+    <string name="clock_size">Storleik på klokke</string>
 </resources>

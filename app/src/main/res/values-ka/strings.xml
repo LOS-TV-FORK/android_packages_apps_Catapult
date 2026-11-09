@@ -73,4 +73,10 @@
     <string name="recent_apps_thumbnails">მინიატურების ჩვენება</string>
     <string name="recent_apps_thumbnails_hint">აპლიკაციის ბოლო ეკრანის გადახედვა ქარტებზე</string>
     <string name="remove_from_channel">წაშლა %1$s-დან</string>
+    <string name="top_bar">ზედა ზოლი</string>
+    <string name="show_search_buttons">ძიების ღილაკების ჩვენება</string>
+    <string name="show_vpn_button">VPN-ის ღილაკის ჩვენება</string>
+    <string name="top_bar_auto_hide">ზედა ზოლის ავტომატური დამალვა გადაფურცვლისას</string>
+    <string name="show_clock">საათის ჩვენება</string>
+    <string name="clock_size">საათის ზომა</string>
 </resources>

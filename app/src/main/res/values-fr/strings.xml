@@ -90,4 +90,10 @@
     <string name="all_apps_grid_view">Grille de toutes les applications</string>
     <string name="all_apps_grid_columns">Colonnes de la grille</string>
     <string name="remove_from_channel">Retirer de %1$s</string>
+    <string name="top_bar">Barre supérieure</string>
+    <string name="show_search_buttons">Afficher les boutons de recherche</string>
+    <string name="show_vpn_button">Afficher le bouton VPN</string>
+    <string name="top_bar_auto_hide">Masquer automatiquement la barre supérieure lors du défilement</string>
+    <string name="show_clock">Afficher l\'horloge</string>
+    <string name="clock_size">Taille de l\'horloge</string>
 </resources>

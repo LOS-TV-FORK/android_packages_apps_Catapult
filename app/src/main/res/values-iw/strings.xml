@@ -90,4 +90,10 @@
     <string name="all_apps_grid_view">תצוגת רשת של כל היישומונים</string>
     <string name="all_apps_grid_columns">עמודות הרשת</string>
     <string name="remove_from_channel">הסרה מ־%1$s</string>
+    <string name="top_bar">סרגל עליון</string>
+    <string name="show_search_buttons">הצגת כפתורי החיפוש</string>
+    <string name="show_vpn_button">הצגת כפתור VPN</string>
+    <string name="top_bar_auto_hide">הסתרה אוטומטית של הסרגל העליון בעת גלילה</string>
+    <string name="show_clock">הצגת השעון</string>
+    <string name="clock_size">גודל השעון</string>
 </resources>

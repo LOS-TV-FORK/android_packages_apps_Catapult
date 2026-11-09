@@ -90,4 +90,10 @@
     <string name="all_apps_grid_view">모든 앱 그리드 보기</string>
     <string name="all_apps_grid_columns">그리드 열 수</string>
     <string name="remove_from_channel">%1$s(으)로부터 제거</string>
+    <string name="top_bar">상단 바</string>
+    <string name="show_search_buttons">검색 버튼 표시</string>
+    <string name="show_vpn_button">VPN 버튼 표시</string>
+    <string name="top_bar_auto_hide">스크롤 시 상단 바 자동 숨기기</string>
+    <string name="show_clock">시계 표시</string>
+    <string name="clock_size">시계 크기</string>
 </resources>

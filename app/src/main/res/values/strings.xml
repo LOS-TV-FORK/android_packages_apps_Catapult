@@ -69,6 +69,13 @@
     <string name="all_apps_grid_view">All apps grid view</string>
     <string name="all_apps_grid_columns">Grid columns</string>
     <string name="card_corner_radius">Card corner radius</string>
+    <string name="top_bar">Top bar</string>
+    <string name="show_search_buttons">Show search buttons</string>
+    <string name="show_vpn_button">Show VPN button</string>
+    <string name="top_bar_auto_hide">Auto-hide top bar on scroll</string>
+    <string name="show_clock">Show clock</string>
+    <string name="clock_size">Clock size</string>
+    <string name="clock_size_sp">%1$d sp</string>
     <string name="card_background">Card background</string>
     <string name="card_background_theme">Theme color</string>
     <string name="card_background_custom">Custom color</string>

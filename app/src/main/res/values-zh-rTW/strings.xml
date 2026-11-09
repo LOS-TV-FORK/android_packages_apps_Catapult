@@ -87,4 +87,10 @@
     <string name="all_apps_grid_view">所有應用程式網格</string>
     <string name="all_apps_grid_columns">網格欄數</string>
     <string name="remove_from_channel">從 %1$s 中移除</string>
+    <string name="top_bar">頂端列</string>
+    <string name="show_search_buttons">顯示搜尋按鈕</string>
+    <string name="show_vpn_button">顯示 VPN 按鈕</string>
+    <string name="top_bar_auto_hide">捲動時自動隱藏頂端列</string>
+    <string name="show_clock">顯示時鐘</string>
+    <string name="clock_size">時鐘大小</string>
 </resources>

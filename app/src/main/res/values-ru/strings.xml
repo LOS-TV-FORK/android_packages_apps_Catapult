@@ -92,4 +92,10 @@
     <string name="all_apps_grid_view">Сетка всех приложений</string>
     <string name="all_apps_grid_columns">Столбцов в сетке</string>
     <string name="remove_from_channel">Удалить из «%1$s»</string>
+    <string name="top_bar">Верхняя панель</string>
+    <string name="show_search_buttons">Показать кнопки поиска</string>
+    <string name="show_vpn_button">Показать кнопку VPN</string>
+    <string name="top_bar_auto_hide">Автоскрытие верхней панели при прокрутке</string>
+    <string name="show_clock">Показать часы</string>
+    <string name="clock_size">Размер часов</string>
 </resources>

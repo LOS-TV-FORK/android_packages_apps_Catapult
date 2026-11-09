@@ -37,13 +37,13 @@ import android.view.ViewTreeObserver
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextClock
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -86,6 +86,16 @@ import org.lineageos.tv.launcher.ext.cardBackgroundGradientStart
 import org.lineageos.tv.launcher.ext.cardBackgroundGradientEnd
 import org.lineageos.tv.launcher.ext.cardBackgroundGradientMode
 import org.lineageos.tv.launcher.ext.cardBackgroundIconGradientMode
+import org.lineageos.tv.launcher.ext.SHOW_ASSISTANT_BUTTONS_KEY
+import org.lineageos.tv.launcher.ext.SHOW_VPN_BUTTON_KEY
+import org.lineageos.tv.launcher.ext.TOP_BAR_AUTO_HIDE_KEY
+import org.lineageos.tv.launcher.ext.SHOW_CLOCK_KEY
+import org.lineageos.tv.launcher.ext.CLOCK_TEXT_SIZE_KEY
+import org.lineageos.tv.launcher.ext.showAssistantButtons
+import org.lineageos.tv.launcher.ext.showVpnButton
+import org.lineageos.tv.launcher.ext.topBarAutoHide
+import org.lineageos.tv.launcher.ext.showClock
+import org.lineageos.tv.launcher.ext.clockTextSize
 import org.lineageos.tv.launcher.model.AppInfo
 import org.lineageos.tv.launcher.model.InternalChannel
 import org.lineageos.tv.launcher.model.MainRowItem
@@ -146,6 +156,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private val notificationCountTextView by lazy { findViewById<TextView>(R.id.notificationCountTextView)!! }
     private val notificationContainer by lazy { findViewById<LinearLayout>(R.id.notificationContainer)!! }
     private val topBarContainer by lazy { findViewById<LinearLayout>(R.id.top_bar)!! }
+    private val clockTextView by lazy { findViewById<TextClock>(R.id.clockTextView)!! }
     private val assistantTransition by lazy {
         Slide().apply {
             slideEdge = Gravity.START
@@ -158,8 +169,121 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     // Return to first row when focus moves to the top bar
     private val mainFocusScrollListener = ViewTreeObserver.OnGlobalFocusChangeListener { _, newFocus ->
         if (newFocus != null && isTopBarDescendant(newFocus)) {
+            showTopBar()
+            // Row 0 must sit exactly at the bar bottom; otherwise it stays
+            // clipped under the bar and focus coming back down skips it.
             mainVerticalGridView.setSelectedPosition(0)
+            snapGridToTop()
+            mainVerticalGridView.post { snapGridToTop() }
         }
+    }
+
+    // Row 0 is the true top of the desktop: it can only be attached once
+    // nothing is scrolled above it.
+    private fun isGridAtTop(): Boolean {
+        val lm = mainVerticalGridView.layoutManager
+            as? androidx.leanback.widget.GridLayoutManager ?: return true
+        return lm.findViewByPosition(0) != null
+    }
+
+    // Push a clipped row 0 back down to the inset line under the bar.
+    private fun snapGridToTop() {
+        val lm = mainVerticalGridView.layoutManager
+            as? androidx.leanback.widget.GridLayoutManager ?: return
+        val row0 = lm.findViewByPosition(0) ?: return
+        val delta = row0.top - mainVerticalGridView.paddingTop
+        if (delta < 0) {
+            mainVerticalGridView.scrollBy(0, delta)
+        }
+    }
+
+    // Auto-hide: slide the top bar out when the user scrolls deeper into the rows
+    private var topBarAutoHidden = false
+    private var topBarScrollAccum = 0
+
+    private val topBarScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            if (!sharedPreferences.topBarAutoHide) {
+                return
+            }
+            if (dy > 0) {
+                topBarScrollAccum += dy
+                if (topBarScrollAccum > 40) {
+                    hideTopBar()
+                }
+            } else if (dy < 0 && isGridAtTop()) {
+                snapGridToTop()
+                showTopBar()
+            }
+        }
+
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            topBarScrollAccum = 0
+            if (newState == RecyclerView.SCROLL_STATE_IDLE && isGridAtTop()) {
+                snapGridToTop()
+                showTopBar()
+            }
+        }
+    }
+
+    private fun showTopBar() {
+        if (!topBarAutoHidden) {
+            return
+        }
+        topBarAutoHidden = false
+        topBarContainer.descendantFocusability = ViewGroup.FOCUS_BEFORE_DESCENDANTS
+        topBarContainer.animate()
+            .translationY(0f)
+            .alpha(1f)
+            .setDuration(150)
+            .start()
+    }
+
+    private fun hideTopBar() {
+        if (topBarAutoHidden || topBarContainer.height == 0) {
+            return
+        }
+        topBarAutoHidden = true
+        topBarContainer.animate()
+            .translationY(-topBarContainer.height.toFloat())
+            .alpha(0f)
+            .setDuration(150)
+            .withEndAction {
+                if (topBarAutoHidden) {
+                    topBarContainer.descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
+                }
+            }
+            .start()
+    }
+
+    private fun applyTopBarAutoHide() {
+        if (!sharedPreferences.topBarAutoHide) {
+            showTopBar()
+        }
+    }
+
+    private var assistAvailable = false
+
+    private fun applyTopBarPreferences() {
+        val showAssistant = sharedPreferences.showAssistantButtons && assistAvailable
+        if (showAssistant) {
+            if (assistantHintImageView.visibility == View.GONE) {
+                assistantHintImageView.isVisible = true
+                assistantButtonsContainer.isVisible = false
+            }
+        } else {
+            assistantHintImageView.visibility = View.GONE
+            assistantButtonsContainer.visibility = View.GONE
+        }
+
+        vpnButton.isVisible = sharedPreferences.showVpnButton
+
+        clockTextView.isVisible = sharedPreferences.showClock
+        if (sharedPreferences.showClock) {
+            clockTextView.textSize = sharedPreferences.clockTextSize.toFloat()
+        }
+
+        mainVerticalGridView.upFocusFallback = findTopBarFocusable()
     }
 
     // System services
@@ -284,10 +408,19 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 mainVerticalGridView.adapter = mainVerticalAdapter
                 mainVerticalGridView.setSelectedPosition(0)
                 mainVerticalGridView.viewTreeObserver.addOnGlobalFocusChangeListener(mainFocusScrollListener)
+                mainVerticalGridView.addOnScrollListener(topBarScrollListener)
                 mainVerticalGridView.upFocusFallback = findTopBarFocusable()
                 setupTopBarScrim()
                 topBarContainer.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
-                    if (bottom != oldBottom) applyMainGridTopInset()
+                    if (bottom != oldBottom) {
+                        applyMainGridTopInset()
+                        // Keep row 0 snug under the new bar height when the list
+                        // rests at the top (bar grew/shrank under the assistant,
+                        // clock or search toggles).
+                        if (isGridAtTop()) {
+                            mainVerticalGridView.post { snapGridToTop() }
+                        }
+                    }
                 }
                 topBarContainer.post { applyMainGridTopInset() }
 
@@ -334,12 +467,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 setupVpnButton()
 
                 val assistIntent = Intent(Intent.ACTION_ASSIST)
-                assistIntent.resolveActivity(packageManager)?.also {
+                assistAvailable = assistIntent.resolveActivity(packageManager) != null
+                if (assistAvailable) {
                     setupAssistantButtons(assistIntent)
-                } ?: run {
-                    assistantHintImageView.isInvisible = true
-                    assistantButtonsContainer.isInvisible = true
                 }
+                applyTopBarPreferences()
 
                 favoritesAdapter.onFavoritesChangedCallback = {
                     sharedPreferences.favoriteApps = it
@@ -401,6 +533,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 APP_CARD_SIZE_KEY, FAVORITE_CARD_SIZE_KEY, WATCH_NEXT_CARD_SIZE_KEY,
                 CARD_CORNER_RADIUS_KEY ->
                     scheduleLiveCardResize()
+                SHOW_ASSISTANT_BUTTONS_KEY, SHOW_VPN_BUTTON_KEY, SHOW_CLOCK_KEY,
+                CLOCK_TEXT_SIZE_KEY ->
+                    applyTopBarPreferences()
+                TOP_BAR_AUTO_HIDE_KEY ->
+                    applyTopBarAutoHide()
             }
         }
 
@@ -425,6 +562,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         isMainActivityVisible = true
         lastResumedTime = System.currentTimeMillis()
         applyBackground()
+        applyTopBarPreferences()
+        showTopBar()
         checkCardSizeChanges()
         dismissStaleModalTasks()
         mainVerticalGridView.post {
@@ -998,7 +1137,11 @@ class MainVerticalGridView @JvmOverloads constructor(
 
     private fun isFirstMainRow(target: View): Boolean {
         val row = findMainGridChild(target) ?: return false
-        return indexOfMainGridChild(row) == 0
+        val lm = layoutManager as? androidx.leanback.widget.GridLayoutManager
+        // Adapter position 0, not the first attached child: when scrolled deep,
+        // child index 0 is just the top visible row and must not escape to the
+        // top bar.
+        return if (lm != null) lm.getPosition(row) == 0 else indexOfChild(row) == 0
     }
 
     private fun mainFocusFallback(target: View, direction: Int): View? {
