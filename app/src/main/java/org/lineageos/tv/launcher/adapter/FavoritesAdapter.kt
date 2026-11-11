@@ -37,8 +37,13 @@ class FavoritesAdapter : TvAdapter<Launchable, FavoriteCard>() {
         event: KeyEvent?,
         bindingAdapterPosition: Int,
     ): Boolean {
-        // Leave center key for onClick handler
-        if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+        // While reordering, the center key settles the card and leaves the
+        // mode - exactly like BACK; otherwise the click would launch the app.
+        if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
+            if (card.moving && event?.action == KeyEvent.ACTION_DOWN) {
+                card.setMoveDone()
+                return true
+            }
             return false
         }
 
