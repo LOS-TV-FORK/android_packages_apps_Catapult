@@ -74,4 +74,7 @@
     <string name="top_bar_auto_hide">Αυτόματη απόκρυψη της πάνω γραμμής κατά την κύλιση</string>
     <string name="show_clock">Εμφάνιση ρολογιού</string>
     <string name="clock_size">Μέγεθος ρολογιού</string>
+    <string name="recent_tasks_title">Πρόσφατες εργασίες (%1$d)</string>
+    <string name="close_all">Κλείσιμο όλων</string>
+
 </resources>

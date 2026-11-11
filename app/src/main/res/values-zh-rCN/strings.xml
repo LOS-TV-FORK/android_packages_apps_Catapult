@@ -75,4 +75,7 @@
     <string name="top_bar_auto_hide">滚动时自动隐藏顶部栏</string>
     <string name="show_clock">显示时钟</string>
     <string name="clock_size">时钟大小</string>
+    <string name="recent_tasks_title">最近任务（%1$d）</string>
+    <string name="close_all">全部关闭</string>
+
 </resources>

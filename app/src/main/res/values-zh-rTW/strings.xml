@@ -72,4 +72,7 @@
     <string name="top_bar_auto_hide">捲動時自動隱藏頂端列</string>
     <string name="show_clock">顯示時鐘</string>
     <string name="clock_size">時鐘大小</string>
+    <string name="recent_tasks_title">最近的工作 (%1$d)</string>
+    <string name="close_all">全部關閉</string>
+
 </resources>

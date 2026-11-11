@@ -63,4 +63,7 @@
     <string name="top_bar_auto_hide">Fshih automatikisht shiritin e sipërm gjatë lëvizjes</string>
     <string name="show_clock">Shfaq orën</string>
     <string name="clock_size">Madhësia e orës</string>
+    <string name="recent_tasks_title">Detyrat e fundit (%1$d)</string>
+    <string name="close_all">Mbyll të gjitha</string>
+
 </resources>

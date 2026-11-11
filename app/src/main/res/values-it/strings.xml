@@ -75,4 +75,7 @@
     <string name="top_bar_auto_hide">Nascondi automaticamente la barra superiore allo scorrimento</string>
     <string name="show_clock">Mostra l\'orologio</string>
     <string name="clock_size">Dimensione dell\'orologio</string>
+    <string name="recent_tasks_title">Attività recenti (%1$d)</string>
+    <string name="close_all">Chiudi tutto</string>
+
 </resources>

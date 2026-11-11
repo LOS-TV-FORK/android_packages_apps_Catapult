@@ -72,4 +72,7 @@
     <string name="top_bar_auto_hide">Bovenbalk automatisch verbergen bij scrollen</string>
     <string name="show_clock">Klok tonen</string>
     <string name="clock_size">Grootte van de klok</string>
+    <string name="recent_tasks_title">Recente taken (%1$d)</string>
+    <string name="close_all">Alles sluiten</string>
+
 </resources>

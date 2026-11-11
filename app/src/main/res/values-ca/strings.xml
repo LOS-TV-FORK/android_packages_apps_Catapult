@@ -75,4 +75,7 @@
     <string name="top_bar_auto_hide">Amaga automàticament la barra superior en desplaçar-se</string>
     <string name="show_clock">Mostra el rellotge</string>
     <string name="clock_size">Mida del rellotge</string>
+    <string name="recent_tasks_title">Tasques recents (%1$d)</string>
+    <string name="close_all">Tanca-ho tot</string>
+
 </resources>

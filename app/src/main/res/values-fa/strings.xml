@@ -75,4 +75,7 @@
     <string name="top_bar_auto_hide">نهفتن خودکار نوار بالا هنگام پیمایش</string>
     <string name="show_clock">نمایش ساعت</string>
     <string name="clock_size">اندازه ساعت</string>
+    <string name="recent_tasks_title">وظایف اخیر (%1$d)</string>
+    <string name="close_all">بستن همه</string>
+
 </resources>

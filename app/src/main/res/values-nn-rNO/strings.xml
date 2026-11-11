@@ -58,4 +58,7 @@
     <string name="top_bar_auto_hide">Skjul toppelinja automatisk ved rulling</string>
     <string name="show_clock">Vis klokke</string>
     <string name="clock_size">Storleik på klokke</string>
+    <string name="recent_tasks_title">Nylege oppgåver (%1$d)</string>
+    <string name="close_all">Lukk alt</string>
+
 </resources>

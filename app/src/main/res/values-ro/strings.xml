@@ -75,4 +75,7 @@
     <string name="top_bar_auto_hide">Ascunde automat bara superioară la derulare</string>
     <string name="show_clock">Afișează ceasul</string>
     <string name="clock_size">Dimensiunea ceasului</string>
+    <string name="recent_tasks_title">Activități recente (%1$d)</string>
+    <string name="close_all">Închide toate</string>
+
 </resources>

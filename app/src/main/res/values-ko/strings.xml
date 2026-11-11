@@ -75,4 +75,7 @@
     <string name="top_bar_auto_hide">스크롤 시 상단 바 자동 숨기기</string>
     <string name="show_clock">시계 표시</string>
     <string name="clock_size">시계 크기</string>
+    <string name="recent_tasks_title">최근 작업 (%1$d)</string>
+    <string name="close_all">모두 닫기</string>
+
 </resources>

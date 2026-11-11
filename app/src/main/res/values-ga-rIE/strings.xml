@@ -60,4 +60,7 @@
     <string name="top_bar_auto_hide">Folaigh an bharrachair go huathoibríoch agus tú ag scrollú</string>
     <string name="show_clock">Taispeáin an clog</string>
     <string name="clock_size">Méid an chloig</string>
+    <string name="recent_tasks_title">Tascanna le déanaí (%1$d)</string>
+    <string name="close_all">Dún Uile</string>
+
 </resources>

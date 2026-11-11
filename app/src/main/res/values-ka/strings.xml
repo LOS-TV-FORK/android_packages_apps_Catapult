@@ -58,4 +58,7 @@
     <string name="top_bar_auto_hide">ზედა ზოლის ავტომატური დამალვა გადაფურცვლისას</string>
     <string name="show_clock">საათის ჩვენება</string>
     <string name="clock_size">საათის ზომა</string>
+    <string name="recent_tasks_title">ბოლო ამოცანები (%1$d)</string>
+    <string name="close_all">ყველას დახურვა</string>
+
 </resources>

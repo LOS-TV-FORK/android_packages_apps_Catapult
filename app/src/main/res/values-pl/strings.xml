@@ -75,4 +75,7 @@
     <string name="top_bar_auto_hide">Automatycznie ukrywaj pasek górny podczas przewijania</string>
     <string name="show_clock">Pokaż zegar</string>
     <string name="clock_size">Rozmiar zegara</string>
+    <string name="recent_tasks_title">Ostatnie zadania (%1$d)</string>
+    <string name="close_all">Zamknij wszystkie</string>
+
 </resources>

@@ -75,4 +75,7 @@
     <string name="top_bar_auto_hide">Masquer automatiquement la barre supérieure lors du défilement</string>
     <string name="show_clock">Afficher l\'horloge</string>
     <string name="clock_size">Taille de l\'horloge</string>
+    <string name="recent_tasks_title">Tâches récentes (%1$d)</string>
+    <string name="close_all">Tout fermer</string>
+
 </resources>

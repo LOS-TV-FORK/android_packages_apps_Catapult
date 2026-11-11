@@ -75,4 +75,7 @@
     <string name="top_bar_auto_hide">הסתרה אוטומטית של הסרגל העליון בעת גלילה</string>
     <string name="show_clock">הצגת השעון</string>
     <string name="clock_size">גודל השעון</string>
+    <string name="recent_tasks_title">משימות אחרונות (%1$d)</string>
+    <string name="close_all">סגור הכל</string>
+
 </resources>

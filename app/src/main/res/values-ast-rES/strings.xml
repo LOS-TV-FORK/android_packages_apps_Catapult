@@ -29,4 +29,7 @@
     <string name="top_bar_auto_hide">Anubrar automáticamente la barra superior al desplazase</string>
     <string name="show_clock">Amosar el reló</string>
     <string name="clock_size">Tamañu del reló</string>
+    <string name="recent_tasks_title">Xeres recientes (%1$d)</string>
+    <string name="close_all">Zarrar too</string>
+
 </resources>

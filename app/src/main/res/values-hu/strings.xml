@@ -75,4 +75,7 @@
     <string name="top_bar_auto_hide">Felső sáv automatikus elrejtése görgetéskor</string>
     <string name="show_clock">Óra megjelenítése</string>
     <string name="clock_size">Óra mérete</string>
+    <string name="recent_tasks_title">Legutóbbi feladatok (%1$d)</string>
+    <string name="close_all">Mind bezárása</string>
+
 </resources>

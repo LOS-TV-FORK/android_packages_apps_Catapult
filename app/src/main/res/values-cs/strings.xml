@@ -67,4 +67,7 @@
     <string name="top_bar_auto_hide">Automaticky skrývat horní lištu při scrollování</string>
     <string name="show_clock">Zobrazit hodiny</string>
     <string name="clock_size">Velikost hodin</string>
+    <string name="recent_tasks_title">Nedávné úlohy (%1$d)</string>
+    <string name="close_all">Zavřít vše</string>
+
 </resources>

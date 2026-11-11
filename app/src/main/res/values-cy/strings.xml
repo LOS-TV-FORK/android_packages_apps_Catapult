@@ -25,4 +25,7 @@
     <string name="top_bar_auto_hide">Cuddio\'r bar uchaf yn awtomatig wrth sgrolio</string>
     <string name="show_clock">Dangos y cloc</string>
     <string name="clock_size">Maint y cloc</string>
+    <string name="recent_tasks_title">Taskau diweddar (%1$d)</string>
+    <string name="close_all">Cau Cyfan</string>
+
 </resources>

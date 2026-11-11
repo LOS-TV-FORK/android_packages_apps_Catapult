@@ -60,4 +60,7 @@
     <string name="top_bar_auto_hide">Plate automatiche la barre in alt tal scoriment</string>
     <string name="show_clock">Mostre il reliui</string>
     <string name="clock_size">Grandece dal reliui</string>
+    <string name="recent_tasks_title">Ativitâts recentis (%1$d)</string>
+    <string name="close_all">Siere dut</string>
+
 </resources>

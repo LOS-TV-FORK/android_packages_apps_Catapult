@@ -59,4 +59,7 @@
     <string name="top_bar_auto_hide">Auto-hide top bar on scroll</string>
     <string name="show_clock">Show clock</string>
     <string name="clock_size">Clock size</string>
+    <string name="recent_tasks_title">Recent tasks (%1$d)</string>
+    <string name="close_all">Close All</string>
+
 </resources>

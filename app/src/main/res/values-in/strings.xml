@@ -28,4 +28,7 @@
     <string name="allow_notification_access">Izinkan akses notifikasi</string>
     <string name="dismiss">Abaikan</string>
     <string name="connected">Terhubung</string>
+    <string name="recent_tasks_title">Tugas terbaru (%1$d)</string>
+    <string name="close_all">Tutup semua</string>
+
 </resources>

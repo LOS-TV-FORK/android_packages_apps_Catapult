@@ -75,4 +75,7 @@
     <string name="top_bar_auto_hide">Sürüşdürmə zamanı yuxarı paneli avtomatik gizlət</string>
     <string name="show_clock">Saatı göstər</string>
     <string name="clock_size">Saat ölçüsü</string>
+    <string name="recent_tasks_title">Son tapşırıqlar (%1$d)</string>
+    <string name="close_all">Hamısını bağla</string>
+
 </resources>

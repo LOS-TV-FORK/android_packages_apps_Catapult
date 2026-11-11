@@ -75,4 +75,7 @@
     <string name="top_bar_auto_hide">Kaydırırken üst çubuğu otomatik gizle</string>
     <string name="show_clock">Saati göster</string>
     <string name="clock_size">Saat boyutu</string>
+    <string name="recent_tasks_title">Son görevler (%1$d)</string>
+    <string name="close_all">Tümünü kapat</string>
+
 </resources>

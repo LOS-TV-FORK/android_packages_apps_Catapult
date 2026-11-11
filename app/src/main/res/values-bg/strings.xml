@@ -75,4 +75,7 @@
     <string name="top_bar_auto_hide">Автоматично скриване на горната лента при превъртане</string>
     <string name="show_clock">Показване на часовника</string>
     <string name="clock_size">Размер на часовника</string>
+    <string name="recent_tasks_title">Скорошни задачи (%1$d)</string>
+    <string name="close_all">Затваряне на всички</string>
+
 </resources>

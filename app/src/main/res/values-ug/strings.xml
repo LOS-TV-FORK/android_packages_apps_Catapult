@@ -58,4 +58,7 @@
     <string name="top_bar_auto_hide">أيلاندراندا ئۈستىكى بالداقنى ئاپتوماتىك يوشۇرۇش</string>
     <string name="show_clock">سائەتنى كۆرسىتىش</string>
     <string name="clock_size">سائەت چوڭلۇقى</string>
+    <string name="recent_tasks_title">يېقىنقى ۋەزىپىلەر (%1$d)</string>
+    <string name="close_all">ھەممىنى تاقاش</string>
+
 </resources>

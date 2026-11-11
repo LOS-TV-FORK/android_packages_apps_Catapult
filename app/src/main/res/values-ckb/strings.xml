@@ -38,4 +38,7 @@
     <string name="connected">پەیوەستە</string>
     <string name="mic_assistant">گەڕان بە بەکارهێنانی مایکرۆفۆن</string>
     <string name="keyboard_assistant">گەڕان بە بەکارهێنانی تەختەکلیل</string>
+    <string name="recent_tasks_title">ئەرکە دواییەکان (%1$d)</string>
+    <string name="close_all">داخستنی هەموو</string>
+
 </resources>

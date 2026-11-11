@@ -75,4 +75,7 @@
     <string name="top_bar_auto_hide">Samodejno skrij zgornjo vrstico med drsenjem</string>
     <string name="show_clock">Pokaži uro</string>
     <string name="clock_size">Velikost ure</string>
+    <string name="recent_tasks_title">Nedavne naloge (%1$d)</string>
+    <string name="close_all">Zapri vse</string>
+
 </resources>

@@ -66,4 +66,7 @@
     <string name="top_bar_auto_hide">உருட்டும்போது மேல் பட்டியைத் தானாக மறை</string>
     <string name="show_clock">கடிகாரத்தைக் காட்டு</string>
     <string name="clock_size">கடிகாரத்தின் அளவு</string>
+    <string name="recent_tasks_title">சமீபத்திய பணிகள் (%1$d)</string>
+    <string name="close_all">அனைத்தையும் மூடு</string>
+
 </resources>

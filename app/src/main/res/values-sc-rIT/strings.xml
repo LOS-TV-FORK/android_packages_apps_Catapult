@@ -58,4 +58,7 @@
     <string name="top_bar_auto_hide">Ammuca in automaticu sa barra in artu in su iscurrere</string>
     <string name="show_clock">Ammustra su rellògiu</string>
     <string name="clock_size">Mannària de su rellògiu</string>
+    <string name="recent_tasks_title">Atividade ùrtimas (%1$d)</string>
+    <string name="close_all">Sèrra totu</string>
+
 </resources>

@@ -92,4 +92,7 @@
     <string name="external_launcher_none">Don\'t use external launcher</string>
     <string name="external_launcher_not_found">No other home launcher apps found.</string>
     <string name="external_launcher_picker">Catapult: choose launcher</string>
+    <string name="recent_tasks_title">Recent tasks (%1$d)</string>
+    <string name="close_all">Close All</string>
+
 </resources>
