@@ -107,6 +107,30 @@ import org.lineageos.tv.launcher.utils.PermissionsGatedCallback
 import org.lineageos.tv.launcher.viewmodels.LauncherViewModel
 import org.lineageos.tv.launcher.viewmodels.NotificationViewModel
 import java.util.Locale
+import android.app.ActivityOptions
+import android.content.ComponentName
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.PixelFormat
+import android.util.Log
+import android.util.TypedValue
+import android.view.ContextThemeWrapper
+import android.view.ViewConfiguration
+import android.view.WindowManager
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.view.animation.AnimationSet
+import android.view.animation.DecelerateInterpolator
+import android.view.animation.RotateAnimation
+import android.view.animation.ScaleAnimation
+import android.view.animation.TranslateAnimation
+import androidx.leanback.widget.HorizontalGridView
+import org.lineageos.tv.launcher.ext.externalLauncherPkg
+import org.lineageos.tv.launcher.ext.recentAppsCardSize
+import org.lineageos.tv.launcher.ext.recentAppsEnabled
+import org.lineageos.tv.launcher.ext.recentAppsShowThumbnails
+import org.lineageos.tv.launcher.model.LeanbackAppInfo
+import org.lineageos.tv.launcher.view.AppCard
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
     companion object {
@@ -116,6 +140,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         var isMainActivityVisible = false
         private var lastResumedTime = 0L
         private const val VPN_PACKAGE_KEY = "vpn_package"
+
+        private const val TAG = "MainActivity"
 
         fun getLastResumedTime() = lastResumedTime
 
@@ -167,14 +193,19 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private val voiceAssistantButton by lazy { findViewById<ImageButton>(R.id.voice_assistant)!! }
 
     // Return to first row when focus moves to the top bar
-    private val mainFocusScrollListener = ViewTreeObserver.OnGlobalFocusChangeListener { _, newFocus ->
+    private val mainFocusScrollListener = ViewTreeObserver.OnGlobalFocusChangeListener { old, newFocus ->
         if (newFocus != null && isTopBarDescendant(newFocus)) {
             showTopBar()
-            // Row 0 must sit exactly at the bar bottom; otherwise it stays
-            // clipped under the bar and focus coming back down skips it.
-            mainVerticalGridView.setSelectedPosition(0)
-            snapGridToTop()
-            mainVerticalGridView.post { snapGridToTop() }
+            // Jump to row 0 only when the user scrolled up from the grid into
+            // the bar. A focus restore after resume (no previous focus, or
+            // focus coming from the bar itself) must not move the grid.
+            if (old != null && isMainDescendant(old)) {
+                // Row 0 must sit exactly at the bar bottom; otherwise it stays
+                // clipped under the bar and focus coming back down skips it.
+                mainVerticalGridView.setSelectedPosition(0)
+                snapGridToTop()
+                mainVerticalGridView.post { snapGridToTop() }
+            }
         }
     }
 
@@ -314,7 +345,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private val permissionsGatedCallback = PermissionsGatedCallback(this) {
                 lifecycleScope.launch {
-                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                         combine(
                             model.watchNextPrograms,
                             model.channelsToPrograms
@@ -364,7 +395,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 }
 
                 lifecycleScope.launch {
-                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                         model.installedApps.collectLatest {
                             allAppsAdapter.submitList(it)
 
@@ -376,7 +407,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 }
 
                 lifecycleScope.launch {
-                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                         model.favoriteApps.collectLatest {
                             favoritesAdapter.submitList(
                                 it.mapNotNull {
@@ -513,6 +544,44 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                         }
                     }
                 }
+        handleHomePress()
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        val homeIntent = intent.hasCategory(Intent.CATEGORY_HOME)
+        handleHomePress()
+        // HOME while the desktop is already in the foreground is a deliberate
+        // "go to the top" gesture. Pressing HOME also runs pause/resume on the
+        // launcher, so visibility flags cannot tell the cases apart: only a
+        // real stop (another app took over) happens when returning from an
+        // app. Never stopped means the desktop was on screen the whole time.
+        if (homeIntent && !activityStopped && !RecentsActivity.isShowing()) {
+            showTopBar()
+            @Suppress("RestrictedApi")
+            mainVerticalGridView.post {
+                val lm = mainVerticalGridView.layoutManager as?
+                    androidx.leanback.widget.GridLayoutManager
+                // Plain scrollToPosition gets re-anchored by leanback's focus
+                // machinery to the old focused row on long distances; scrollBy
+                // is immediate and loops until row 0 is really attached.
+                if (lm != null) {
+                    var guard = 0
+                    while (lm.findViewByPosition(0) == null && guard < 24) {
+                        mainVerticalGridView.scrollBy(0, -mainVerticalGridView.height.coerceAtLeast(1))
+                        guard++
+                    }
+                }
+                mainVerticalGridView.setSelectedPosition(0)
+                snapGridToTop()
+                mainVerticalGridView.post {
+                    snapGridToTop()
+                    (lm?.findViewByPosition(0) ?: mainVerticalGridView).requestFocus()
+                    mainVerticalGridView.post { snapGridToTop() }
+                }
+            }
+        }
     }
 
     override fun onStart() {
@@ -557,9 +626,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }.also { cardSizeHandler.postDelayed(it, 120) }
     }
 
+    private var activityStopped = true
+
     override fun onResume() {
         super.onResume()
         isMainActivityVisible = true
+        activityStopped = false
         lastResumedTime = System.currentTimeMillis()
         applyBackground()
         applyTopBarPreferences()
@@ -600,6 +672,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 mainVerticalGridView.setSelectedPosition(0)
             }
         }
+    }
+
+
+    override fun onStop() {
+        super.onStop()
+        activityStopped = true
     }
 
     override fun onPause() {
@@ -1047,6 +1125,51 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
         }
         return inSampleSize
+    }
+
+    /**
+     * Plain HOME presses land while MainActivity is the home task itself; the
+     * only thing to do is forwarding to a HOME replacement picked in settings.
+     * Recents requests never come here - the translucent RecentsActivity
+     * receives them so the app below is not paused.
+     */
+    private fun handleHomePress() {
+        if (intent?.hasCategory(Intent.CATEGORY_HOME) == true &&
+            sharedPreferences.externalLauncherPkg != null
+        ) {
+            launchExternalLauncherIfSet()
+        }
+    }
+
+    private fun launchExternalLauncherIfSet(): Boolean {
+        val pkg = sharedPreferences.externalLauncherPkg ?: return false
+        val intent = getHomeIntentForPackage(pkg) ?: return false
+        // Reorder, don't recreate: a fresh instance always opens the default
+        // tab, while the live one keeps where the user was.
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+        return try {
+            startActivity(intent)
+            overridePendingTransition(0, 0)
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    /**
+     * TV home replacements (e.g. Google TV Launcher) expose MAIN+HOME, not
+     * LAUNCHER, so getLaunchIntentForPackage() misses them. Resolve HOME
+     * first, fall back to the regular launcher lookup.
+     */
+    private fun getHomeIntentForPackage(pkg: String): Intent? {
+        val homeQuery = Intent(Intent.ACTION_MAIN).apply {
+            addCategory(Intent.CATEGORY_HOME)
+            setPackage(pkg)
+        }
+        packageManager.resolveActivity(homeQuery, PackageManager.MATCH_DEFAULT_ONLY)?.let { ri ->
+            return Intent().setComponent(ComponentName(pkg, ri.activityInfo.name))
+        }
+        return packageManager.getLaunchIntentForPackage(pkg)
     }
 }
 

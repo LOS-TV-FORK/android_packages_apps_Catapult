@@ -20,20 +20,23 @@ import android.util.TypedValue
 import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.KeyEvent
+import android.view.View
+import android.view.ViewConfiguration
+import android.view.ViewTreeObserver
+import android.view.WindowManager
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationSet
+import android.view.animation.DecelerateInterpolator
 import android.view.animation.RotateAnimation
 import android.view.animation.ScaleAnimation
 import android.view.animation.TranslateAnimation
-import android.view.View
-import android.view.ViewTreeObserver
-import android.view.WindowManager
-import android.view.animation.DecelerateInterpolator
-import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.leanback.widget.HorizontalGridView
 import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.RecyclerView
+import android.view.ViewGroup
 import org.lineageos.tv.launcher.ext.externalLauncherPkg
 import org.lineageos.tv.launcher.ext.recentAppsCardSize
 import org.lineageos.tv.launcher.ext.recentAppsEnabled
@@ -41,130 +44,98 @@ import org.lineageos.tv.launcher.ext.recentAppsShowThumbnails
 import org.lineageos.tv.launcher.model.LeanbackAppInfo
 import org.lineageos.tv.launcher.view.AppCard
 
-class ProxyHomeActivity : Activity() {
+/**
+ * Transparent host for the recents overlay. It carries no UI: the translucent
+ * window keeps the activity below visible and unpaused while the menu is up,
+ * which is why the overlay is opened from here and not from MainActivity -
+ * bringing the home activity forward would pause the app the menu was called
+ * from. Manifest: Theme.Translucent.NoTitleBar, excludeFromRecents, noHistory.
+ */
+class RecentsActivity : Activity() {
 
     companion object {
-        private const val TAG = "ProxyHomeActivity"
+        private const val TAG = "RecentsActivity"
 
-        // Set by SystemUI's CentralSurfacesCommandQueueCallbacks.toggleRecentApps(),
-        // which PhoneWindowManager reaches for Action.APP_SWITCH - the action that
-        // config_doubleTapOnHomeBehavior selects for a double tap on HOME. The
-        // platform detects the double tap in the input stream, where it can see both
-        // presses; the launcher is only the place that draws the result. Keep in
-        // sync with that file.
-        const val EXTRA_SHOW_RECENTS = "org.lineageos.tv.launcher.SHOW_RECENTS"
-
-        // The overlay is opened by whichever instance last started, and HOME can land
-        // on a different instance, so the reference is static. Both instances share
-        // this class.
+        // The overlay is a window attached outside the activity lifecycle, and
+        // noHistory means the instance may be replaced between presses, so the
+        // reference consulted by the close paths is static.
         @Volatile
         private var currentOverlay: View? = null
+
+        fun isShowing(): Boolean = currentOverlay != null
     }
 
-    private var windowManager: WindowManager? = null
-    private var overlayView: View? = null
-    private var cardsContainer: LinearLayout? = null
-    private var scrollView: HorizontalScrollView? = null
-    private val taskSnapshots = mutableMapOf<Int, Bitmap>()
-    private val prefs by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
+    private val sharedPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-
-        handleHomePress()
-    }
-
-    /**
-     * A HOME press arriving through either entry point. Which one fires depends on
-     * whether the previous instance survived: the manifest combines
-     * launchMode="singleInstance" with noHistory="true", so the system sometimes
-     * tears the instance down between presses and calls onCreate() again, and
-     * sometimes keeps it and delivers onNewIntent(). Both funnel here so the
-     * behaviour does not depend on that.
-     *
-     * There is no double tap detection here on purpose. The platform detects it in
-     * PhoneWindowManager, which sees both presses in the input stream; by the time a
-     * press reaches this activity the second one of a fast pair is already gone
-     * (measured: two presses back to back delivered nothing at all, while the same
-     * two presses a second apart both arrived). Requesting recents from here instead
-     * means the launcher is only asked to draw, never to decide.
-     */
-    private fun handleHomePress() {
-        if (intent?.getBooleanExtra(EXTRA_SHOW_RECENTS, false) == true) {
-            // Double tap on HOME, as decided by PhoneWindowManager.
-            Log.d(TAG, "Double HOME: open recents")
-            intent.removeExtra(EXTRA_SHOW_RECENTS)
-            GlobalHotkeyService.clearOverlayFlag()
-            // The overlay is a full screen window, so a second one on top of it
-            // leaves recents impossible to leave: the newest overlay takes the
-            // key events and BACK only reaches the topmost. Take the previous one
-            // down first. This is a toggle - that is what PhoneWindowManager asks
-            // for with Action.APP_SWITCH.
-            if (currentOverlay != null) {
-                dismissOverlay()
-            }
-            openRecentsOrHome()
-            return
-        }
-
-        when {
-            currentOverlay != null -> {
-                // Recents is up and HOME was pressed. Without this the overlay
-                // would stay put with no way out through HOME.
-                Log.d(TAG, "HOME with recents open: dismiss and go home")
-                dismissOverlay()
-                launchHomeTarget()
-            }
-            GlobalHotkeyService.isOverlayShown() -> {
-                // Alt+Tab: the hotkey service already decided that recents should
-                // come up.
-                Log.d(TAG, "HOME from Alt+Tab flag: open recents")
-                GlobalHotkeyService.clearOverlayFlag()
-                openRecentsOrHome()
-            }
-            else -> {
-                Log.d(TAG, "Single HOME: go home")
-                launchHomeTarget()
-            }
-        }
+        handleRecentsRequest()
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
-
-        handleHomePress()
+        handleRecentsRequest()
     }
 
     /**
      * BACK/ESC that bypasses the overlay window (focus never entered it, or
-     * already left) must still only close the overlay — never fall through
-     * to the activity default or the launcher underneath (both would act on
-     * the same press: launcher jumps to the previous app). No overlay open
-     * means normal behavior.
+     * already left) must still only close the overlay. No overlay open means
+     * the default behavior: the empty translucent activity finishes.
      */
     override fun onBackPressed() {
         if (overlayView != null || currentOverlay != null) {
-            hideOverlayAndFinish()
+            hideOverlay()
         } else {
             super.onBackPressed()
         }
     }
 
+    // ---- Recents overlay window ----
+    private val overlayWindowManager by lazy {
+        getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    }
+    private var overlayView: View? = null
+    private var recentGrid: HorizontalGridView? = null
+    private var recentAdapter: RecentCardsAdapter? = null
+    private val taskSnapshots = mutableMapOf<Int, Bitmap>()
+
+    /**
+     * Starting this activity IS the recents request: nothing else launches it
+     * (no launcher entry, no intent filter) - the double tap on HOME reaches
+     * it through SystemUI's TvStatusBar and Alt+Tab through GlobalHotkeyService.
+     * The request is a toggle: with the menu up it closes it.
+     *
+     * There is no double tap detection here on purpose. The platform detects
+     * it in PhoneWindowManager, which sees both presses in the input stream;
+     * by the time a request reaches here the decision is already made. This
+     * activity only draws the result.
+     */
+    private fun handleRecentsRequest() {
+        GlobalHotkeyService.clearOverlayFlag()
+        if (currentOverlay != null) {
+            hideOverlay()
+            return
+        }
+        openRecentsOrHome()
+    }
+
     private fun openRecentsOrHome() {
-        if (prefs.recentAppsEnabled) {
+        if (sharedPreferences.recentAppsEnabled) {
             showOverlay()
         } else {
-            launchHomeTarget()
+            finish()
         }
     }
 
     private fun dismissOverlay() {
         try {
-            overlayView?.let {
-                windowManager?.removeViewImmediate(it)
+            // A fresh instance may be asked to dismiss an overlay opened by the
+            // previous one: fall back to the shared reference.
+            (overlayView ?: currentOverlay)?.let {
+                overlayWindowManager.removeViewImmediate(it)
             }
         } catch (e: Exception) {
             android.util.Log.e(TAG, "Failed to dismiss overlay", e)
@@ -183,62 +154,46 @@ class ProxyHomeActivity : Activity() {
         currentOverlay = view
     }
 
-    private fun launchHomeTarget() {
-        if (!launchExternalLauncherIfSet()) {
-            launchMainActivity()
-        }
-    }
-
-    private fun launchExternalLauncherIfSet(): Boolean {
-        val pkg = prefs.externalLauncherPkg ?: return false
-        val intent = getHomeIntentForPackage(pkg) ?: return false
-        // Reorder, don't recreate: a fresh instance always opens the default
-        // tab, while the live one keeps where the user was.
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
-        return try {
-            startActivity(intent)
-            finish()
-            overridePendingTransition(0, 0)
-            true
-        } catch (e: Exception) {
-            false
-        }
-    }
-
-    /**
-     * TV home replacements (e.g. Google TV Launcher) expose MAIN+HOME, not
-     * LAUNCHER, so getLaunchIntentForPackage() misses them. Resolve HOME
-     * first, fall back to the regular launcher lookup.
-     */
-    private fun getHomeIntentForPackage(pkg: String): Intent? {
-        val homeQuery = Intent(Intent.ACTION_MAIN).apply {
-            addCategory(Intent.CATEGORY_HOME)
-            setPackage(pkg)
-        }
-        packageManager.resolveActivity(homeQuery, PackageManager.MATCH_DEFAULT_ONLY)?.let { ri ->
-            return Intent().setComponent(ComponentName(pkg, ri.activityInfo.name))
-        }
-        return packageManager.getLaunchIntentForPackage(pkg)
-    }
-
-    private fun launchMainActivity() {
-        val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_ANIMATION)
-        startActivity(intent)
-        finish()
-        overridePendingTransition(0, 0)
-    }
-
     private fun showOverlay() {
+        // Never stack overlays: a second window on top of the first swallows all
+        // touch and focus, and BACK only ever reaches the newest one.
+        if (overlayView != null || currentOverlay != null) {
+            dismissOverlay()
+        }
+
         val recentTasks = getRecentTasks()
-        val cardMargin = (20 * resources.displayMetrics.density).toInt()
 
         val root = object : LinearLayout(this) {
+            private var lastHomeDownTime = 0L
+            private var closeOnHomeUp = false
+
             override fun dispatchKeyEvent(event: KeyEvent): Boolean {
                 // Close on RELEASE, not on press: closing on DOWN hands focus
                 // to the layer below while the UP of the same press is still
                 // in flight, and it triggers there (launcher jumps). Swallow
                 // the press, act on the release, swallow that too.
+                if (event.keyCode == KeyEvent.KEYCODE_HOME) {
+                    when (event.action) {
+                        KeyEvent.ACTION_DOWN -> {
+                            // Only the second press of a double tap closes the
+                            // menu; a held key repeats DOWN and must not count.
+                            if (event.repeatCount == 0) {
+                                closeOnHomeUp = event.eventTime - lastHomeDownTime <=
+                                    ViewConfiguration.getDoubleTapTimeout()
+                                lastHomeDownTime = event.eventTime
+                            }
+                            return true
+                        }
+                        KeyEvent.ACTION_UP -> {
+                            if (closeOnHomeUp) {
+                                closeOnHomeUp = false
+                                hideOverlay()
+                            }
+                            return true
+                        }
+                    }
+                    return true
+                }
                 if (event.action == KeyEvent.ACTION_DOWN) {
                     when (event.keyCode) {
                         KeyEvent.KEYCODE_BACK, KeyEvent.KEYCODE_ESCAPE -> {
@@ -249,7 +204,7 @@ class ProxyHomeActivity : Activity() {
                 if (event.action == KeyEvent.ACTION_UP) {
                     when (event.keyCode) {
                         KeyEvent.KEYCODE_BACK, KeyEvent.KEYCODE_ESCAPE -> {
-                            hideOverlayAndFinish()
+                            hideOverlay()
                             return true
                         }
                     }
@@ -275,7 +230,7 @@ class ProxyHomeActivity : Activity() {
         }
 
         val titleText = TextView(this).apply {
-            text = "Recent Tasks (${recentTasks.size})"
+            text = getString(R.string.recent_tasks_title, recentTasks.size)
             setTextColor(0xFFFFFFFF.toInt())
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 28f)
             layoutParams = LinearLayout.LayoutParams(
@@ -288,197 +243,116 @@ class ProxyHomeActivity : Activity() {
 
         val themedContext = ContextThemeWrapper(this, R.style.Theme_Catapult)
 
-        scrollView = HorizontalScrollView(themedContext).apply {
-            isHorizontalScrollBarEnabled = false
-            isFocusable = false
-            clipChildren = false
-            clipToPadding = false
-        }
-
-        val cardSize = prefs.recentAppsCardSize
-        val verticalPadding = ((80.0 * (50 - cardSize) / 30.0) * resources.displayMetrics.density).toInt()
+        val cardSize = sharedPreferences.recentAppsCardSize
+        val verticalPadding =
+            ((80.0 * (50 - cardSize) / 30.0) * resources.displayMetrics.density).toInt()
         val horizontalPadding = (32 * resources.displayMetrics.density).toInt()
 
-        cardsContainer = LinearLayout(themedContext).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-            setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding)
+        // Same widget the desktop rows scroll with, so left/right focus search,
+        // centering and edge behavior match the desktop carousel exactly. The
+        // scaled cards sat inside a HorizontalScrollView before, whose focus
+        // and scroll math ignores the card scale transform.
+        // The weighted frame owns all the leftover height; leanback centers its
+        // single row inside it, so the frame's bottom half is exactly the empty
+        // space under the carousel. The button floats in that space via a frame
+        // margin and never consumes layout height (no layout feedback loops).
+        val gridFrame = android.widget.FrameLayout(this).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                0,
+                1f
+            )
+        }
+
+        val grid = HorizontalGridView(themedContext).apply {
+            isHorizontalScrollBarEnabled = false
             clipChildren = false
             clipToPadding = false
+            setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding)
+            layoutParams = android.widget.FrameLayout.LayoutParams(
+                android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+                android.widget.FrameLayout.LayoutParams.MATCH_PARENT
+            )
         }
-
-        for (task in recentTasks) {
-            try {
-                val packageName = task.packageName
-                val taskId = task.taskId
-                val displayName = task.displayName
-                val taskLabel = task.taskLabel
-                val customIcon = task.customIcon
-                val baseIntent = task.baseIntent
-
-                // Try to get app info for icon and label
-                val appInfo = try {
-                    packageManager.getApplicationInfo(packageName, 0)
-                } catch (e: Exception) {
-                    null
-                }
-
-                // Create app info for the card
-                val appInfoForCard: LeanbackAppInfo? = if (appInfo != null) {
-                    try {
-                        val intent = packageManager.getLaunchIntentForPackage(packageName) 
-                            ?: baseIntent
-                        if (intent != null) {
-                            val resolveInfo = packageManager.resolveActivity(
-                                intent, 
-                                PackageManager.MATCH_DEFAULT_ONLY
-                            )
-                            if (resolveInfo != null) {
-                                LeanbackAppInfo(resolveInfo, themedContext)
-                            } else null
-                        } else null
-                    } catch (e: Exception) {
-                        null
-                    }
-                } else null
-
-                val card = AppCard(themedContext).apply {
-                    isFocusable = true
-                    isClickable = true
-                    isFocusableInTouchMode = true
-                    
-                    // Set card info first (establishes default icon/banner)
-                    appInfoForCard?.let { setCardInfo(it) }
-                    
-                    // Override icon with custom icon (hides banner, shows custom icon)
-                    if (customIcon != null) {
-                        setCustomIcon(customIcon)
-                    }
-                    
-                    // Override title with task-specific displayName
-                    if (!displayName.isNullOrEmpty()) {
-                        setCustomTitle(displayName)
-                    }
-                    
-                    // Apply custom scale based on screen height percentage
-                    val screenHeight = resources.displayMetrics.heightPixels
-                    val density = resources.displayMetrics.density
-                    val baseHeightPx = 100 * density
-                    val cardHeightPx = screenHeight * prefs.recentAppsCardSize / 100
-                    val scale = cardHeightPx / baseHeightPx
-                    setCardScale(scale)
-                    
-                    clipChildren = false
-                    clipToPadding = false
-                    setPadding(
-                        (8 * resources.displayMetrics.density).toInt(),
-                        (16 * resources.displayMetrics.density).toInt(),
-                        (8 * resources.displayMetrics.density).toInt(),
-                        (16 * resources.displayMetrics.density).toInt()
-                    )
-                    layoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    ).apply {
-                        marginEnd = cardMargin
-                    }
-
-                    tag = taskId
-
-                    // Optional real-state preview of the task (RAM-only system snapshot).
-                    if (prefs.recentAppsShowThumbnails) {
-                        setPreview(getTaskSnapshot(taskId))
-                    }
-
-                    // Set content description using task label or display name
-                    val descText = if (!taskLabel.isNullOrEmpty()) taskLabel else displayName
-                    if (descText.isNotEmpty()) {
-                        contentDescription = descText
-                    }
-
-                    setOnClickListener {
-                        try {
-                            val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-                            val options = ActivityOptions.makeBasic()
-                            options.setPendingIntentBackgroundActivityStartMode(
-                                ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
-                            )
-                            activityManager.moveTaskToFront(
-                                taskId,
-                                ActivityManager.MOVE_TASK_WITH_HOME,
-                                options.toBundle()
-                            )
-                            root.postDelayed({
-                                hideOverlayAndFinish()
-                            }, 200)
-                        } catch (e: Exception) {
-                            android.util.Log.e(TAG, "Failed to move task to front", e)
-                            try {
-                                baseIntent?.let { intent ->
-                                    intent.addFlags(
-                                        Intent.FLAG_ACTIVITY_NEW_TASK or
-                                        Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED or
-                                        Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY
-                                    )
-                                    startActivity(intent)
-                                }
-                            } catch (e2: Exception) {
-                                android.util.Log.e(TAG, "Failed to start activity", e2)
-                            }
-                            hideOverlayAndFinish()
-                        }
-                    }
-
-                    setOnKeyListener { v, keyCode, event ->
-                        if (keyCode == KeyEvent.KEYCODE_DPAD_UP && event.action == KeyEvent.ACTION_DOWN) {
-                            removeTaskWithAnimation(v, taskId)
-                            true
-                        } else {
-                            false
-                        }
-                    }
-                }
-
-                cardsContainer?.addView(card)
-
-            } catch (e: Exception) {
-                android.util.Log.e(TAG, "Failed to load task: ${task.packageName}", e)
-            }
-        }
-
-        val sv = scrollView!!
-        val cc = cardsContainer!!
-        
-        sv.addView(cc)
-        root.addView(sv)
+        recentAdapter = RecentCardsAdapter(recentTasks.toMutableList(), themedContext)
+        grid.adapter = recentAdapter
+        recentGrid = grid
+        gridFrame.addView(grid)
 
         // Add "Close All" button only if there are tasks
         var closeAllButton: android.widget.Button? = null
         if (recentTasks.isNotEmpty()) {
-            closeAllButton = android.widget.Button(this).apply {
-                text = "Close All"
-                textSize = 18f
-                setTextColor(0xFFFFFFFF.toInt())
-                setBackgroundResource(android.R.drawable.btn_default)
-                setPadding(
-                    (24 * resources.displayMetrics.density).toInt(),
-                    (12 * resources.displayMetrics.density).toInt(),
-                    (24 * resources.displayMetrics.density).toInt(),
-                    (12 * resources.displayMetrics.density).toInt()
+            val density = resources.displayMetrics.density
+            val corner = 24f * density
+            fun rounded(color: Int, stroke: Int = 0x00000000): android.graphics.drawable.Drawable {
+                val d = android.graphics.drawable.GradientDrawable()
+                d.shape = android.graphics.drawable.GradientDrawable.RECTANGLE
+                d.cornerRadius = corner
+                d.setColor(color)
+                if (stroke != 0x00000000) {
+                    d.setStroke((1f * density).toInt(), stroke)
+                }
+                return d
+            }
+            val buttonBackground = android.graphics.drawable.StateListDrawable().apply {
+                addState(intArrayOf(android.R.attr.state_focused), rounded(0xFFFFFFFF.toInt()))
+                addState(intArrayOf(android.R.attr.state_selected), rounded(0xFFFFFFFF.toInt()))
+                addState(intArrayOf(android.R.attr.state_pressed), rounded(0x80FFFFFF.toInt()))
+                addState(intArrayOf(), rounded(0x33FFFFFF.toInt(), 0x55FFFFFF.toInt()))
+            }
+            val buttonTextColor = android.content.res.ColorStateList(
+                arrayOf(
+                    intArrayOf(android.R.attr.state_focused),
+                    intArrayOf(android.R.attr.state_selected),
+                    intArrayOf()
+                ),
+                intArrayOf(
+                    0xFF202124.toInt(),
+                    0xFF202124.toInt(),
+                    0xFFFFFFFF.toInt()
                 )
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            closeAllButton = android.widget.Button(this).apply {
+                text = getString(R.string.close_all)
+                textSize = 16f
+                letterSpacing = 0.04f
+                isAllCaps = true
+                setTextColor(buttonTextColor)
+                background = buttonBackground
+                setPadding(
+                    (28 * density).toInt(),
+                    (12 * density).toInt(),
+                    (28 * density).toInt(),
+                    (12 * density).toInt()
+                )
+                stateListAnimator = null
+                layoutParams = android.widget.FrameLayout.LayoutParams(
+                    android.widget.FrameLayout.LayoutParams.WRAP_CONTENT,
+                    android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
                 ).apply {
-                    topMargin = (16 * resources.displayMetrics.density).toInt()
-                    gravity = Gravity.CENTER_HORIZONTAL
+                    gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
                 }
                 setOnClickListener {
                     closeAllTasksWithAnimation()
                 }
             }
-            root.addView(closeAllButton)
+            gridFrame.addView(closeAllButton)
+
+            // Center the button in the empty band between the carousel bottom
+            // and the screen bottom: band = frameHeight/2 - renderedRowHalf,
+            // margin = band/2 - buttonHeight/2, floored at 12dp.
+            gridFrame.post {
+                val rowHalf = (resources.displayMetrics.heightPixels *
+                    sharedPreferences.recentAppsCardSize / 100f) / 2f
+                val band = gridFrame.height / 2f - rowHalf
+                val lp = closeAllButton.layoutParams as android.widget.FrameLayout.LayoutParams
+                lp.bottomMargin = ((band - closeAllButton.height) / 2f)
+                    .toInt()
+                    .coerceAtLeast((12 * density).toInt())
+                closeAllButton.layoutParams = lp
+            }
         }
+        root.addView(gridFrame)
 
         val windowParams = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT,
@@ -493,7 +367,7 @@ class ProxyHomeActivity : Activity() {
             title = "RecentAppsOverlay"
         }
 
-        windowManager?.addView(root, windowParams)
+        overlayWindowManager.addView(root, windowParams)
         setOverlayView(root)
         android.util.Log.d(TAG, "Recents overlay shown with ${recentTasks.size} tasks")
 
@@ -503,9 +377,7 @@ class ProxyHomeActivity : Activity() {
                     root.isFocusable = true
                     root.isFocusableInTouchMode = true
                     root.requestFocus()
-                    if (cardsContainer?.childCount ?: 0 > 0) {
-                        cardsContainer?.getChildAt(0)?.requestFocus()
-                    }
+                    focusRecentPosition(0)
                 }
             }
 
@@ -573,29 +445,30 @@ class ProxyHomeActivity : Activity() {
             .setDuration(300)
             .setInterpolator(DecelerateInterpolator())
             .withEndAction {
-                cardsContainer?.removeView(card)
-                
-                if (cardsContainer?.childCount == 0) {
-                    hideOverlayAndFinish()
+                val adapter = recentAdapter ?: return@withEndAction
+                val position = adapter.positionOf(taskId)
+                if (position >= 0) {
+                    adapter.removeAt(position)
+                }
+                if (adapter.itemCount == 0) {
+                    hideOverlay()
                 } else {
-                    val nextFocusable = cardsContainer?.focusedChild
-                    if (nextFocusable != null) {
-                        nextFocusable.requestFocus()
-                    } else if (cardsContainer?.childCount ?: 0 > 0) {
-                        cardsContainer?.getChildAt(0)?.requestFocus()
+                    recentGrid?.post {
+                        focusRecentPosition(position.coerceAtLeast(0)
+                            .coerceAtMost(adapter.itemCount - 1))
                     }
                 }
             }
     }
 
-    private fun hideOverlayAndFinish() {
+    private fun hideOverlay() {
         // Idempotent: a second BACK with no overlay must not touch tasks.
         if (overlayView == null && currentOverlay == null) {
             return
         }
         try {
-            overlayView?.let {
-                windowManager?.removeViewImmediate(it)
+            (overlayView ?: currentOverlay)?.let {
+                overlayWindowManager.removeViewImmediate(it)
             }
         } catch (e: Exception) {
             android.util.Log.e(TAG, "Failed to hide overlay", e)
@@ -603,10 +476,6 @@ class ProxyHomeActivity : Activity() {
         setOverlayView(null)
 
         GlobalHotkeyService.clearOverlayFlag()
-        // Finish instead of moveTaskToBack: this task is empty and
-        // translucent, moving it back lets the system fall through to the
-        // Main task (Catapult pops up). Finishing drops the empty task and
-        // reveals whoever was fronted above, Main stays buried.
         finish()
     }
 
@@ -617,20 +486,16 @@ class ProxyHomeActivity : Activity() {
         val centerX = screenWidth / 2f
         val centerY = screenHeight / 2f
         
-        val cc = cardsContainer!!
+        val cc = recentGrid ?: return
         val cardCount = cc.childCount
         
         if (cardCount == 0) {
-            hideOverlayAndFinish()
+            hideOverlay()
             return
         }
         
         // Get all task IDs and remove them via ActivityTaskManager
-        val taskIds = mutableListOf<Int>()
-        for (i in 0 until cc.childCount) {
-            val card = cc.getChildAt(i) as? View
-            card?.tag?.let { taskIds.add(it as Int) }
-        }
+        val taskIds = recentAdapter?.taskIds() ?: return
         
         for (taskId in taskIds) {
             try {
@@ -738,15 +603,23 @@ class ProxyHomeActivity : Activity() {
     private fun openHomeLauncher() {
         overlayView?.let {
             try {
-                windowManager?.removeViewImmediate(it)
+                overlayWindowManager.removeViewImmediate(it)
             } catch (e: Exception) {
                 // ignore
             }
         }
         setOverlayView(null)
         GlobalHotkeyService.clearOverlayFlag()
-        if (!launchExternalLauncherIfSet()) {
-            launchMainActivity()
+        // Whoever resolves as HOME (the launcher or a picked replacement)
+        // comes back; the overlay window is gone by now either way.
+        try {
+            val home = Intent(Intent.ACTION_MAIN).apply {
+                addCategory(Intent.CATEGORY_HOME)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            startActivity(home)
+        } catch (e: Exception) {
+            android.util.Log.w(TAG, "No home activity to start", e)
         }
     }
 
@@ -846,7 +719,7 @@ class ProxyHomeActivity : Activity() {
                     try {
                         val pkgName = taskInfo.baseActivity?.packageName ?: continue
                         if (excludeSelf && pkgName == myPackage) continue
-                        if (excludeExternal && pkgName == prefs.externalLauncherPkg) continue
+                        if (excludeExternal && pkgName == sharedPreferences.externalLauncherPkg) continue
                         
                         val taskId = taskInfo.id
                         if (taskId <= 0) continue
@@ -1008,7 +881,7 @@ class ProxyHomeActivity : Activity() {
                 
                 if (pkgName == null) continue
                 if (excludeSelf && pkgName == myPackage) continue
-                if (excludeExternal && pkgName == prefs.externalLauncherPkg) continue
+                if (excludeExternal && pkgName == sharedPreferences.externalLauncherPkg) continue
                 if (taskId <= 0) continue
                 
                 // Use three-layer fallback to resolve task title
@@ -1234,5 +1107,144 @@ class ProxyHomeActivity : Activity() {
         }
 
         return null
+    }
+
+    private fun focusRecentPosition(position: Int) {
+        val grid = recentGrid ?: return
+        val view = grid.findViewHolderForAdapterPosition(position)?.itemView
+            ?: grid.getChildAt(position)
+        view?.requestFocus()
+    }
+
+    private fun findRecentTask(taskId: Int): RecentTask? =
+        recentAdapter?.taskById(taskId)
+
+    private fun launchTask(taskId: Int) {
+        try {
+            val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            val options = ActivityOptions.makeBasic()
+            options.setPendingIntentBackgroundActivityStartMode(
+                ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
+            )
+            activityManager.moveTaskToFront(
+                taskId,
+                ActivityManager.MOVE_TASK_WITH_HOME,
+                options.toBundle()
+            )
+            root_post_hide()
+        } catch (e: Exception) {
+            android.util.Log.e(TAG, "Failed to move task to front", e)
+            try {
+                findRecentTask(taskId)?.baseIntent?.let { intent ->
+                    intent.addFlags(
+                        Intent.FLAG_ACTIVITY_NEW_TASK or
+                        Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED or
+                        Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY
+                    )
+                    startActivity(intent)
+                }
+            } catch (e2: Exception) {
+                android.util.Log.e(TAG, "Failed to start activity", e2)
+            }
+            hideOverlay()
+        }
+    }
+
+    private fun root_post_hide() {
+        recentGrid?.postDelayed({ hideOverlay() }, 200)
+            ?: hideOverlay()
+    }
+
+    private fun configureRecentCard(card: AppCard, task: RecentTask) {
+        val taskId = task.taskId
+        card.tag = taskId
+
+        val appInfoForCard = try {
+            if (packageManager.getApplicationInfo(task.packageName, 0) != null) {
+                val intent = packageManager.getLaunchIntentForPackage(task.packageName)
+                    ?: task.baseIntent
+                val resolveInfo = intent?.let {
+                    packageManager.resolveActivity(it, PackageManager.MATCH_DEFAULT_ONLY)
+                }
+                if (resolveInfo != null) LeanbackAppInfo(resolveInfo, card.context) else null
+            } else null
+        } catch (e: Exception) {
+            null
+        }
+        appInfoForCard?.let { card.setCardInfo(it) }
+
+        if (task.customIcon != null) {
+            card.setCustomIcon(task.customIcon)
+        }
+        if (!task.displayName.isNullOrEmpty()) {
+            card.setCustomTitle(task.displayName)
+        }
+
+        val density = resources.displayMetrics.density
+        val cardHeightPx = resources.displayMetrics.heightPixels *
+            sharedPreferences.recentAppsCardSize / 100f
+        card.setCardScale(cardHeightPx / (100f * density))
+
+        card.setPreview(if (sharedPreferences.recentAppsShowThumbnails) getTaskSnapshot(taskId) else null)
+
+        val descText = if (!task.taskLabel.isNullOrEmpty()) task.taskLabel else task.displayName
+        card.contentDescription = descText ?: ""
+    }
+
+    private inner class RecentCardsAdapter(
+        private val tasks: MutableList<RecentTask>,
+        private val themed: Context,
+    ) : RecyclerView.Adapter<RecentCardsAdapter.VH>() {
+
+        inner class VH(val card: AppCard) : RecyclerView.ViewHolder(card)
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+            val density = parent.resources.displayMetrics.density
+            val card = AppCard(themed).apply {
+                isFocusable = true
+                isClickable = true
+                isFocusableInTouchMode = true
+                clipChildren = false
+                clipToPadding = false
+                setPadding(
+                    (8 * density).toInt(), (16 * density).toInt(),
+                    (8 * density).toInt(), (16 * density).toInt()
+                )
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { marginEnd = (20 * density).toInt() }
+                setOnClickListener { launchTask(tag as Int) }
+                setOnKeyListener { v, keyCode, event ->
+                    if (keyCode == KeyEvent.KEYCODE_DPAD_UP && event.action == KeyEvent.ACTION_DOWN) {
+                        removeTaskWithAnimation(v, v.tag as Int)
+                        true
+                    } else {
+                        false
+                    }
+                }
+            }
+            return VH(card)
+        }
+
+        override fun onBindViewHolder(holder: VH, position: Int) {
+            val task = tasks[position]
+            if (holder.card.tag != task.taskId) {
+                configureRecentCard(holder.card, task)
+            }
+        }
+
+        override fun getItemCount(): Int = tasks.size
+
+        fun positionOf(taskId: Int): Int = tasks.indexOfFirst { it.taskId == taskId }
+
+        fun taskById(taskId: Int): RecentTask? = tasks.firstOrNull { it.taskId == taskId }
+
+        fun taskIds(): MutableList<Int> = tasks.mapTo(mutableListOf()) { it.taskId }
+
+        fun removeAt(position: Int) {
+            tasks.removeAt(position)
+            notifyItemRemoved(position)
+        }
     }
 }

@@ -47,7 +47,7 @@ class GlobalHotkeyService : Service() {
         // is zero, so a bare HOME press can never reach a subscriber. On top of
         // that PhoneWindowManager consumes HOME in
         // DisplayHomeButtonHandler.handleHomeButton() before the shortcut service
-        // stage is reached. Double-tap HOME is detected in ProxyHomeActivity
+        // stage is reached. Double-tap HOME is detected by the platform and delivered to MainActivity
         // instead, which is the registered HOME activity.
         private const val HOTKEY_KEYCODE_TAB = 61
         private const val HOTKEY_META_ALT = 2
@@ -116,17 +116,23 @@ class GlobalHotkeyService : Service() {
                 }
 
                 private fun handleAltTabKey() {
-                    Log.d(TAG, "Alt+Tab pressed!")
-
-                    if (overlayShown) {
-                        overlayShown = false
-                    } else {
-                        overlayShown = true
-                        val intent = Intent(this@GlobalHotkeyService, ProxyHomeActivity::class.java).apply {
-                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        }
-                        startActivity(intent)
+                    // The platform fires this callback for both phases of the
+                    // press: handleShortcutService() in AppLaunchShortcutManager
+                    // filters on the modifier state only, so releasing Tab while
+                    // Alt is still held matches the shortcut code once more.
+                    // Alt+Tab therefore only opens: the repeat delivery sees the
+                    // menu already up and does nothing. Closing stays BACK and
+                    // double HOME, which deliver exactly one request.
+                    if (RecentsActivity.isShowing()) {
+                        return
                     }
+                    val intent = Intent(this@GlobalHotkeyService, RecentsActivity::class.java).apply {
+                        addFlags(
+                            Intent.FLAG_ACTIVITY_NEW_TASK or
+                            Intent.FLAG_ACTIVITY_SINGLE_TOP
+                        )
+                    }
+                    startActivity(intent)
                 }
             }
 
