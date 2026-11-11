@@ -25,6 +25,8 @@ class DropShadowDrawable(context: Context) : Drawable() {
         color = Color.TRANSPARENT
     }
     private var shadowBitmap: Bitmap? = null
+    private var shadowWidth = 0
+    private var shadowHeight = 0
 
     override fun getPadding(padding: Rect): Boolean {
         padding.set(shadowPadding, shadowPadding, shadowPadding, shadowPadding)
@@ -43,9 +45,20 @@ class DropShadowDrawable(context: Context) : Drawable() {
         val width = bounds.width()
         val height = bounds.height()
         if (width <= 0 || height <= 0) {
+            shadowBitmap?.recycle()
             shadowBitmap = null
+            shadowWidth = 0
+            shadowHeight = 0
             return
         }
+        // Bounds change on every measure pass; rebuilding the shadow bitmap each
+        // time while the old one waits for the GC is what took the launcher down
+        // with an OutOfMemoryError in the recents overlay. Reuse while the size
+        // is unchanged, recycle on rebuild.
+        if (width == shadowWidth && height == shadowHeight && shadowBitmap != null) {
+            return
+        }
+        shadowBitmap?.recycle()
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         canvas.drawRoundRect(
@@ -58,6 +71,8 @@ class DropShadowDrawable(context: Context) : Drawable() {
             paint
         )
         shadowBitmap = bitmap
+        shadowWidth = width
+        shadowHeight = height
     }
 
     override fun draw(canvas: Canvas) {
