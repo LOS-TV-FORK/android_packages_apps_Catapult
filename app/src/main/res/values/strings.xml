@@ -69,6 +69,15 @@
     <string name="watch_next_cards_size">Channel cards size</string>
     <string name="card_size_percent">%d%%</string>
     <string name="all_apps_grid_view">All apps grid view</string>
+    <string name="background_perf_title">Animation performance</string>
+    <string name="background_auto_perf">Adaptive performance</string>
+    <string name="background_auto_perf_t0">Full effects: GPU blur, smooth Ken Burns</string>
+    <string name="background_auto_perf_t1">Balanced: Ken Burns at 20 fps</string>
+    <string name="background_auto_perf_t2">Light: blur moved to CPU</string>
+    <string name="background_auto_perf_t3">Minimal: Ken Burns off, blur kept</string>
+    <string name="background_blur_prebaked">Pre-bake blur (CPU, saves GPU)</string>
+    <string name="background_kb_low_fps">Ken Burns at 20 fps</string>
+    <string name="background_kb_pause">Pause Ken Burns during background transitions</string>
     <string name="all_apps_grid_columns">Grid columns</string>
     <string name="card_corner_radius">Card corner radius</string>
     <string name="top_bar">Top bar</string>

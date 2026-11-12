@@ -3,12 +3,19 @@
      SPDX-FileCopyrightText: 2025 The LineageOS Project
      SPDX-License-Identifier: Apache-2.0
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<org.lineageos.tv.launcher.view.FocusScrollingScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="350dp"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
-    android:orientation="vertical">
+    android:fillViewport="true"
+    android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:orientation="vertical"
+        android:paddingBottom="16dp">
 
     <TextView
         style="@style/SideActivityHeaderStyle"
@@ -36,6 +43,7 @@
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
+            style="@style/Widget.Catapult.SettingsRadio"
                     android:id="@+id/background_default"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -45,6 +53,7 @@
                     android:textAppearance="?attr/textAppearanceBodyLarge" />
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
+            style="@style/Widget.Catapult.SettingsRadio"
                     android:id="@+id/background_image"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -54,6 +63,7 @@
                     android:textAppearance="?attr/textAppearanceBodyLarge" />
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
+            style="@style/Widget.Catapult.SettingsRadio"
                     android:id="@+id/background_dynamic"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -91,6 +101,7 @@
                 android:textAppearance="?attr/textAppearanceBodyLarge" />
 
             <com.google.android.material.slider.Slider
+            style="@style/Widget.Catapult.SettingsSlider"
                 android:id="@+id/background_blur_slider"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -112,6 +123,73 @@
 
     </org.lineageos.tv.launcher.view.FocusHighlightCardView>
 
+    <org.lineageos.tv.launcher.view.FocusHighlightCardView
+        android:id="@+id/perf_section"
+        style="@style/Widget.Material3.CardView.Outlined"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:cardElevation="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/background_perf_title"
+                android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+            style="@style/Widget.Catapult.SettingsSwitch"
+                android:id="@+id/auto_perf_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/background_auto_perf" />
+
+            <TextView
+                android:id="@+id/auto_perf_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorPrimary"
+                android:visibility="gone" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+            style="@style/Widget.Catapult.SettingsSwitch"
+                android:id="@+id/prebake_blur_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/background_blur_prebaked" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+            style="@style/Widget.Catapult.SettingsSwitch"
+                android:id="@+id/kb_low_fps_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/background_kb_low_fps" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+            style="@style/Widget.Catapult.SettingsSwitch"
+                android:id="@+id/kb_pause_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/background_kb_pause" />
+
+        </LinearLayout>
+
+    </org.lineageos.tv.launcher.view.FocusHighlightCardView>
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/select_image_button"
         style="@style/Widget.Material3.Button.TonalButton"
@@ -122,4 +200,6 @@
         android:text="@string/select_image"
         android:visibility="gone" />
 
-</LinearLayout>
+    </LinearLayout>
+
+</org.lineageos.tv.launcher.view.FocusScrollingScrollView>

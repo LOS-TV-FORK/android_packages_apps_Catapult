@@ -18,6 +18,22 @@
         <item name="android:layout_marginTop">4dp</item>
     </style>
 
+    <style name="Widget.Catapult.SettingsSwitch" parent="Widget.Material3.CompoundButton.MaterialSwitch">
+        <item name="android:background">@drawable/settings_item_focus</item>
+        <item name="android:paddingHorizontal">12dp</item>
+        <item name="android:paddingVertical">6dp</item>
+    </style>
+
+    <style name="Widget.Catapult.SettingsRadio" parent="Widget.Material3.CompoundButton.RadioButton">
+        <item name="android:background">@drawable/settings_item_focus</item>
+    </style>
+
+    <style name="Widget.Catapult.SettingsSlider" parent="Widget.Material3.Slider">
+        <item name="android:background">@drawable/settings_item_focus</item>
+        <item name="android:paddingHorizontal">12dp</item>
+        <item name="android:paddingVertical">6dp</item>
+    </style>
+
     <style name="SideActivityHeaderStyle" parent="TextAppearance.Material3.HeadlineMedium">
         <item name="android:layout_marginTop">60dp</item>
         <item name="android:layout_marginBottom">24dp</item>

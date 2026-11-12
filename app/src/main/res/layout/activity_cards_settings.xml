@@ -42,6 +42,7 @@
                     android:textAppearance="?attr/textAppearanceBodyLarge" />
 
                 <com.google.android.material.materialswitch.MaterialSwitch
+            style="@style/Widget.Catapult.SettingsSwitch"
                     android:id="@+id/all_apps_grid_switch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -79,6 +80,7 @@
                         android:textAppearance="?attr/textAppearanceBodyLarge" />
 
                     <com.google.android.material.slider.Slider
+            style="@style/Widget.Catapult.SettingsSlider"
                         android:id="@+id/grid_columns_slider"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -124,6 +126,7 @@
                     android:textAppearance="?attr/textAppearanceBodyLarge" />
 
                 <com.google.android.material.slider.Slider
+            style="@style/Widget.Catapult.SettingsSlider"
                     android:id="@+id/app_card_size_slider"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -166,6 +169,7 @@
                     android:textAppearance="?attr/textAppearanceBodyLarge" />
 
                 <com.google.android.material.slider.Slider
+            style="@style/Widget.Catapult.SettingsSlider"
                     android:id="@+id/favorite_card_size_slider"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -208,6 +212,7 @@
                     android:textAppearance="?attr/textAppearanceBodyLarge" />
 
                 <com.google.android.material.slider.Slider
+            style="@style/Widget.Catapult.SettingsSlider"
                     android:id="@+id/watch_next_card_size_slider"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -250,6 +255,7 @@
                     android:textAppearance="?attr/textAppearanceBodyLarge" />
 
                 <com.google.android.material.slider.Slider
+            style="@style/Widget.Catapult.SettingsSlider"
                     android:id="@+id/card_corner_radius_slider"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

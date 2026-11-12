@@ -72,6 +72,11 @@ import org.lineageos.tv.launcher.ext.roleCanBeRequested
 import org.lineageos.tv.launcher.ext.backgroundType
 import org.lineageos.tv.launcher.ext.backgroundColor
 import org.lineageos.tv.launcher.ext.backgroundBlur
+import org.lineageos.tv.launcher.ext.backgroundBlurPrebaked
+import org.lineageos.tv.launcher.ext.backgroundAutoPerf
+import org.lineageos.tv.launcher.ext.backgroundAutoTier
+import org.lineageos.tv.launcher.ext.backgroundKbLowFps
+import org.lineageos.tv.launcher.ext.backgroundKbPause
 import org.lineageos.tv.launcher.ext.backgroundImageUri
 import org.lineageos.tv.launcher.ext.BACKGROUND_BLUR_KEY
 import org.lineageos.tv.launcher.ext.BACKGROUND_IMAGE_URI_KEY
@@ -216,6 +221,20 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             it.setBlurRadius(sharedPreferences.backgroundBlur.toFloat())
             it.setAppCardPool(::collectAppIconDrawables)
         }
+    }
+
+    private fun applyBackgroundPerfPreferences() {
+        dynamicBackground.setBlurRadius(sharedPreferences.backgroundBlur.toFloat())
+        dynamicBackground.setPreBakedBlur(sharedPreferences.backgroundBlurPrebaked)
+        dynamicBackground.setAutoTierListener { tier ->
+            sharedPreferences.backgroundAutoTier = tier
+        }
+        dynamicBackground.setAutoPerf(
+            sharedPreferences.backgroundAutoPerf,
+            sharedPreferences.backgroundAutoTier
+        )
+        dynamicBackground.setLowFpsMode(sharedPreferences.backgroundKbLowFps)
+        dynamicBackground.setPauseDuringTransitions(sharedPreferences.backgroundKbPause)
     }
 
     private fun collectAppIconDrawables(): List<Pair<String, Drawable>> {
@@ -722,6 +741,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         activityStopped = false
         lastResumedTime = System.currentTimeMillis()
         applyBackground()
+        applyBackgroundPerfPreferences()
         applyTopBarPreferences()
         showTopBar()
         checkCardSizeChanges()

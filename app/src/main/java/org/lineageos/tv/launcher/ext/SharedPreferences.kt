@@ -119,9 +119,49 @@ var SharedPreferences.backgroundImageUri: String?
 const val BACKGROUND_BLUR_KEY = "background_blur"
 
 var SharedPreferences.backgroundBlur: Int
-    get() = getInt(BACKGROUND_BLUR_KEY, 14)
+    get() = getInt(BACKGROUND_BLUR_KEY, 7)
     set(value) = edit {
         putInt(BACKGROUND_BLUR_KEY, value.coerceIn(0, 30))
+    }
+
+const val BACKGROUND_AUTO_PERF_KEY = "background_auto_perf"
+
+var SharedPreferences.backgroundAutoPerf: Boolean
+    get() = getBoolean(BACKGROUND_AUTO_PERF_KEY, true)
+    set(value) = edit {
+        putBoolean(BACKGROUND_AUTO_PERF_KEY, value)
+    }
+
+const val BACKGROUND_AUTO_TIER_KEY = "background_auto_tier"
+
+var SharedPreferences.backgroundAutoTier: Int
+    get() = getInt(BACKGROUND_AUTO_TIER_KEY, 0)
+    set(value) = edit {
+        putInt(BACKGROUND_AUTO_TIER_KEY, value.coerceIn(0, 3))
+    }
+
+const val BACKGROUND_KB_LOW_FPS_KEY = "background_kb_low_fps"
+
+var SharedPreferences.backgroundKbLowFps: Boolean
+    get() = getBoolean(BACKGROUND_KB_LOW_FPS_KEY, false)
+    set(value) = edit {
+        putBoolean(BACKGROUND_KB_LOW_FPS_KEY, value)
+    }
+
+const val BACKGROUND_KB_PAUSE_KEY = "background_kb_pause"
+
+var SharedPreferences.backgroundKbPause: Boolean
+    get() = getBoolean(BACKGROUND_KB_PAUSE_KEY, false)
+    set(value) = edit {
+        putBoolean(BACKGROUND_KB_PAUSE_KEY, value)
+    }
+
+const val BACKGROUND_BLUR_PREBAKED_KEY = "background_blur_prebaked"
+
+var SharedPreferences.backgroundBlurPrebaked: Boolean
+    get() = getBoolean(BACKGROUND_BLUR_PREBAKED_KEY, false)
+    set(value) = edit {
+        putBoolean(BACKGROUND_BLUR_PREBAKED_KEY, value)
     }
 
 const val APP_CARD_SIZE_KEY = "app_card_size"

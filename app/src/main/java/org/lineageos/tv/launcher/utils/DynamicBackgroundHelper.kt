@@ -5,8 +5,6 @@
 
 package org.lineageos.tv.launcher.utils
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.graphics.Bitmap
 import android.graphics.BitmapShader
@@ -17,15 +15,16 @@ import android.graphics.LinearGradient
 import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.graphics.RadialGradient
-import android.graphics.RenderEffect
 import android.graphics.Shader
 import android.graphics.Rect
+import android.graphics.RenderEffect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.SystemClock
 import android.os.Looper
+import android.view.Choreographer
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.FrameLayout
@@ -56,6 +55,9 @@ class DynamicBackgroundHelper(
         const val RETRY_MS = 500L
         const val MAX_SWAP_RETRIES = 12
         const val KEN_BURNS_MS = 22000L
+        const val LOW_FPS_STEP_MS = 50L
+        const val AUTO_INTERVAL_MS = 15000L
+        const val FPS_WINDOW_MS = 1000L
         const val SCALE_FROM = 1.05f
         const val SCALE_TO = 1.14f
         const val PAN_FRACTION = 0.02f
@@ -74,10 +76,24 @@ class DynamicBackgroundHelper(
     private var pendingColorMode = false
     private var debounceRunnable: Runnable? = null
     private var lastRequestTime = 0L
-    private var kenBurns: AnimatorSet? = null
     private var blurRadiusDp = 14f
     private var blurEffect: RenderEffect? = null
+    private var preBakedBlur = false
+    private var preBakedActive = false
     private var visible = false
+    private var kbPaused = false
+    private var kbPhaseMs = 0L
+    private var kenBurnsActive = false
+    private var kenBurnsEnabled = true
+    private var lowFpsManual = false
+    private var pauseManual = false
+    private var lowFpsActive = false
+    private var pauseKbDuringTransitions = false
+    private var autoPerf = false
+    private var autoTier = 0
+    private var goodWindows = 0
+    private var fpsFrames = 0
+    private var fpsStart = 0L
     private var poolProvider: () -> List<Pair<String, Drawable>> = { emptyList() }
     private val dominantCache = LinkedHashMap<String, Int>()
     private var previousFocusKey: String? = null
@@ -109,20 +125,194 @@ class DynamicBackgroundHelper(
         }
         gradientAnimator = animator
         animator.start()
+        pauseKbForTransition()
     }
 
     fun setBlurRadius(dp: Float) {
         blurRadiusDp = dp.coerceIn(0f, 30f)
-        val effect = if (blurRadiusDp > 0f) {
-            RenderEffect.createBlurEffect(
-                blurRadiusDp * density, blurRadiusDp * density, Shader.TileMode.CLAMP
-            )
+        recomputeBlurEffect()
+    }
+
+    // CPU pre-baked Gaussian instead of the live RenderEffect: same kernel,
+    // applied to the 256px artwork once, radius converted for the upscale.
+    fun setPreBakedBlur(enabled: Boolean) {
+        if (preBakedBlur == enabled) return
+        preBakedBlur = enabled
+        if (!autoPerf) applyPerfState()
+    }
+
+    private fun recomputeBlurEffect() {
+        val dp = if (preBakedActive) 0f else blurRadiusDp
+        blurEffect = if (dp > 0f) {
+            RenderEffect.createBlurEffect(dp * density, dp * density, Shader.TileMode.CLAMP)
         } else null
-        blurEffect = effect
         pool.forEach { view ->
             view.setRenderEffect(
-                if (view.drawable is GradientPaletteDrawable) null else effect
+                if (view.drawable is GradientPaletteDrawable) null else blurEffect
             )
+        }
+    }
+
+    private fun preBlurIfNeeded(src: Bitmap): Bitmap {
+        if (!preBakedActive || blurRadiusDp <= 0f) return src
+        val viewW = container.width.takeIf { it > 0 } ?: return src
+        // RenderEffect radius R behaves as sigma = R/2 in Skia; the box-3 core
+        // lands at sigma ~ r, so take half the small-radius to match it.
+        val radiusSmall = blurRadiusDp * density * src.width.toFloat() / viewW / 2f
+        return gaussianBlur(src, radiusSmall)
+    }
+
+    // Three separable box-blur iterations approximate a Gaussian closely
+    // (the same math GPU blur stacks use); O(n) via running sums.
+    private fun gaussianBlur(src: Bitmap, radiusPx: Float): Bitmap {
+        val r = Math.round(radiusPx)
+        if (r < 1) return src
+        val w = src.width
+        val h = src.height
+        val px = IntArray(w * h)
+        src.getPixels(px, 0, w, 0, 0, w, h)
+        repeat(3) {
+            boxPass(px, w, h, r, horizontal = true)
+            boxPass(px, w, h, r, horizontal = false)
+        }
+        return Bitmap.createBitmap(px, w, h, Bitmap.Config.ARGB_8888)
+    }
+
+    private fun boxPass(px: IntArray, w: Int, h: Int, r: Int, horizontal: Boolean) {
+        val len = if (horizontal) w else h
+        val outer = if (horizontal) h else w
+        val tmp = IntArray(len)
+        val window = 2 * r + 1
+        for (o in 0 until outer) {
+            var sA = 0
+            var sR = 0
+            var sG = 0
+            var sB = 0
+            // Edge replication matches TileMode.CLAMP of the live blur.
+            fun get(i: Int): Int {
+                val j = i.coerceIn(0, len - 1)
+                return if (horizontal) px[o * w + j] else px[j * w + o]
+            }
+            for (i in -r..r) {
+                val p = get(i)
+                sA += p ushr 24
+                sR += p shr 16 and 255
+                sG += p shr 8 and 255
+                sB += p and 255
+            }
+            for (i in 0 until len) {
+                tmp[i] = (sA / window shl 24) or
+                    (sR / window shl 16) or
+                    (sG / window shl 8) or
+                    (sB / window)
+                val add = get(i + r + 1)
+                val sub = get(i - r)
+                sA += (add ushr 24) - (sub ushr 24)
+                sR += (add shr 16 and 255) - (sub shr 16 and 255)
+                sG += (add shr 8 and 255) - (sub shr 8 and 255)
+                sB += (add and 255) - (sub and 255)
+            }
+            for (i in 0 until len) {
+                px[if (horizontal) o * w + i else i * w + o] = tmp[i]
+            }
+        }
+    }
+
+    // Manual toggles; while auto mode runs they are ignored.
+    fun setLowFpsMode(enabled: Boolean) {
+        lowFpsManual = enabled
+        if (!autoPerf) applyPerfState()
+    }
+
+    fun setPauseDuringTransitions(enabled: Boolean) {
+        pauseManual = enabled
+        if (!autoPerf) applyPerfState()
+    }
+
+    // Adaptive performance: a 1s frame window every 15s (near-free) decides
+    // whether to simplify the effect stack step by step or restore a step.
+    // The learned tier survives restarts; re-enabling auto starts from 0 again.
+    fun setAutoPerf(enabled: Boolean, learnedTier: Int = 0) {
+        if (autoPerf == enabled) return
+        autoPerf = enabled
+        if (enabled) {
+            autoTier = learnedTier.coerceIn(0, 3)
+            goodWindows = 0
+            scheduleAutoWindow()
+        } else {
+            autoTier = 0
+            handler.removeCallbacks(autoScheduleRunnable)
+        }
+        applyPerfState()
+    }
+
+    private var autoTierListener: ((Int) -> Unit)? = null
+
+    fun setAutoTierListener(listener: (Int) -> Unit) {
+        autoTierListener = listener
+    }
+
+    private fun applyPerfState() {
+        lowFpsActive = if (autoPerf) autoTier >= 1 else lowFpsManual
+        pauseKbDuringTransitions = if (autoPerf) true else pauseManual
+        preBakedActive = if (autoPerf) autoTier >= 2 else preBakedBlur
+        val enabled = if (autoPerf) autoTier < 3 else true
+        recomputeBlurEffect()
+        if (kenBurnsEnabled != enabled) {
+            kenBurnsEnabled = enabled
+            if (enabled) {
+                if (visible) startKenBurns()
+            } else {
+                stopKenBurns()
+            }
+        }
+    }
+
+    private val autoScheduleRunnable = Runnable { measureFpsWindow() }
+
+    private fun scheduleAutoWindow() {
+        handler.removeCallbacks(autoScheduleRunnable)
+        handler.postDelayed(autoScheduleRunnable, AUTO_INTERVAL_MS)
+    }
+
+    private fun measureFpsWindow() {
+        if (!autoPerf || !visible) return
+        fpsFrames = 0
+        fpsStart = SystemClock.elapsedRealtime()
+        Choreographer.getInstance().postFrameCallback(fpsCallback)
+    }
+
+    private val fpsCallback = object : Choreographer.FrameCallback {
+        override fun doFrame(frameTimeNanos: Long) {
+            if (!autoPerf) return
+            fpsFrames++
+            val now = SystemClock.elapsedRealtime()
+            if (now - fpsStart < FPS_WINDOW_MS) {
+                Choreographer.getInstance().postFrameCallback(this)
+            } else {
+                val fps = fpsFrames * 1000f / (now - fpsStart).coerceAtLeast(1L)
+                if (fps < 45f) {
+                    goodWindows = 0
+                    if (autoTier < 3) {
+                        autoTier++
+                        android.util.Log.d("DynamicBG", "auto-perf downgrade fps=$fps tier=$autoTier")
+                        applyPerfState()
+                        autoTierListener?.invoke(autoTier)
+                    }
+                } else if (fps >= 55f) {
+                    goodWindows++
+                    if (goodWindows >= 3 && autoTier > 0) {
+                        autoTier--
+                        goodWindows = 0
+                        android.util.Log.d("DynamicBG", "auto-perf upgrade tier=$autoTier")
+                        applyPerfState()
+                        autoTierListener?.invoke(autoTier)
+                    }
+                } else {
+                    goodWindows = 0
+                }
+                scheduleAutoWindow()
+            }
         }
     }
 
@@ -143,14 +333,13 @@ class DynamicBackgroundHelper(
     }
 
     fun pause() {
-        kenBurns?.pause()
+        kbPaused = true
     }
 
     fun resume() {
-        if (visible && kenBurns == null) {
+        kbPaused = false
+        if (visible && !kenBurnsActive) {
             startKenBurns()
-        } else {
-            kenBurns?.resume()
         }
     }
 
@@ -300,7 +489,8 @@ class DynamicBackgroundHelper(
             retrySwap()
             return
         }
-        present(UpscaleDrawable(bitmap), bitmap, key)
+        val artworkBitmap = preBlurIfNeeded(bitmap)
+        present(UpscaleDrawable(artworkBitmap), bitmap, key)
     }
 
     private fun present(artwork: Drawable, tint: Bitmap?, key: String) {
@@ -329,6 +519,7 @@ class DynamicBackgroundHelper(
             .setInterpolator(AccelerateDecelerateInterpolator()).start()
         currentKey = key
         onImage?.invoke(tint)
+        pauseKbForTransition()
     }
 
     private fun retrySwap() {
@@ -464,9 +655,37 @@ class DynamicBackgroundHelper(
         return true
     }
 
+    // Manual Ken Burns stepper instead of an infinite AnimatorSet: one cheap
+    // Runnable drives scale/pan. At 20 fps the transform updates are four
+    // times rarer, and GPU work only happens when the matrix actually moves.
+    private val kenBurnsTick = object : Runnable {
+        override fun run() {
+            val step = if (lowFpsActive) LOW_FPS_STEP_MS else 16L
+            if (!kbPaused && kenBurnsEnabled) {
+                kbPhaseMs += step
+                applyKenBurnsFrame()
+            }
+            handler.postDelayed(this, step)
+        }
+    }
+
+    private fun applyKenBurnsFrame() {
+        val w = layer.width.toFloat()
+        val h = layer.height.toFloat()
+        if (w <= 0f || h <= 0f) return
+        val cycle = KEN_BURNS_MS * 2
+        val el = kbPhaseMs % cycle
+        val t = (if (el < KEN_BURNS_MS) el else cycle - el).toFloat() / KEN_BURNS_MS
+        val interp = AccelerateDecelerateInterpolator().getInterpolation(t)
+        val scale = SCALE_FROM + (SCALE_TO - SCALE_FROM) * interp
+        layer.scaleX = scale
+        layer.scaleY = scale
+        layer.translationX = (interp * 2f - 1f) * w * PAN_FRACTION
+        layer.translationY = (interp * 2f - 1f) * h * PAN_FRACTION
+    }
+
     private fun startKenBurns() {
-        if (kenBurns?.isRunning == true) return
-        stopKenBurns()
+        if (!kenBurnsEnabled || kenBurnsActive) return
         val w = layer.width.toFloat()
         val h = layer.height.toFloat()
         if (w <= 0f || h <= 0f) {
@@ -475,35 +694,24 @@ class DynamicBackgroundHelper(
         }
         layer.pivotX = w / 2f
         layer.pivotY = h / 2f
-        val panX = w * PAN_FRACTION
-        val panY = h * PAN_FRACTION
-        // The scale baseline is > 1 so the pan never exposes an empty edge.
-        val set = AnimatorSet().apply {
-            playTogether(
-                ObjectAnimator.ofFloat(layer, View.SCALE_X, SCALE_FROM, SCALE_TO),
-                ObjectAnimator.ofFloat(layer, View.SCALE_Y, SCALE_FROM, SCALE_TO),
-                ObjectAnimator.ofFloat(layer, View.TRANSLATION_X, -panX, panX),
-                ObjectAnimator.ofFloat(layer, View.TRANSLATION_Y, -panY, panY)
-            )
-            // AnimatorSet has no repeat support; repeat must be set on each child.
-            childAnimations.forEach { animator ->
-                animator.duration = KEN_BURNS_MS
-                (animator as ValueAnimator).repeatMode = ValueAnimator.REVERSE
-                animator.repeatCount = ValueAnimator.INFINITE
-                animator.interpolator = AccelerateDecelerateInterpolator()
-            }
-        }
-        kenBurns = set
-        set.start()
+        kenBurnsActive = true
+        handler.postDelayed(kenBurnsTick, if (lowFpsActive) LOW_FPS_STEP_MS else 16L)
     }
 
     private fun stopKenBurns() {
-        kenBurns?.cancel()
-        kenBurns = null
+        kenBurnsActive = false
+        handler.removeCallbacks(kenBurnsTick)
+        kbPhaseMs = 0L
         layer.scaleX = SCALE_FROM
         layer.scaleY = SCALE_FROM
         layer.translationX = 0f
         layer.translationY = 0f
+    }
+
+    private fun pauseKbForTransition() {
+        if (!pauseKbDuringTransitions || !kenBurnsEnabled) return
+        kbPaused = true
+        handler.postDelayed({ kbPaused = false }, CROSSFADE_MS + 300L)
     }
 }
 
