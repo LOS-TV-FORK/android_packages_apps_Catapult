@@ -24,6 +24,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Handler
+import android.os.SystemClock
 import android.os.Looper
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -50,6 +51,7 @@ class DynamicBackgroundHelper(
         // blur radius stays small and cheap on TV boxes of any screen resolution.
         const val TARGET_LONG_SIDE = 256f
         const val DEBOUNCE_MS = 300L
+        const val CALM_MS = 600L
         const val CROSSFADE_MS = 1400L
         const val RETRY_MS = 500L
         const val MAX_SWAP_RETRIES = 12
@@ -71,6 +73,7 @@ class DynamicBackgroundHelper(
     private var swapRetries = 0
     private var pendingColorMode = false
     private var debounceRunnable: Runnable? = null
+    private var lastRequestTime = 0L
     private var kenBurns: AnimatorSet? = null
     private var blurRadiusDp = 14f
     private var blurEffect: RenderEffect? = null
@@ -176,7 +179,13 @@ class DynamicBackgroundHelper(
         debounceRunnable?.let { handler.removeCallbacks(it) }
         val runnable = Runnable { swap() }
         debounceRunnable = runnable
-        handler.postDelayed(runnable, DEBOUNCE_MS)
+        // After a calm period start instantly; debounce only while the user
+        // is flicking through cards in quick succession.
+        val now = SystemClock.elapsedRealtime()
+        val sinceLast = now - lastRequestTime
+        lastRequestTime = now
+        val delay = if (sinceLast > CALM_MS) 0L else DEBOUNCE_MS
+        handler.postDelayed(runnable, delay)
     }
 
     fun release() {
