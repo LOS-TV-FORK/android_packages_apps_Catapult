@@ -830,6 +830,16 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private fun setupVpnButton() {
         vpnButton.setOnClickListener { launchVpn() }
+        // Long press: forget the remembered VPN client and re-open the chooser.
+        vpnButton.setOnLongClickListener {
+            sharedPreferences.edit().remove(VPN_PACKAGE_KEY).apply()
+            if (vpnClientPackages().size > 1) {
+                showVpnChooser(vpnClientPackages())
+            } else {
+                launchVpn()
+            }
+            true
+        }
 
         // Idempotent: never stack duplicate callbacks if called again.
         vpnNetworkCallback?.let {
