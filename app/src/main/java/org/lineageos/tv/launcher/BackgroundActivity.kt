@@ -117,7 +117,7 @@ class BackgroundActivity : ModalActivity(R.layout.activity_background) {
         kbPauseSwitch?.isChecked = prefs.backgroundKbPause
         prebakeSwitch?.isChecked = prefs.backgroundBlurPrebaked
         applyManualAvailability(
-            prefs.backgroundAutoPerf, blurSlider, blurValue, kbLowFpsSwitch, kbPauseSwitch,
+            prefs.backgroundAutoPerf, kbLowFpsSwitch, kbPauseSwitch,
             prebakeSwitch, autoPerfState
         )
 
@@ -130,7 +130,7 @@ class BackgroundActivity : ModalActivity(R.layout.activity_background) {
                 autoPerfState?.text = getString(R.string.background_auto_perf_t0)
             }
             applyManualAvailability(
-                isChecked, blurSlider, blurValue, kbLowFpsSwitch, kbPauseSwitch,
+                isChecked, kbLowFpsSwitch, kbPauseSwitch,
                 prebakeSwitch, autoPerfState
             )
         }
@@ -175,20 +175,16 @@ class BackgroundActivity : ModalActivity(R.layout.activity_background) {
         }
     }
 
-    // Auto mode owns blur and the Ken Burns toggles: manual controls go dead.
+    // Auto mode owns the Ken Burns toggles and blur source; the blur strength
+    // slider stays adjustable.
     private fun applyManualAvailability(
         auto: Boolean,
-        blurSlider: com.google.android.material.slider.Slider?,
-        blurValue: TextView?,
         kbLowFpsSwitch: com.google.android.material.materialswitch.MaterialSwitch?,
         kbPauseSwitch: com.google.android.material.materialswitch.MaterialSwitch?,
         prebakeSwitch: com.google.android.material.materialswitch.MaterialSwitch?,
         autoPerfState: TextView?
     ) {
         val alpha = if (auto) 0.4f else 1f
-        blurSlider?.isEnabled = !auto
-        blurSlider?.alpha = alpha
-        blurValue?.alpha = alpha
         kbLowFpsSwitch?.isEnabled = !auto
         kbLowFpsSwitch?.alpha = alpha
         kbPauseSwitch?.isEnabled = !auto

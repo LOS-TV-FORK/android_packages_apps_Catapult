@@ -95,7 +95,7 @@ var SharedPreferences.homeRoleRequestDialogDismissed: Boolean
 const val BACKGROUND_TYPE_KEY = "background_type"
 
 var SharedPreferences.backgroundType: Int
-    get() = getInt(BACKGROUND_TYPE_KEY, 0)
+    get() = getInt(BACKGROUND_TYPE_KEY, 3)
     set(value) = edit {
         putInt(BACKGROUND_TYPE_KEY, value)
     }
@@ -279,7 +279,7 @@ var SharedPreferences.recentAppsCardSize: Int
 const val RECENT_APPS_SHOW_THUMBNAILS_KEY = "recent_apps_show_thumbnails"
 
 var SharedPreferences.recentAppsShowThumbnails: Boolean
-    get() = getBoolean(RECENT_APPS_SHOW_THUMBNAILS_KEY, false)
+    get() = getBoolean(RECENT_APPS_SHOW_THUMBNAILS_KEY, true)
     set(value) = edit {
         putBoolean(RECENT_APPS_SHOW_THUMBNAILS_KEY, value)
     }
