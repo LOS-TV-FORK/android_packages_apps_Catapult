@@ -11,12 +11,15 @@ import android.app.role.RoleManager
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
+import android.animation.ObjectAnimator
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.net.ConnectivityManager
 import android.net.Network
@@ -34,6 +37,7 @@ import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewTreeObserver
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -67,7 +71,9 @@ import org.lineageos.tv.launcher.ext.homeRoleRequestDialogDismissed
 import org.lineageos.tv.launcher.ext.roleCanBeRequested
 import org.lineageos.tv.launcher.ext.backgroundType
 import org.lineageos.tv.launcher.ext.backgroundColor
+import org.lineageos.tv.launcher.ext.backgroundBlur
 import org.lineageos.tv.launcher.ext.backgroundImageUri
+import org.lineageos.tv.launcher.ext.BACKGROUND_BLUR_KEY
 import org.lineageos.tv.launcher.ext.BACKGROUND_IMAGE_URI_KEY
 import org.lineageos.tv.launcher.ext.BACKGROUND_TYPE_KEY
 import org.lineageos.tv.launcher.ext.allAppsGrid
@@ -103,6 +109,7 @@ import org.lineageos.tv.launcher.view.Card
 import org.lineageos.tv.launcher.notification.NotificationUtils
 import org.lineageos.tv.launcher.notification.ServiceConnectionState
 import org.lineageos.tv.launcher.utils.AppManager
+import org.lineageos.tv.launcher.utils.DynamicBackgroundHelper
 import org.lineageos.tv.launcher.utils.PermissionsGatedCallback
 import org.lineageos.tv.launcher.viewmodels.LauncherViewModel
 import org.lineageos.tv.launcher.viewmodels.NotificationViewModel
@@ -117,6 +124,7 @@ import android.util.TypedValue
 import android.view.ContextThemeWrapper
 import android.view.ViewConfiguration
 import android.view.WindowManager
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationSet
@@ -192,6 +200,79 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private val mainVerticalGridView by lazy { findViewById<MainVerticalGridView>(R.id.main_vertical_grid)!! }
     private val voiceAssistantButton by lazy { findViewById<ImageButton>(R.id.voice_assistant)!! }
 
+    private val dynamicBackgroundContainer by lazy {
+        findViewById<FrameLayout>(R.id.dynamicBackgroundContainer)!!
+    }
+    private val dynamicBackground by lazy {
+        DynamicBackgroundHelper(
+            dynamicBackgroundContainer,
+            findViewById(R.id.dynamicBackgroundLayer),
+            findViewById(R.id.dynamicBgA),
+            findViewById(R.id.dynamicBgB),
+            findViewById(R.id.dynamicBgC),
+            resources.displayMetrics.density,
+            ::applyPillTint
+        ).also {
+            it.setBlurRadius(sharedPreferences.backgroundBlur.toFloat())
+            it.setAppCardPool(::collectAppIconDrawables)
+        }
+    }
+
+    private fun collectAppIconDrawables(): List<Pair<String, Drawable>> {
+        val out = ArrayList<Pair<String, Drawable>>()
+        collectAppIconDrawablesInto(mainVerticalGridView, out)
+        return out
+    }
+
+    private fun collectAppIconDrawablesInto(view: View, out: ArrayList<Pair<String, Drawable>>) {
+        if (view is Card) {
+            val bannerView = view.findViewById<ImageView>(R.id.app_banner)
+            val banner = bannerView?.drawable?.takeIf {
+                bannerView.visibility == View.VISIBLE && it !is ColorDrawable
+            }
+            val drawable = banner ?: view.findViewById<ImageView>(R.id.app_icon)?.drawable
+            if (drawable != null && drawable !is ColorDrawable) {
+                out.add("${view.packageName}/${view.label}" to drawable)
+            }
+            return
+        }
+        if (view is ViewGroup) {
+            for (i in 0 until view.childCount) collectAppIconDrawablesInto(view.getChildAt(i), out)
+        }
+    }
+
+    // Blurred background of the focused tile, behind the grid
+    private fun updateDynamicBackground(focusView: View) {
+        if (sharedPreferences.backgroundType != 3) return
+        var view: View? = focusView
+        while (view != null && view !is Card) {
+            view = view.parent as? View
+        }
+        val card = view ?: return
+        val key = "${card.packageName}/${card.label}@${System.identityHashCode(card)}"
+        val iconView = card.findViewById<ImageView>(R.id.app_icon)
+        if (iconView != null) {
+            // TV banner (when the app ships/loads one) is the primary color
+            // source for app cards; the phone icon is the fallback.
+            dynamicBackground.setColorImage(key) {
+                val bannerView = card.findViewById<ImageView>(R.id.app_banner)
+                val banner = bannerView?.drawable?.takeIf {
+                    bannerView.visibility == View.VISIBLE && it !is ColorDrawable
+                }
+                banner ?: iconView.drawable
+            }
+        } else {
+            dynamicBackground.setImage(key) {
+                val banner = card.findViewById<ImageView>(R.id.app_banner)
+                if (banner != null && banner.visibility == View.VISIBLE && banner.drawable != null) {
+                    banner.drawable
+                } else {
+                    card.findViewById<ImageView>(R.id.app_banner_background)?.drawable
+                }
+            }
+        }
+    }
+
     // Return to first row when focus moves to the top bar
     private val mainFocusScrollListener = ViewTreeObserver.OnGlobalFocusChangeListener { old, newFocus ->
         if (newFocus != null && isTopBarDescendant(newFocus)) {
@@ -206,6 +287,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 snapGridToTop()
                 mainVerticalGridView.post { snapGridToTop() }
             }
+        }
+        if (newFocus != null && isMainDescendant(newFocus)) {
+            updateDynamicBackground(newFocus)
         }
     }
 
@@ -590,6 +674,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         // view changes are not rendered; re-setting it here forces a fresh frame
         // as soon as the launcher becomes visible behind the settings panel again.
         applyBackground()
+        dynamicBackground.resume()
         if (NotificationUtils.notificationPermissionGranted(this)) {
             notificationViewModel.bindService(this)
         }
@@ -599,6 +684,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
             when (key) {
                 BACKGROUND_TYPE_KEY, BACKGROUND_IMAGE_URI_KEY -> applyBackground()
+                BACKGROUND_BLUR_KEY -> dynamicBackground.setBlurRadius(
+                    sharedPreferences.backgroundBlur.toFloat()
+                )
                 APP_CARD_SIZE_KEY, FAVORITE_CARD_SIZE_KEY, WATCH_NEXT_CARD_SIZE_KEY,
                 CARD_CORNER_RADIUS_KEY ->
                     scheduleLiveCardResize()
@@ -678,6 +766,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onStop() {
         super.onStop()
         activityStopped = true
+        dynamicBackground.pause()
     }
 
     override fun onPause() {
@@ -860,6 +949,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onDestroy() {
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(backgroundPrefsListener)
         cardSizeResizeRunnable?.let { cardSizeHandler.removeCallbacks(it) }
+        dynamicBackground.release()
         if (mainVerticalGridView.viewTreeObserver.isAlive) {
             mainVerticalGridView.viewTreeObserver.removeOnGlobalFocusChangeListener(mainFocusScrollListener)
         }
@@ -1030,9 +1120,17 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         
         when (backgroundType) {
             0, 1 -> {
+                dynamicBackground.hide()
                 decorView.setBackgroundColor(getColor(R.color.default_background))
             }
+            3 -> {
+                decorView.setBackgroundColor(getColor(R.color.default_background))
+                dynamicBackground.show()
+                applyPillTint(null)
+                currentFocus?.let { updateDynamicBackground(it) }
+            }
             2 -> {
+                dynamicBackground.hide()
                 val uriString = sharedPreferences.backgroundImageUri
                 if (!uriString.isNullOrEmpty()) {
                     try {
@@ -1077,6 +1175,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private val topBarButtonsGroup by lazy { findViewById<View>(R.id.topBarButtonsGroup)!! }
 
     private var pillTintGeneration = 0
+    private var pillTintAnimator: android.animation.ValueAnimator? = null
+    private var lastPillColor: Int? = null
 
     // Material-You-style pill background: take the wallpaper's hue from a vivid
     // swatch and build a dark, moderately saturated tone with it (fixed value in
@@ -1085,6 +1185,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private fun applyPillTint(wallpaper: android.graphics.Bitmap?) {
         val generation = ++pillTintGeneration
         if (wallpaper == null) {
+            pillTintAnimator?.cancel()
+            lastPillColor = null
             assistantButtonsContainer.backgroundTintList = null
             topBarButtonsGroup.backgroundTintList = null
             return
@@ -1106,11 +1208,26 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 if (generation != pillTintGeneration) {
                     return@runOnUiThread
                 }
-                val tint = ColorStateList.valueOf(pillColor)
+                animatePillTint(pillColor)
+            }
+        }.start()
+    }
+
+    // Pill color crossfades with the wallpaper crossfade instead of snapping.
+    private fun animatePillTint(color: Int) {
+        pillTintAnimator?.cancel()
+        val from = lastPillColor ?: color
+        lastPillColor = color
+        pillTintAnimator = ObjectAnimator.ofArgb(from, color).apply {
+            duration = 1400L
+            interpolator = AccelerateDecelerateInterpolator()
+            addUpdateListener { animator ->
+                val tint = ColorStateList.valueOf(animator.animatedValue as Int)
                 assistantButtonsContainer.backgroundTintList = tint
                 topBarButtonsGroup.backgroundTintList = tint
             }
-        }.start()
+            start()
+        }
     }
 
     private fun calculateInSampleSize(options: android.graphics.BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {        val (height: Int, width: Int) = options.outHeight to options.outWidth

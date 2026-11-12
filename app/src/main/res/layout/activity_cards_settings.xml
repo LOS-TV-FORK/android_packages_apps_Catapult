@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:text="@string/app_cards" />
 
-        <com.google.android.material.card.MaterialCardView
+        <org.lineageos.tv.launcher.view.FocusHighlightCardView
             style="@style/Widget.Material3.CardView.Outlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
 
             </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
+        </org.lineageos.tv.launcher.view.FocusHighlightCardView>
 
         <LinearLayout
             android:id="@+id/grid_columns_section"
@@ -58,7 +58,7 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <com.google.android.material.card.MaterialCardView
+            <org.lineageos.tv.launcher.view.FocusHighlightCardView
                 style="@style/Widget.Material3.CardView.Outlined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -98,11 +98,11 @@
 
                 </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
+            </org.lineageos.tv.launcher.view.FocusHighlightCardView>
 
         </LinearLayout>
 
-        <com.google.android.material.card.MaterialCardView
+        <org.lineageos.tv.launcher.view.FocusHighlightCardView
             android:id="@+id/app_card_size_section"
             style="@style/Widget.Material3.CardView.Outlined"
             android:layout_width="match_parent"
@@ -143,9 +143,9 @@
 
             </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
+        </org.lineageos.tv.launcher.view.FocusHighlightCardView>
 
-        <com.google.android.material.card.MaterialCardView
+        <org.lineageos.tv.launcher.view.FocusHighlightCardView
             style="@style/Widget.Material3.CardView.Outlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -185,9 +185,9 @@
 
             </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
+        </org.lineageos.tv.launcher.view.FocusHighlightCardView>
 
-        <com.google.android.material.card.MaterialCardView
+        <org.lineageos.tv.launcher.view.FocusHighlightCardView
             style="@style/Widget.Material3.CardView.Outlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -227,9 +227,9 @@
 
             </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
+        </org.lineageos.tv.launcher.view.FocusHighlightCardView>
 
-        <com.google.android.material.card.MaterialCardView
+        <org.lineageos.tv.launcher.view.FocusHighlightCardView
             style="@style/Widget.Material3.CardView.Outlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -269,7 +269,7 @@
 
             </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
+        </org.lineageos.tv.launcher.view.FocusHighlightCardView>
 
     </LinearLayout>
 

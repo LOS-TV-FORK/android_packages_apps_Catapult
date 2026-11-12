@@ -116,6 +116,14 @@ var SharedPreferences.backgroundImageUri: String?
         putString(BACKGROUND_IMAGE_URI_KEY, value)
     }
 
+const val BACKGROUND_BLUR_KEY = "background_blur"
+
+var SharedPreferences.backgroundBlur: Int
+    get() = getInt(BACKGROUND_BLUR_KEY, 14)
+    set(value) = edit {
+        putInt(BACKGROUND_BLUR_KEY, value.coerceIn(0, 30))
+    }
+
 const val APP_CARD_SIZE_KEY = "app_card_size"
 
 var SharedPreferences.appCardSize: Int

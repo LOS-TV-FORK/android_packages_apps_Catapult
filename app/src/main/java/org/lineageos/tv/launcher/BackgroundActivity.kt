@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.preference.PreferenceManager
 import org.lineageos.tv.launcher.ext.backgroundImageUri
+import org.lineageos.tv.launcher.ext.backgroundBlur
 import org.lineageos.tv.launcher.ext.backgroundType
 import java.io.File
 
@@ -61,24 +62,40 @@ class BackgroundActivity : ModalActivity(R.layout.activity_background) {
     private fun setupBackgroundSettings() {
         val radioGroup = findViewById<RadioGroup>(R.id.background_type_group)
         val selectImageButton = findViewById<TextView>(R.id.select_image_button)
+        val blurSection = findViewById<View>(R.id.dynamic_blur_section)
+        val blurSlider = findViewById<com.google.android.material.slider.Slider>(
+            R.id.background_blur_slider
+        )
+        val blurValue = findViewById<TextView>(R.id.background_blur_value)
 
         val currentType = prefs.backgroundType
         when (currentType) {
             0 -> findViewById<RadioButton>(R.id.background_default)?.isChecked = true
             1 -> findViewById<RadioButton>(R.id.background_default)?.isChecked = true
             2 -> findViewById<RadioButton>(R.id.background_image)?.isChecked = true
+            3 -> findViewById<RadioButton>(R.id.background_dynamic)?.isChecked = true
         }
 
-        updateVisibility(currentType, selectImageButton)
+        updateVisibility(currentType, selectImageButton, blurSection)
+
+        blurSlider?.value = prefs.backgroundBlur.toFloat()
+        blurValue?.text = blurSlider?.value?.toInt()?.toString()
+        blurSlider?.addOnChangeListener { _, value, fromUser ->
+            if (fromUser) {
+                prefs.backgroundBlur = value.toInt()
+            }
+            blurValue?.text = value.toInt().toString()
+        }
 
         radioGroup?.setOnCheckedChangeListener { _, checkedId ->
             val type = when (checkedId) {
                 R.id.background_default -> 0
                 R.id.background_image -> 2
+                R.id.background_dynamic -> 3
                 else -> 0
             }
             prefs.backgroundType = type
-            updateVisibility(type, selectImageButton)
+            updateVisibility(type, selectImageButton, blurSection)
         }
 
         selectImageButton?.setOnClickListener {
@@ -86,8 +103,13 @@ class BackgroundActivity : ModalActivity(R.layout.activity_background) {
         }
     }
 
-    private fun updateVisibility(type: Int, selectImageButton: TextView?) {
+    private fun updateVisibility(
+        type: Int,
+        selectImageButton: TextView?,
+        blurSection: View?
+    ) {
         selectImageButton?.visibility = if (type == 2) View.VISIBLE else View.GONE
+        blurSection?.visibility = if (type == 3) View.VISIBLE else View.GONE
         if (type == 2) {
             val hasImage = !prefs.backgroundImageUri.isNullOrEmpty()
             selectImageButton?.text = if (hasImage) getString(R.string.selected_image) else getString(R.string.select_image)
