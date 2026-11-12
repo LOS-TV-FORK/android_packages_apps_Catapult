@@ -63,4 +63,44 @@
     <string name="recent_tasks_title">Ativitâts recentis (%1$d)</string>
     <string name="close_all">Siere dut</string>
 
+
+    <string name="background">Font</string>
+    <string name="background_default">Predefinît</string>
+    <string name="background_image">Imazine</string>
+    <string name="background_dynamic">Dinamic (mosaîc in fûc)</string>
+    <string name="background_blur_strength">Intensitât de la sfumature</string>
+    <string name="select_image">Selezione imazine</string>
+    <string name="selected_image">Imazine seleazionade</string>
+    <string name="appearance">Aspiet</string>
+    <string name="card_size_percent">%d %%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">Prestazion des animazions</string>
+    <string name="background_auto_perf">Prestazions adaptivis</string>
+    <string name="background_auto_perf_t0">Efiets completis: sfumature GPU, Ken Burns fluide</string>
+    <string name="background_auto_perf_t1">Bilançât: Ken Burns a 20 fps</string>
+    <string name="background_auto_perf_t2">Lizêr: sfumature movesude ae CPU</string>
+    <string name="background_auto_perf_t3">Minimâl: Ken Burns distudât, sfumature conservade</string>
+    <string name="background_blur_prebaked">Sfumature pre-calcolade (CPU, sparegne GPU)</string>
+    <string name="background_kb_low_fps">Ken Burns a 20 fps</string>
+    <string name="background_kb_pause">Ferme il Ken Burns tal cambi dal font</string>
+    <string name="ok">OK</string>
+    <string name="overlay_title">Supercjale Catapult</string>
+    <string name="overlay_hint">Frache dôs voltis HOME, ESC o BACK par sierâ</string>
+    <string name="remove_program_failed">No si podeve gjavâ chest element</string>
+    <string name="vpn_no_clients">Nissun client VPN cjatât</string>
+    <string name="additional">In zonte</string>
+    <string name="external_launcher">Lancadôr esterni</string>
+    <string name="external_launcher_hint">Selezione une aplicazion come lancadôr di cjase. Catapult al continue a gestî il tast Home e lis aplicazions recentis.</string>
+    <string name="external_launcher_none">No doprâ il lancadôr esterni</string>
+    <string name="external_launcher_not_found">No son stâts cjatâts altris aplicazions lancadôr.</string>
+    <string name="external_launcher_picker">Catapult: sielte il lancadôr</string>
+    <string name="recent_apps">Aplicazions recentis</string>
+    <string name="recent_apps_enabled">Mostre la supercjale des aplicazions recentis</string>
+    <string name="recent_apps_size">Grandezie de schede</string>
+    <string name="recent_apps_size_percent">%d %% de la altece dal screen</string>
+
+
+    <string name="android_settings">Impostazions Android</string>
+    <string name="vpn">VPN</string>
+
 </resources>

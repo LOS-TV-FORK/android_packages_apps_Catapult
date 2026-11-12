@@ -78,4 +78,26 @@
     <string name="recent_tasks_title">Tareas recientes (%1$d)</string>
     <string name="close_all">Cerrar todo</string>
 
+
+    <string name="android_settings">Ajustes de Android</string>
+    <string name="background_dynamic">Dinámico (mosaico enfocado)</string>
+    <string name="background_blur_strength">Intensidad del desenfoque</string>
+    <string name="card_size_percent">%d %%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">Rendimiento de animación</string>
+    <string name="background_auto_perf">Rendimiento adaptativo</string>
+    <string name="background_auto_perf_t0">Efectos completos: desenfoque por GPU, Ken Burns fluido</string>
+    <string name="background_auto_perf_t1">Equilibrado: Ken Burns a 20 fps</string>
+    <string name="background_auto_perf_t2">Ligero: desenfoque movido a la CPU</string>
+    <string name="background_auto_perf_t3">Mínimo: Ken Burns desactivado, desenfoque activo</string>
+    <string name="background_blur_prebaked">Desenfoque precalculado (CPU, ahorra GPU)</string>
+    <string name="background_kb_low_fps">Ken Burns a 20 fps</string>
+    <string name="background_kb_pause">Pausar Ken Burns durante los cambios de fondo</string>
+    <string name="ok">Aceptar</string>
+    <string name="overlay_title">Superposición de Catapult</string>
+    <string name="overlay_hint">Doble pulsación de HOME, ESC o ATRÁS para cerrar</string>
+    <string name="remove_program_failed">No se pudo eliminar este elemento</string>
+    <string name="vpn_no_clients">No se encontraron clientes VPN</string>
+    <string name="vpn">VPN</string>
+
 </resources>

@@ -31,4 +31,73 @@
     <string name="recent_tasks_title">Tugas terbaru (%1$d)</string>
     <string name="close_all">Tutup semua</string>
 
+
+    <string name="order_channels_guide">Untuk mengatur urutan kanal, tekan lama kanal yang diinginkan dan pindahkan ke posisi yang diinginkan.</string>
+    <string name="search">Cari</string>
+    <string name="modify_favorites">Ubah aplikasi favorit Anda</string>
+    <string name="network_status">Jaringan\n%1$s</string>
+    <string name="home_role_request_dialog_title">Setel sebagai peluncur</string>
+    <string name="home_role_request_dialog_message">Aplikasi ini dapat berperan sebagai aplikasi beranda default. Apakah Anda ingin membuka aplikasi pengaturan untuk mengubah aplikasi peluncur?</string>
+    <string name="home_role_request_dialog_neutral">Nanti</string>
+    <string name="unknown">Tidak diketahui</string>
+    <string name="mic_assistant">Cari menggunakan mikrofon</string>
+    <string name="keyboard_assistant">Cari menggunakan papan ketik</string>
+    <string name="system_settings">Pengaturan sistem</string>
+    <string name="launcher_settings">Pengaturan peluncur</string>
+
+
+    <string name="android_settings">Pengaturan Android</string>
+    <string name="additional">Tambahan</string>
+    <string name="appearance">Tampilan</string>
+    <string name="app_cards">Kartu aplikasi</string>
+    <string name="app_cards_size">Ukuran kartu aplikasi</string>
+    <string name="favorite_cards_size">Ukuran kartu favorit</string>
+    <string name="watch_next_cards_size">Ukuran kartu saluran</string>
+    <string name="background">Latar</string>
+    <string name="background_default">Bawaan</string>
+    <string name="background_image">Gambar</string>
+    <string name="background_dynamic">Dinamis (ubin terfokus)</string>
+    <string name="background_blur_strength">Kekuatan blur</string>
+    <string name="select_image">Pilih gambar</string>
+    <string name="selected_image">Gambar dipilih</string>
+    <string name="card_size_percent">%d%%</string>
+    <string name="all_apps_grid_view">Tampilan kisi semua aplikasi</string>
+    <string name="all_apps_grid_columns">Kolom kisi</string>
+    <string name="card_corner_radius">Radius sudut kartu</string>
+    <string name="clock_size">Ukuran jam</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">Performa animasi</string>
+    <string name="background_auto_perf">Performa adaptif</string>
+    <string name="background_auto_perf_t0">Efek penuh: blur GPU, Ken Burns halus</string>
+    <string name="background_auto_perf_t1">Seimbang: Ken Burns pada 20 fps</string>
+    <string name="background_auto_perf_t2">Ringan: blur dipindahkan ke CPU</string>
+    <string name="background_auto_perf_t3">Minimal: Ken Burns mati, blur dipertahankan</string>
+    <string name="background_blur_prebaked">Blur pra-hitung (CPU, hemat GPU)</string>
+    <string name="background_kb_low_fps">Ken Burns pada 20 fps</string>
+    <string name="background_kb_pause">Jeda Ken Burns selama transisi latar</string>
+    <string name="ok">OK</string>
+    <string name="overlay_title">Overlay Catapult</string>
+    <string name="overlay_hint">Tekan dua kali HOME, ESC, atau BACK untuk menutup</string>
+    <string name="remove_program_failed">Gagal menghapus item ini</string>
+    <string name="vpn_no_clients">Klien VPN tidak ditemukan</string>
+    <string name="external_launcher">Peluncur eksternal</string>
+    <string name="external_launcher_hint">Pilih aplikasi sebagai peluncur utama. Catapult tetap menangani tombol Home dan aplikasi terakhir.</string>
+    <string name="external_launcher_none">Jangan gunakan peluncur eksternal</string>
+    <string name="external_launcher_not_found">Tidak ditemukan aplikasi peluncur utama lain.</string>
+    <string name="external_launcher_picker">Catapult: pilih peluncur</string>
+    <string name="recent_apps">Aplikasi terakhir</string>
+    <string name="recent_apps_enabled">Tampilkan overlay aplikasi terakhir</string>
+    <string name="recent_apps_size">Ukuran kartu</string>
+    <string name="recent_apps_size_percent">%d%% tinggi layar</string>
+    <string name="recent_apps_thumbnails">Tampilkan gambar kecil</string>
+    <string name="recent_apps_thumbnails_hint">Pratinjau layar terakhir aplikasi pada kartu</string>
+    <string name="remove_from_channel">Hapus dari %1$s</string>
+    <string name="app_info">Info aplikasi</string>
+    <string name="top_bar">Bilah atas</string>
+    <string name="show_search_buttons">Tampilkan tombol pencarian</string>
+    <string name="show_vpn_button">Tampilkan tombol VPN</string>
+    <string name="top_bar_auto_hide">Sembunyikan bilah atas otomatis saat gulir</string>
+    <string name="show_clock">Tampilkan jam</string>
+    <string name="vpn">VPN</string>
+
 </resources>

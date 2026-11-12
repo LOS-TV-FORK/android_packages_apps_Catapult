@@ -6,7 +6,6 @@
 package org.lineageos.tv.launcher
 
 import android.app.ActivityManager
-import android.app.Dialog
 import android.app.role.RoleManager
 import android.content.DialogInterface
 import android.content.Intent
@@ -572,26 +571,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 lastCardBackgroundIconGradientMode = sharedPreferences.cardBackgroundIconGradientMode
 
                 settingButton.setOnClickListener {
-                    val dialog = Dialog(this, R.style.Theme_Catapult_SideActivity)
-                    dialog.setContentView(R.layout.settings_button_menu)
-                    dialog.window?.apply {
-                        setGravity(Gravity.END)
-                        attributes = attributes.apply {
-                            height = android.view.WindowManager.LayoutParams.MATCH_PARENT
-                            width = (350 * resources.displayMetrics.density).toInt()
-                        }
-                    }
-                    dialog.findViewById<View>(R.id.system_settings_item)?.setOnClickListener {
-                        startActivity(Intent(android.provider.Settings.ACTION_SETTINGS).apply {
-                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        })
-                        dialog.dismiss()
-                    }
-                    dialog.findViewById<View>(R.id.launcher_settings_item)?.setOnClickListener {
-                        startActivity(Intent(this@MainActivity, LauncherSettingsActivity::class.java))
-                        dialog.dismiss()
-                    }
-                    dialog.show()
+                    startActivity(Intent(this@MainActivity, LauncherSettingsActivity::class.java))
                 }
 
                 notificationContainer.setOnClickListener {

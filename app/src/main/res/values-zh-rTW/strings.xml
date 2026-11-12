@@ -75,4 +75,29 @@
     <string name="recent_tasks_title">最近的工作 (%1$d)</string>
     <string name="close_all">全部關閉</string>
 
+
+    <string name="android_settings">Android 設定</string>
+    <string name="background_image">圖片</string>
+    <string name="background_dynamic">動態（聚焦磁磚）</string>
+    <string name="background_blur_strength">模糊強度</string>
+    <string name="select_image">選擇圖片</string>
+    <string name="selected_image">已選擇圖片</string>
+    <string name="card_size_percent">%d%%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">動畫效能</string>
+    <string name="background_auto_perf">自適應效能</string>
+    <string name="background_auto_perf_t0">完整效果：GPU 模糊、順暢 Ken Burns</string>
+    <string name="background_auto_perf_t1">平衡：Ken Burns 以 20 fps</string>
+    <string name="background_auto_perf_t2">輕量：模糊移至 CPU</string>
+    <string name="background_auto_perf_t3">極簡：關閉 Ken Burns、保留模糊</string>
+    <string name="background_blur_prebaked">預先烘焙模糊（CPU，節省 GPU）</string>
+    <string name="background_kb_low_fps">Ken Burns 以 20 fps</string>
+    <string name="background_kb_pause">背景切換期間暫停 Ken Burns</string>
+    <string name="ok">確定</string>
+    <string name="overlay_title">Catapult 疊加</string>
+    <string name="overlay_hint">按兩下 HOME、ESC 或 BACK 以關閉</string>
+    <string name="remove_program_failed">無法移除此項目</string>
+    <string name="vpn_no_clients">找不到 VPN 用戶端</string>
+    <string name="vpn">VPN</string>
+
 </resources>

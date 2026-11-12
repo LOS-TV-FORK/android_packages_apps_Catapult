@@ -78,4 +78,26 @@
     <string name="recent_tasks_title">Tâches récentes (%1$d)</string>
     <string name="close_all">Tout fermer</string>
 
+
+    <string name="android_settings">Paramètres Android</string>
+    <string name="background_dynamic">Dynamique (tuile sélectionnée)</string>
+    <string name="background_blur_strength">Intensité du flou</string>
+    <string name="card_size_percent">%d %%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">Performance des animations</string>
+    <string name="background_auto_perf">Performance adaptative</string>
+    <string name="background_auto_perf_t0">Effets complets : flou GPU, Ken Burns fluide</string>
+    <string name="background_auto_perf_t1">Équilibré : Ken Burns à 20 i/s</string>
+    <string name="background_auto_perf_t2">Léger : flou traité par le CPU</string>
+    <string name="background_auto_perf_t3">Minimal : Ken Burns désactivé, flou conservé</string>
+    <string name="background_blur_prebaked">Flou précalculé (CPU, ménage le GPU)</string>
+    <string name="background_kb_low_fps">Ken Burns à 20 i/s</string>
+    <string name="background_kb_pause">Pause de Ken Burns pendant les changements de fond</string>
+    <string name="ok">OK</string>
+    <string name="overlay_title">Superposition Catapult</string>
+    <string name="overlay_hint">Double appui sur HOME, ÉCHAP ou RETOUR pour fermer</string>
+    <string name="remove_program_failed">Impossible de supprimer cet élément</string>
+    <string name="vpn_no_clients">Aucun client VPN trouvé</string>
+    <string name="vpn">VPN</string>
+
 </resources>

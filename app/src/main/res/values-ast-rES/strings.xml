@@ -32,4 +32,75 @@
     <string name="recent_tasks_title">Xeres recientes (%1$d)</string>
     <string name="close_all">Zarrar too</string>
 
+
+    <string name="background">Fondo</string>
+    <string name="background_default">Predetermináu</string>
+    <string name="background_image">Semeya</string>
+    <string name="background_dynamic">Dinámicu (mosaicu enfocáu)</string>
+    <string name="background_blur_strength">Intensidá del desenfoque</string>
+    <string name="select_image">Seleicionar semeya</string>
+    <string name="selected_image">Semeya seleicionada</string>
+    <string name="appearance">Apariencia</string>
+    <string name="card_size_percent">%d %%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">Rendimientu de l\'animación</string>
+    <string name="background_auto_perf">Rendimientu adaptativu</string>
+    <string name="background_auto_perf_t0">Efeutos completos: desenfoque GPU, Ken Burns fluíu</string>
+    <string name="background_auto_perf_t1">Equilibráu: Ken Burns a 20 fps</string>
+    <string name="background_auto_perf_t2">Llixeru: desenfoque movíu a la CPU</string>
+    <string name="background_auto_perf_t3">Mínimu: Ken Burns desactiváu, desenfoque calteníu</string>
+    <string name="background_blur_prebaked">Desenfoque precalculáu (CPU, aforra GPU)</string>
+    <string name="background_kb_low_fps">Ken Burns a 20 fps</string>
+    <string name="background_kb_pause">Posar Ken Burns durante los cambeos de fondu</string>
+    <string name="ok">Aceutar</string>
+    <string name="overlay_title">Superposición de Catapult</string>
+    <string name="overlay_hint">Doble pulsación de HOME, ESC o BACK pa zarrar</string>
+    <string name="remove_program_failed">Nun se pudo desaniciar esti elementu</string>
+    <string name="vpn_no_clients">Nun se toparon veceros VPN</string>
+    <string name="additional">Adicional</string>
+    <string name="external_launcher">Llanzador esternu</string>
+    <string name="external_launcher_hint">Escueyi una aplicación pa usar como llanzador de casa. Catapult sigue xestionando el botón Home y les aplicaciones recientes.</string>
+    <string name="external_launcher_none">Nun usar llanzador esternu</string>
+    <string name="external_launcher_not_found">Nun se toparon otres aplicaciones de llanzador.</string>
+    <string name="external_launcher_picker">Catapult: escueyi\'l llanzador</string>
+    <string name="recent_apps">Aplicaciones recientes</string>
+    <string name="recent_apps_enabled">Amostrar la superposición d\'aplicaciones recientes</string>
+    <string name="recent_apps_size">Tamañu de la tarxeta</string>
+    <string name="recent_apps_size_percent">%d %% del altor de la pantalla</string>
+    <string name="favorites">Favoritos</string>
+    <string name="uninstall">Desinstalar</string>
+    <string name="mark_as_favorite">Marcar como favoritu</string>
+    <string name="modify_favorites_short">Modificar favoritos</string>
+    <string name="move">Mover</string>
+    <string name="remove_favorite">Desfacar favoritu</string>
+    <string name="watch_next">Ver de siguío</string>
+    <string name="channel_title">%1$s: %2$s</string>
+    <string name="order_channels_guide">Pa ordenar canales, calca enllargáu nun canal deseyáu y muévilu a la posición deseyada.</string>
+    <string name="search">Guetar</string>
+    <string name="modify_favorites">Modificar les tos aplicaciones favorites</string>
+    <string name="sleep">Añarar</string>
+    <string name="no_notifications">Nun hai avisos</string>
+    <string name="network_status">Rede\n%1$s</string>
+    <string name="bluetooth_status">Accesorios\n%1$s</string>
+    <string name="not_connected">Nun conectáu</string>
+    <string name="enabled">Activáu</string>
+    <string name="disabled">Desactiváu</string>
+    <string name="app_permissions_toast">L\'usuariu nun concedió los permisos.</string>
+    <string name="home_role_request_dialog_title">Configurar como llanzador</string>
+    <string name="home_role_request_dialog_message">Esta aplicación pue actuar como aplicación de casa predeterminada. ¿Quies abrir l\'aplicación de configuración pa camudar el llanzador?</string>
+    <string name="home_role_request_dialog_neutral">Dempués</string>
+    <string name="home_role_request_dialog_negative">Nun entrugar más</string>
+    <string name="unknown">Desconocíu</string>
+    <string name="no_notification_access">Nun hai accesu a avisos</string>
+    <string name="allow_notification_access">Permitir accesu a avisos</string>
+    <string name="dismiss">Escartar</string>
+    <string name="connected">Conectáu</string>
+    <string name="mic_assistant">Guetar col micrófonu</string>
+    <string name="keyboard_assistant">Guetar col tecláu</string>
+
+
+    <string name="android_settings">Configuración d\'Android</string>
+    <string name="modify_channels">Modificar canales</string>
+    <string name="vpn">VPN</string>
+
 </resources>

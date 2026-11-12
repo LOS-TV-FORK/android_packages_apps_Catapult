@@ -78,4 +78,26 @@
     <string name="recent_tasks_title">Son görevler (%1$d)</string>
     <string name="close_all">Tümünü kapat</string>
 
+
+    <string name="android_settings">Android ayarları</string>
+    <string name="background_dynamic">Dinamik (odaklanan döşeme)</string>
+    <string name="background_blur_strength">Bulanıklık şiddeti</string>
+    <string name="card_size_percent">%d %%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">Animasyon performansı</string>
+    <string name="background_auto_perf">Uyarlanabilir performans</string>
+    <string name="background_auto_perf_t0">Tam efektler: GPU bulanıklığı, akıcı Ken Burns</string>
+    <string name="background_auto_perf_t1">Dengeli: Ken Burns 20 fps</string>
+    <string name="background_auto_perf_t2">Hafif: bulanıklık CPU\'ya taşındı</string>
+    <string name="background_auto_perf_t3">Minimum: Ken Burns kapalı, bulanıklık korundu</string>
+    <string name="background_blur_prebaked">Önden hesaplanan bulanıklık (CPU, GPU\'yu korur)</string>
+    <string name="background_kb_low_fps">Ken Burns 20 fps</string>
+    <string name="background_kb_pause">Arka plan geçişlerinde Ken Burns\'ü duraklat</string>
+    <string name="ok">Tamam</string>
+    <string name="overlay_title">Catapult Overlay</string>
+    <string name="overlay_hint">Kapatmak için HOME, ESC veya BACK tuşuna çift basın</string>
+    <string name="remove_program_failed">Bu öğe kaldırılamadı</string>
+    <string name="vpn_no_clients">VPN istemcisi bulunamadı</string>
+    <string name="vpn">VPN</string>
+
 </resources>

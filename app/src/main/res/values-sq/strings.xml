@@ -66,4 +66,39 @@
     <string name="recent_tasks_title">Detyrat e fundit (%1$d)</string>
     <string name="close_all">Mbyll të gjitha</string>
 
+
+    <string name="android_settings">Cilësimet Android</string>
+    <string name="background_dynamic">Dinamik (pllaka e fokusuar)</string>
+    <string name="background_blur_strength">Fortësia e turbullimit</string>
+    <string name="card_size_percent">%d%%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">Performanca e animacioneve</string>
+    <string name="background_auto_perf">Performancë adaptive</string>
+    <string name="background_auto_perf_t0">Efekte të plota: turbullim GPU, Ken Burns i rrjedhshëm</string>
+    <string name="background_auto_perf_t1">E balancuar: Ken Burns në 20 fps</string>
+    <string name="background_auto_perf_t2">E lehtë: turbullimi u kalua te CPU-ja</string>
+    <string name="background_auto_perf_t3">Minimale: Ken Burns fik, turbullimi ruhet</string>
+    <string name="background_blur_prebaked">Turbullim i parapërpunuar (CPU, kursen GPU-në)</string>
+    <string name="background_kb_low_fps">Ken Burns në 20 fps</string>
+    <string name="background_kb_pause">Ndalo Ken Burns-in gjatë kalimeve të sfondit</string>
+    <string name="ok">NË RREGULL</string>
+    <string name="overlay_title">Mbivendosja Catapult</string>
+    <string name="overlay_hint">Shtyp dy herë HOME, ESC ose BACK për të mbyllur</string>
+    <string name="remove_program_failed">Ky objekt nuk mund të hiqej</string>
+    <string name="vpn_no_clients">Nuk u gjetën klientë VPN</string>
+    <string name="additional">Shtesë</string>
+    <string name="external_launcher">Përhapës jashtë</string>
+    <string name="external_launcher_hint">Për zgjedh një aplikacion si përhapës kryesor. Catapult do të vijojë të përballëojë butonin Home dhe aplikacionet e fundit.</string>
+    <string name="external_launcher_none">Mos përdor përhapës jashtë</string>
+    <string name="external_launcher_not_found">Nuk u gjetën aplikacione të tjera përhapësish.</string>
+    <string name="external_launcher_picker">Catapult: zgjidh përhapësin</string>
+    <string name="recent_apps">Aplikacionet e fundit</string>
+    <string name="recent_apps_enabled">Shfaq mbivendosjen e aplikacioneve të fundit</string>
+    <string name="recent_apps_size">Madhësia e kartës</string>
+    <string name="recent_apps_size_percent">%d%% e lartësisë së ekranit</string>
+    <string name="vpn">VPN</string>
+    <string name="all_apps">Të gjitha aplikacionet</string>
+    <string name="mark_as_favorite">Shënoje si të preferuar</string>
+    <string name="channel_title">%1$s: %2$s</string>
+
 </resources>

@@ -78,4 +78,26 @@
     <string name="recent_tasks_title">Ostatnie zadania (%1$d)</string>
     <string name="close_all">Zamknij wszystkie</string>
 
+
+    <string name="android_settings">Ustawienia Androida</string>
+    <string name="background_dynamic">Dynamiczne (kafelka w fokusie)</string>
+    <string name="background_blur_strength">Siła rozmycia</string>
+    <string name="card_size_percent">%d %%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">Wydajność animacji</string>
+    <string name="background_auto_perf">Adaptacyjna wydajność</string>
+    <string name="background_auto_perf_t0">Pełne efekty: rozmycie na GPU, płynny Ken Burns</string>
+    <string name="background_auto_perf_t1">Zbalansowane: Ken Burns przy 20 fps</string>
+    <string name="background_auto_perf_t2">Lekkie: rozmycie przeniesione na CPU</string>
+    <string name="background_auto_perf_t3">Minimalne: Ken Burns wyłączony, rozmycie zachowane</string>
+    <string name="background_blur_prebaked">Wstępne rozmycie (CPU, oszczędza GPU)</string>
+    <string name="background_kb_low_fps">Ken Burns przy 20 fps</string>
+    <string name="background_kb_pause">Pauza Ken Burnsa podczas zmian tła</string>
+    <string name="ok">OK</string>
+    <string name="overlay_title">Nakładka Catapult</string>
+    <string name="overlay_hint">Podwójne naciśnięcie HOME, ESC lub BACK zamyka</string>
+    <string name="remove_program_failed">Nie można usunąć tego elementu</string>
+    <string name="vpn_no_clients">Nie znaleziono klientów VPN</string>
+    <string name="vpn">VPN</string>
+
 </resources>

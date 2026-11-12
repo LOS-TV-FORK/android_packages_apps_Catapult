@@ -61,4 +61,48 @@
     <string name="recent_tasks_title">يېقىنقى ۋەزىپىلەر (%1$d)</string>
     <string name="close_all">ھەممىنى تاقاش</string>
 
+
+    <string name="system_settings">سىستېما تەڭشىكى</string>
+    <string name="launcher_settings">قوزغاتقۇچ تەڭشىكى</string>
+
+
+    <string name="background">تەۋرۈك</string>
+    <string name="background_default">سۈكۈتتىكى</string>
+    <string name="background_image">سۈرەت</string>
+    <string name="background_dynamic">ھەرىكەتچان (فوكۇسلانغان تاش)</string>
+    <string name="background_blur_strength">خېلىيلاشتۇرۇش كۈچى</string>
+    <string name="select_image">سۈرەت تاللاش</string>
+    <string name="selected_image">سۈرەت تاللاندى</string>
+    <string name="appearance">قىىۋەت</string>
+    <string name="card_size_percent">%d%%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">ھەرىكەت ئىقتىدارى</string>
+    <string name="background_auto_perf">ئۆزگەرگۈچى ئىقتىدار</string>
+    <string name="background_auto_perf_t0">تولۇق ئۈنۈم: GPU خېلىيلاشتۇرۇش، يۇمشاق Ken Burns</string>
+    <string name="background_auto_perf_t1">تەڭپۇڭ: Ken Burns 20 fps</string>
+    <string name="background_auto_perf_t2">يېنىك: خېلىيلاشتۇرۇش CPUغا يۆتكەلدى</string>
+    <string name="background_auto_perf_t3">ئەڭ ئاز: Ken Burns ئۆچۈرۈلگەن، خېلىيلاشتۇرۇش ساقلىنىدۇ</string>
+    <string name="background_blur_prebaked">ئالدىن ھېسابلىغان خېلىيلاشتۇرۇش (CPU، GPU ئۈنۈمى)</string>
+    <string name="background_kb_low_fps">Ken Burns 20 fps</string>
+    <string name="background_kb_pause">تەۋرۈك ئالماشتۇرۇشتا Ken Burnsنى توختىتىش</string>
+    <string name="ok">جەزم</string>
+    <string name="overlay_title">Catapult ئۈستىلەتمىسى</string>
+    <string name="overlay_hint">يېپىش ئۈچۈن HOME، ESC ياكى BACKنى ئىككى قېتىم بېسىڭ</string>
+    <string name="remove_program_failed">بۇ تۈرنى ئېلىۋېتىش مۇمكىن بولمىدى</string>
+    <string name="vpn_no_clients">VPN ئۈسكۈنىلىرى تېپىلمىدى</string>
+    <string name="additional">قوشۇمچە</string>
+    <string name="external_launcher">سىرتقى قوزغاتقۇچ</string>
+    <string name="external_launcher_hint">باش قوزغاتقۇچ قىلىپ بىر پروگرامما تاللاڭ. Catapult يەنىلا Home كۇنۇپكىسى ۋە يېقىنقى پروگراممىلارنى بىر تەرەپ قىلىدۇ.</string>
+    <string name="external_launcher_none">سىرتقى قوزغاتقۇچنى ئىشلەتمەسلىك</string>
+    <string name="external_launcher_not_found">باشقا باش قوزغاتقۇچ پروگراممىسى تېپىلمىدى.</string>
+    <string name="external_launcher_picker">Catapult: قوزغاتقۇچ تاللاڭ</string>
+    <string name="recent_apps">يېقىنقى پروگراممىلار</string>
+    <string name="recent_apps_enabled">يېقىنقى پروگراممىلار ئۈستىلەتمىسىنى كۆرسىتىش</string>
+    <string name="recent_apps_size">كارتا چوڭلۇقى</string>
+    <string name="recent_apps_size_percent">ئېكران ئېگىزلىكىنىڭ %d%%</string>
+
+
+    <string name="android_settings">Android تەڭشىكى</string>
+    <string name="vpn">VPN</string>
+
 </resources>

@@ -41,4 +41,65 @@
     <string name="recent_tasks_title">ئەرکە دواییەکان (%1$d)</string>
     <string name="close_all">داخستنی هەموو</string>
 
+
+    <string name="system_settings">ڕاڤەکردنەوەکانی سیستەم</string>
+    <string name="launcher_settings">ڕاڤەکردنەوەکانی لۆنچەر</string>
+
+
+    <string name="background">باکگراوند</string>
+    <string name="background_default">بنەڕەتی</string>
+    <string name="background_image">وێنە</string>
+    <string name="background_dynamic">جوڵاو (تایلە ئەکسەوتراوە)</string>
+    <string name="background_blur_strength">هێزی لێبڕین</string>
+    <string name="select_image">هەڵبژاردنی وێنە</string>
+    <string name="selected_image">وێنە هەڵبژێردرا</string>
+    <string name="appearance">ڕوخسار</string>
+    <string name="app_cards">کارتی ئەپەکان</string>
+    <string name="app_cards_size">قەبارەی کارتەکانی ئەپ</string>
+    <string name="favorite_cards_size">قەبارەی کارتە دڵخوازەکان</string>
+    <string name="watch_next_cards_size">قەبارەی کارتەکانی کەناڵ</string>
+    <string name="card_size_percent">%d%%</string>
+    <string name="all_apps_grid_view">شێوەی تۆڕی هەموو ئەپەکان</string>
+    <string name="all_apps_grid_columns">ستوونەکانی تۆڕ</string>
+    <string name="card_corner_radius">ڕادیۆسەی گۆشەی کارت</string>
+    <string name="clock_size">قەبارەی کاتژمێر</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">کارایی جوڵە</string>
+    <string name="background_auto_perf">کارایی خۆگونجێنەر</string>
+    <string name="background_auto_perf_t0">هەموو کاریگەرییەکان: لێبڕینی GPU، Ken Burns ی نەرم</string>
+    <string name="background_auto_perf_t1">هاوسەنگ: Ken Burns لە ٢٠ fps</string>
+    <string name="background_auto_perf_t2">ساک: لێبڕین گواستراوەتەوە بۆ CPU</string>
+    <string name="background_auto_perf_t3">کەمترین: Ken Burns داخراوە، لێبڕین هەیارە</string>
+    <string name="background_blur_prebaked">لێبڕینی پێشوەختە (CPU، GPU ڕادەپارێزێت)</string>
+    <string name="background_kb_low_fps">Ken Burns لە ٢٠ fps</string>
+    <string name="background_kb_pause">وەستاندنی Ken Burns لە کاتی گۆڕینی باکگراوند</string>
+    <string name="ok">باشە</string>
+    <string name="overlay_title">Catapult ئاوێتە</string>
+    <string name="overlay_hint">دوو پەنجە دانان لەسەر HOME، ESC یان BACK بۆ داخستن</string>
+    <string name="remove_program_failed">نەتوانرا ئەم بابەتە لاببرێت</string>
+    <string name="vpn_no_clients">هیچ کلیێنتێکی VPN نەدۆزرایەوە</string>
+    <string name="additional">زیاتر</string>
+    <string name="external_launcher">لۆنچەری دەرەکی</string>
+    <string name="external_launcher_hint">ئەپێک هەڵبژێرە وەک لۆنچەری ماڵ. Catapult هێشتا دوگمەی Home و ئەپەکانی دوایی بەڕێوەدەبات.</string>
+    <string name="external_launcher_none">لۆنچەری دەرەکی بەکارنەهێنە</string>
+    <string name="external_launcher_not_found">هیچ ئەپێکی دیکەی لۆنچەری ماڵ نەدۆزرایەوە.</string>
+    <string name="external_launcher_picker">Catapult: لۆنچەر هەڵبژێرە</string>
+    <string name="recent_apps">ئەپەکانی دوایی</string>
+    <string name="recent_apps_enabled">پیشاندانی ئاوێتەی ئەپەکانی دوایی</string>
+    <string name="recent_apps_size">قەبارەی کارت</string>
+    <string name="recent_apps_size_percent">%d%% ی بەرزیی شاشە</string>
+    <string name="recent_apps_thumbnails">پیشاندانی وێنە بچووکەکان</string>
+    <string name="recent_apps_thumbnails_hint">پێشەینیی بەرهەمی ئەپی دوایی لەسەر کارتەکان</string>
+    <string name="remove_from_channel">لابردن لە %1$s</string>
+
+
+    <string name="android_settings">ڕاڤەکردنەوەکانی Android</string>
+    <string name="app_info">زانیاری ئەپ</string>
+    <string name="top_bar">باری سەرەوە</string>
+    <string name="show_search_buttons">پیشاندانی دوگمەکانی گەڕان</string>
+    <string name="show_vpn_button">پیشاندانی دوگمەی VPN</string>
+    <string name="top_bar_auto_hide">شاردنەوەی خۆکاری باری سەرەوە لەکاتی خستنەوە</string>
+    <string name="show_clock">پیشاندانی کاتژمێر</string>
+    <string name="vpn">VPN</string>
+
 </resources>

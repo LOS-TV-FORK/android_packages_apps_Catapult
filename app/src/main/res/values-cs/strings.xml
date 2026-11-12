@@ -70,4 +70,36 @@
     <string name="recent_tasks_title">Nedávné úlohy (%1$d)</string>
     <string name="close_all">Zavřít vše</string>
 
+
+    <string name="android_settings">Nastavení Androidu</string>
+    <string name="background">Pozadí</string>
+    <string name="background_default">Výchozí</string>
+    <string name="background_image">Obrázek</string>
+    <string name="background_dynamic">Dynamické (zaměřená dlaždice)</string>
+    <string name="background_blur_strength">Síla rozostření</string>
+    <string name="select_image">Vybrat obrázek</string>
+    <string name="selected_image">Obrázek vybrán</string>
+    <string name="appearance">Vzhled</string>
+    <string name="card_size_percent">%d %%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">Výkon animací</string>
+    <string name="background_auto_perf">Adaptivní výkon</string>
+    <string name="background_auto_perf_t0">Plné efekty: rozostření GPU, plynulý Ken Burns</string>
+    <string name="background_auto_perf_t1">Vyvážené: Ken Burns při 20 fps</string>
+    <string name="background_auto_perf_t2">Lehké: rozostření přesunuto na CPU</string>
+    <string name="background_auto_perf_t3">Minimální: Ken Burns vypnut, rozostření zachováno</string>
+    <string name="background_blur_prebaked">Předpočítané rozostření (CPU, šetří GPU)</string>
+    <string name="background_kb_low_fps">Ken Burns při 20 fps</string>
+    <string name="background_kb_pause">Pozastavit Ken Burns během přechodů pozadí</string>
+    <string name="ok">OK</string>
+    <string name="overlay_title">Překrytí Catapult</string>
+    <string name="overlay_hint">Dvojité stisknutí HOME, ESC nebo BACK zavře</string>
+    <string name="remove_program_failed">Tuto položku nelze odstranit</string>
+    <string name="vpn_no_clients">Nebyly nalezeny žádné VPN klienty</string>
+    <string name="vpn">VPN</string>
+
+
+    <string name="system_settings">Nastavení systému</string>
+    <string name="launcher_settings">Nastavení spouštěče</string>
+
 </resources>

@@ -78,4 +78,26 @@
     <string name="recent_tasks_title">Nedavne naloge (%1$d)</string>
     <string name="close_all">Zapri vse</string>
 
+
+    <string name="android_settings">Nastavitve Androida</string>
+    <string name="background_dynamic">Dinamično ( fokusirana ploščica)</string>
+    <string name="background_blur_strength">Moč zameglitve</string>
+    <string name="card_size_percent">%d %%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">Uspešnost animacij</string>
+    <string name="background_auto_perf">Prilagodljiva uspešnost</string>
+    <string name="background_auto_perf_t0">Polni učinki: zameglitev GPU, gladken Ken Burns</string>
+    <string name="background_auto_perf_t1">Uravnoteženo: Ken Burns pri 20 sličicah/s</string>
+    <string name="background_auto_perf_t2">Lahek: zameglitev prenesena na CPU</string>
+    <string name="background_auto_perf_t3">Minimalno: Ken Burns izkloplen, zameglitev ohranjena</string>
+    <string name="background_blur_prebaked">Vnaprej izračunana zameglitev (CPU, varčuje GPU)</string>
+    <string name="background_kb_low_fps">Ken Burns pri 20 sličicah/s</string>
+    <string name="background_kb_pause">Premor Ken Burnsa med prehodi ozadja</string>
+    <string name="ok">V redu</string>
+    <string name="overlay_title">Prekrivni Catapult</string>
+    <string name="overlay_hint">Dvokratni pritisk HOME, ESC ali BACK zapre</string>
+    <string name="remove_program_failed">Tega predmeta ni bilo mogoče odstraniti</string>
+    <string name="vpn_no_clients">Ni najdenih odjemcev VPN</string>
+    <string name="vpn">VPN</string>
+
 </resources>

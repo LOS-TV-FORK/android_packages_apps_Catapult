@@ -78,4 +78,26 @@
     <string name="recent_tasks_title">최근 작업 (%1$d)</string>
     <string name="close_all">모두 닫기</string>
 
+
+    <string name="android_settings">Android 설정</string>
+    <string name="background_dynamic">동적(포커스된 타일)</string>
+    <string name="background_blur_strength">흐림 강도</string>
+    <string name="card_size_percent">%d%%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">애니메이션 성능</string>
+    <string name="background_auto_perf">적응형 성능</string>
+    <string name="background_auto_perf_t0">전체 효과: GPU 흐림, 부드러운 Ken Burns</string>
+    <string name="background_auto_perf_t1">균형: Ken Burns 20fps</string>
+    <string name="background_auto_perf_t2">가벼움: 흐림을 CPU로 이동</string>
+    <string name="background_auto_perf_t3">최소: Ken Burns 끔, 흐림 유지</string>
+    <string name="background_blur_prebaked">사전 흐림 처리(CPU, GPU 절약)</string>
+    <string name="background_kb_low_fps">Ken Burns 20fps</string>
+    <string name="background_kb_pause">배경 전환 중 Ken Burns 일시정지</string>
+    <string name="ok">확인</string>
+    <string name="overlay_title">Catapult 오버레이</string>
+    <string name="overlay_hint">HOME, ESC 또는 BACK을 두 번 눌러 닫기</string>
+    <string name="remove_program_failed">이 항목을 삭제할 수 없습니다</string>
+    <string name="vpn_no_clients">VPN 클라이언트를 찾을 수 없습니다</string>
+    <string name="vpn">VPN</string>
+
 </resources>

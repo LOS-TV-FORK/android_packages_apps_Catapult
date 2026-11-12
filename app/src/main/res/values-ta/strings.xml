@@ -69,4 +69,36 @@
     <string name="recent_tasks_title">சமீபத்திய பணிகள் (%1$d)</string>
     <string name="close_all">அனைத்தையும் மூடு</string>
 
+
+    <string name="android_settings">அண்ட்ராய்டு அமைப்புகள்</string>
+    <string name="background_dynamic">டினாமிக் (குவியப்பட்ட ஓடு)</string>
+    <string name="background_blur_strength">மங்கலித்தல் அளவு</string>
+    <string name="card_size_percent">%d%%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">அசைவூட்ட செயல்திறன்</string>
+    <string name="background_auto_perf">மாறக்கூடிய செயல்திறன்</string>
+    <string name="background_auto_perf_t0">முழு விளைவுகள்: GPU மங்கலித்தல், சீரான Ken Burns</string>
+    <string name="background_auto_perf_t1">சமநிலை: Ken Burns 20 fps</string>
+    <string name="background_auto_perf_t2">லேசான: மங்கலித்தல் CPU-க்கு</string>
+    <string name="background_auto_perf_t3">மிகக் குறைவு: Ken Burns அணைக்கப்பட்டது, மங்கலித்தல் இருக்கும்</string>
+    <string name="background_blur_prebaked">முன்பகர்கப்பட்ட மங்கலித்தல் (CPU, GPU சேமிப்பு)</string>
+    <string name="background_kb_low_fps">Ken Burns 20 fps</string>
+    <string name="background_kb_pause">பின்னணி மாற்றங்களிஓதும் Ken Burns இடைநிறுத்து</string>
+    <string name="ok">சரி</string>
+    <string name="overlay_title">கட்டபல்ட் மேலடுக்கு</string>
+    <string name="overlay_hint">மூட HOME, ESC அல்லது BACK ஐ இரு முறை அழுத்து</string>
+    <string name="remove_program_failed">இந்த உருப்படியை நீக்க முடியவில்லை</string>
+    <string name="vpn_no_clients">VPN வாடிக்கையாளர்கள் இல்லை</string>
+    <string name="additional">கூடுதல்</string>
+    <string name="external_launcher">வெளி லாంచர்</string>
+    <string name="external_launcher_hint">முகப்பு லாంచராக ஒரு செயலியைத் தேர்ந்தெடுக்கவும். Catapult ஹோம் பொத்தான் மற்றும் சமீபத்திய செயலிகளை கையாளும்.</string>
+    <string name="external_launcher_none">வெளி லாஞ்சரைப் பயன்படுத்த வேண்டாம்</string>
+    <string name="external_launcher_not_found">வேறு முகப்பு லாஞ்சர் செயலிகள் எதுவும் இல்லை.</string>
+    <string name="external_launcher_picker">கட்டபல்ட்: லாஞ்சரைத் தேர்ந்தெடு</string>
+    <string name="recent_apps">சமீபத்திய செயலிகள்</string>
+    <string name="recent_apps_enabled">சமீபத்திய செயலி மேலடுக்கைக் காட்டு</string>
+    <string name="recent_apps_size">அட்டை அளவு</string>
+    <string name="recent_apps_size_percent">திரையின் உயரத்தில் %d%%</string>
+    <string name="vpn">VPN</string>
+
 </resources>

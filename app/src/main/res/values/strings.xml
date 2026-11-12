@@ -54,6 +54,7 @@
     <string name="keyboard_assistant">Search using keyboard</string>
     <string name="system_settings">System settings</string>
     <string name="launcher_settings">Launcher settings</string>
+    <string name="android_settings">Android settings</string>
     <string name="appearance">Appearance</string>
     <string name="background">Background</string>
     <string name="background_default">Default</string>
@@ -89,7 +90,7 @@
     <string name="clock_size_sp">%1$d sp</string>
     <string name="ok">OK</string>
     <string name="overlay_title">Catapult Overlay</string>
-    <string name="overlay_hint">Double HOME, ESC или BACK для закрытия</string>
+    <string name="overlay_hint">Double HOME, ESC or BACK to close</string>
     <string name="recent_apps">Recent apps</string>
     <string name="recent_apps_enabled">Show recent apps overlay</string>
     <string name="recent_apps_size">Card size</string>

@@ -78,4 +78,26 @@
     <string name="recent_tasks_title">Attività recenti (%1$d)</string>
     <string name="close_all">Chiudi tutto</string>
 
+
+    <string name="android_settings">Impostazioni Android</string>
+    <string name="background_dynamic">Dinamico ( riquadro messo a fuoco)</string>
+    <string name="background_blur_strength">Intensità della sfocatura</string>
+    <string name="card_size_percent">%d %%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">Prestazioni animazioni</string>
+    <string name="background_auto_perf">Prestazioni adattive</string>
+    <string name="background_auto_perf_t0">Effetti completi: sfocatura GPU, Ken Burns fluido</string>
+    <string name="background_auto_perf_t1">Bilanciato: Ken Burns a 20 fps</string>
+    <string name="background_auto_perf_t2">Leggero: sfocatura sulla CPU</string>
+    <string name="background_auto_perf_t3">Minimo: Ken Burns disattivato, sfocatura attiva</string>
+    <string name="background_blur_prebaked">Sfocatura pre-calcolata (CPU, risparmia GPU)</string>
+    <string name="background_kb_low_fps">Ken Burns a 20 fps</string>
+    <string name="background_kb_pause">Pausa di Ken Burns durante i cambi di sfondo</string>
+    <string name="ok">OK</string>
+    <string name="overlay_title">Overlay Catapult</string>
+    <string name="overlay_hint">Premi due volte HOME, ESC o BACK per chiudere</string>
+    <string name="remove_program_failed">Impossibile rimuovere questo elemento</string>
+    <string name="vpn_no_clients">Nessun client VPN trovato</string>
+    <string name="vpn">VPN</string>
+
 </resources>

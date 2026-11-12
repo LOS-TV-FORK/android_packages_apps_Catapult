@@ -78,4 +78,26 @@
     <string name="recent_tasks_title">Tasques recents (%1$d)</string>
     <string name="close_all">Tanca-ho tot</string>
 
+
+    <string name="android_settings">Configuració d\'Android</string>
+    <string name="background_dynamic">Dinàmic (mosaic enfocat)</string>
+    <string name="background_blur_strength">Intensitat del difuminat</string>
+    <string name="background_perf_title">Rendiment de l\'animació</string>
+    <string name="background_auto_perf">Rendiment adaptatiu</string>
+    <string name="background_auto_perf_t0">Efectes complets: difuminat GPU, Ken Burns suau</string>
+    <string name="background_auto_perf_t1">Equilibrat: Ken Burns a 20 fps</string>
+    <string name="background_auto_perf_t2">Lleuger: difuminat traslladat a la CPU</string>
+    <string name="background_auto_perf_t3">Mínim: Ken Burns desactivat, difuminat mantingut</string>
+    <string name="background_blur_prebaked">Difuminat precalculat (CPU, estalvia GPU)</string>
+    <string name="background_kb_low_fps">Ken Burns a 20 fps</string>
+    <string name="background_kb_pause">Pausa Ken Burns durant els canvis de fons</string>
+    <string name="card_size_percent">%d %%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="ok">D\'acord</string>
+    <string name="overlay_title">Superposició de Catapult</string>
+    <string name="overlay_hint">Prem dos cops HOME, ESC o BACK per tancar</string>
+    <string name="remove_program_failed">No s\'ha pogut eliminar aquest element</string>
+    <string name="vpn">VPN</string>
+    <string name="vpn_no_clients">No s\'han trobat clients de VPN</string>
+
 </resources>

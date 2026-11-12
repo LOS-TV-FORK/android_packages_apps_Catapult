@@ -78,4 +78,26 @@
     <string name="recent_tasks_title">最近のタスク (%1$d)</string>
     <string name="close_all">すべて閉じる</string>
 
+
+    <string name="android_settings">Android設定</string>
+    <string name="background_dynamic">動的（フォーカス中のタイル）</string>
+    <string name="background_blur_strength">ぼかしの強さ</string>
+    <string name="card_size_percent">%d%%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">アニメーションのパフォーマンス</string>
+    <string name="background_auto_perf">adaptive パフォーマンス</string>
+    <string name="background_auto_perf_t0">フル効果: GPUぼかし、滑らかなKen Burns</string>
+    <string name="background_auto_perf_t1">バランス: Ken Burnsを20 fpsで</string>
+    <string name="background_auto_perf_t2">軽量: ぼかしをCPUに移動</string>
+    <string name="background_auto_perf_t3">最小: Ken Burnsオフ、ぼかしは維持</string>
+    <string name="background_blur_prebaked">事前ぼかし（CPU使用、GPUを節約）</string>
+    <string name="background_kb_low_fps">Ken Burnsを20 fpsで</string>
+    <string name="background_kb_pause">背景の切り替え中はKen Burnsを一時停止</string>
+    <string name="ok">OK</string>
+    <string name="overlay_title">Catapultオーバーレイ</string>
+    <string name="overlay_hint">HOME、ESC、BACKのダブル押しで閉じる</string>
+    <string name="remove_program_failed">この項目を削除できませんでした</string>
+    <string name="vpn_no_clients">VPNクライアントが見つかりません</string>
+    <string name="vpn">VPN</string>
+
 </resources>

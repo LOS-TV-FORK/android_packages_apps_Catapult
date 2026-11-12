@@ -78,4 +78,26 @@
     <string name="recent_tasks_title">Legutóbbi feladatok (%1$d)</string>
     <string name="close_all">Mind bezárása</string>
 
+
+    <string name="android_settings">Android-beállítások</string>
+    <string name="background_dynamic">Dinamikus (fókuszban lévő csempe)</string>
+    <string name="background_blur_strength">Elmosás erőssége</string>
+    <string name="card_size_percent">%d%%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">Animációk teljesítménye</string>
+    <string name="background_auto_perf">Alkalmazkodó teljesítmény</string>
+    <string name="background_auto_perf_t0">Teljes effektek: GPU-elmosás, folyékony Ken Burns</string>
+    <string name="background_auto_perf_t1">Kiegyensúlyozott: Ken Burns 20 fps</string>
+    <string name="background_auto_perf_t2">Könnyű: elmosás a CPU-ra költöztetve</string>
+    <string name="background_auto_perf_t3">Minimális: Ken Burns kikapcsolva, elmosás megmarad</string>
+    <string name="background_blur_prebaked">Előre számított elmosás (CPU, GPU-t kíméli)</string>
+    <string name="background_kb_low_fps">Ken Burns 20 fps</string>
+    <string name="background_kb_pause">Ken Burns szüneteltetése háttérváltás során</string>
+    <string name="ok">OK</string>
+    <string name="overlay_title">Catapult-overlay</string>
+    <string name="overlay_hint">Kétszeri HOME, ESC vagy BACK nyomás bezárja</string>
+    <string name="remove_program_failed">Az elem nem távolítható el</string>
+    <string name="vpn_no_clients">Nincs VPN kliens</string>
+    <string name="vpn">VPN</string>
+
 </resources>

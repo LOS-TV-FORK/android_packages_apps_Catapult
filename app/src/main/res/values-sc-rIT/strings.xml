@@ -61,4 +61,46 @@
     <string name="recent_tasks_title">Atividade ùrtimas (%1$d)</string>
     <string name="close_all">Sèrra totu</string>
 
+
+    <string name="background">Fundu</string>
+    <string name="background_default">Preetziosu</string>
+    <string name="background_image">Immàgine</string>
+    <string name="background_dynamic">Dinàmicu (matonedda in focu)</string>
+    <string name="background_blur_strength">Intensidade de s\'isfarulladura</string>
+    <string name="select_image">Seletziona immàgine</string>
+    <string name="selected_image">Immàgine seletzionada</string>
+    <string name="appearance">Ambiente</string>
+    <string name="card_size_percent">%d %%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">Perfurmàntzia de is animatziones</string>
+    <string name="background_auto_perf">Perfurmàntzia adaptiva</string>
+    <string name="background_auto_perf_t0">Totu is efetos: isfarulladura GPU, Ken Burns bòidu</string>
+    <string name="background_auto_perf_t1">Bilantziadu: Ken Burns a 20 fps</string>
+    <string name="background_auto_perf_t2">Lèbiu: isfarulladura tramudada a CPU</string>
+    <string name="background_auto_perf_t3">Mìnimu: Ken Burns sarau, isfarulladura cunservada</string>
+    <string name="background_blur_prebaked">Isfarulladura pre-computada (CPU, ispàrret GPU)</string>
+    <string name="background_kb_low_fps">Ken Burns a 20 fps</string>
+    <string name="background_kb_pause">Pàusa de Ken Burns durante is càmbios de fundu</string>
+    <string name="ok">Va bene</string>
+    <string name="overlay_title">Superpone Catapult</string>
+    <string name="overlay_hint">Incarca duus bias HOME, ESC o BACK pro serrare</string>
+    <string name="remove_program_failed">Non fiat possibile levaru custu elementu</string>
+    <string name="vpn_no_clients">Perunu client VPN agatadu</string>
+    <string name="additional">In prus</string>
+    <string name="external_launcher">Incundadore esternu</string>
+    <string name="external_launcher_hint">Seletziona una aplicatzione comu incundadore de domo. Catapult at a sighire a manìgiare su butone Home e is aplicatziones ùrtimas.</string>
+    <string name="external_launcher_none">Non imprea incundadore esternu</string>
+    <string name="external_launcher_not_found">Perunu àtera aplicatzione incundadore agatada.</string>
+    <string name="external_launcher_picker">Catapult: seletziona incundadore</string>
+    <string name="recent_apps">Aplicatziones ùrtimas</string>
+    <string name="recent_apps_enabled">Amustra sa superpone de aplicatziones ùrtimas</string>
+    <string name="recent_apps_size">Mànnia de sa carta</string>
+    <string name="recent_apps_size_percent">%d %% de s\'artza de ischirmu</string>
+    <string name="system_settings">Impostatziones de sistema</string>
+    <string name="launcher_settings">Impostatziones de incundadore</string>
+
+
+    <string name="android_settings">Impostatziones Android</string>
+    <string name="vpn">VPN</string>
+
 </resources>

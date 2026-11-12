@@ -80,4 +80,26 @@
     <string name="recent_tasks_title">Недавние задачи (%1$d)</string>
     <string name="close_all">Закрыть все</string>
 
+
+    <string name="android_settings">Настройки Android</string>
+    <string name="background_dynamic">Динамический (плитка в фокусе)</string>
+    <string name="background_blur_strength">Сила размытия</string>
+    <string name="card_size_percent">%d %%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">Производительность анимации</string>
+    <string name="background_auto_perf">Адаптивная производительность</string>
+    <string name="background_auto_perf_t0">Полные эффекты: GPU-размытие, плавный Ken Burns</string>
+    <string name="background_auto_perf_t1">Сбалансированный: Ken Burns при 20 fps</string>
+    <string name="background_auto_perf_t2">Лёгкий: размытие на CPU</string>
+    <string name="background_auto_perf_t3">Минимальный: Ken Burns выключен, размытие сохранено</string>
+    <string name="background_blur_prebaked">Предварительное размытие (CPU, экономит GPU)</string>
+    <string name="background_kb_low_fps">Ken Burns при 20 fps</string>
+    <string name="background_kb_pause">Пауза Ken Burns при смене фона</string>
+    <string name="ok">ОК</string>
+    <string name="overlay_title">Оверлей Catapult</string>
+    <string name="overlay_hint">Двойное нажатие HOME, ESC или BACK для закрытия</string>
+    <string name="remove_program_failed">Не удалось удалить этот элемент</string>
+    <string name="vpn_no_clients">VPN-клиенты не найдены</string>
+    <string name="vpn">VPN</string>
+
 </resources>

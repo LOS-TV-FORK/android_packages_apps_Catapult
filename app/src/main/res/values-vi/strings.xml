@@ -78,4 +78,26 @@
     <string name="recent_tasks_title">Tác vụ gần đây (%1$d)</string>
     <string name="close_all">Đóng tất cả</string>
 
+
+    <string name="android_settings">Cài đặt Android</string>
+    <string name="background_dynamic">Động (ô đang được chọn)</string>
+    <string name="background_blur_strength">Cường độ làm mờ</string>
+    <string name="card_size_percent">%d%%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">Hiệu suất animation</string>
+    <string name="background_auto_perf">Hiệu suất thích ứng</string>
+    <string name="background_auto_perf_t0">Đầy đủ hiệu ứng: làm mờ GPU, Ken Burns mượt</string>
+    <string name="background_auto_perf_t1">Cân bằng: Ken Burns ở 20 fps</string>
+    <string name="background_auto_perf_t2">Nhẹ: chuyển làm mờ sang CPU</string>
+    <string name="background_auto_perf_t3">Tối giản: tắt Ken Burns, giữ làm mờ</string>
+    <string name="background_blur_prebaked">Làm mờ tính trước (CPU, tiết kiệm GPU)</string>
+    <string name="background_kb_low_fps">Ken Burns ở 20 fps</string>
+    <string name="background_kb_pause">Tạm dừng Ken Burns khi chuyển nền</string>
+    <string name="ok">OK</string>
+    <string name="overlay_title">Lớp phủ Catapult</string>
+    <string name="overlay_hint">Nhấn đúp HOME, ESC hoặc BACK để đóng</string>
+    <string name="remove_program_failed">Không thể xóa mục này</string>
+    <string name="vpn_no_clients">Không tìm thấy client VPN</string>
+    <string name="vpn">VPN</string>
+
 </resources>

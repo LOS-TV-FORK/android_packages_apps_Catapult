@@ -78,4 +78,26 @@
     <string name="recent_tasks_title">Скорошни задачи (%1$d)</string>
     <string name="close_all">Затваряне на всички</string>
 
+
+    <string name="android_settings">Настройки на Android</string>
+    <string name="background_dynamic">Динамичен (фокусиран плочка)</string>
+    <string name="background_blur_strength">Сила на замразяването</string>
+    <string name="card_size_percent">%d%%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">Производителност на анимациите</string>
+    <string name="background_auto_perf">Адаптивна производителност</string>
+    <string name="background_auto_perf_t0">Пълни ефекти: GPU замразяване, плавен Ken Burns</string>
+    <string name="background_auto_perf_t1">Балансирано: Ken Burns при 20 fps</string>
+    <string name="background_auto_perf_t2">Леко: замразяването е преместено на CPU</string>
+    <string name="background_auto_perf_t3">Минимално: Ken Burns изключен, замразяването е запазено</string>
+    <string name="background_blur_prebaked">Предварително изчислено замразяване (CPU, пести GPU)</string>
+    <string name="background_kb_low_fps">Ken Burns при 20 fps</string>
+    <string name="background_kb_pause">Пауза на Ken Burns при смяна на фона</string>
+    <string name="ok">Добре</string>
+    <string name="overlay_title">Припокриване на Catapult</string>
+    <string name="overlay_hint">Двойно натискане на HOME, ESC или BACK затваря</string>
+    <string name="remove_program_failed">Елементът не можа да бъде премахнат</string>
+    <string name="vpn_no_clients">Няма намерени VPN клиенти</string>
+    <string name="vpn">VPN</string>
+
 </resources>

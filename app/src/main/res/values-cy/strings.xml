@@ -28,4 +28,81 @@
     <string name="recent_tasks_title">Taskau diweddar (%1$d)</string>
     <string name="close_all">Cau Cyfan</string>
 
+
+    <string name="settings">Gosodiadau</string>
+    <string name="all_apps">Holl aplysiadau</string>
+    <string name="favorites">Ffaboriadau</string>
+    <string name="uninstall">Dadsodli</string>
+    <string name="mark_as_favorite">Nodi fel ffaboriedig</string>
+    <string name="modify_favorites_short">Addasu ffaboriadau</string>
+    <string name="move">Symud</string>
+    <string name="remove_favorite">Tynnu ffaboriedig</string>
+    <string name="watch_next">Gwylio nesaf</string>
+    <string name="channel_title">%1$s: %2$s</string>
+    <string name="order_channels_guide">I drefnu sianeli, pwyswch yn hir ar sianel a symudwch hi i\'r safle dymunol.</string>
+    <string name="search">Chwilio</string>
+    <string name="modify_favorites">Addasu dy aplysiadau ffaboriedig</string>
+    <string name="system_modal">Opsiynau\'r system</string>
+    <string name="sleep">Cysgu</string>
+    <string name="network_status">Rhwydwaith\n%1$s</string>
+    <string name="bluetooth_status">Atalusu\n%1$s</string>
+    <string name="not_connected">Heb gysylltu</string>
+    <string name="enabled">Galluogedig</string>
+    <string name="disabled">Analluogedig</string>
+    <string name="app_permissions_toast">Ni rhoddodd y defnyddiwr caniatâd.</string>
+    <string name="home_role_request_dialog_title">Gosod fel lansiwr</string>
+    <string name="home_role_request_dialog_message">Gall yr ap hon weithredu fel yr ap haf erthygl. Ydych chi eisiau agor yr ap gosodiadau i newid yr lansiwr?</string>
+    <string name="home_role_request_dialog_neutral">Yn hwyrach</string>
+    <string name="home_role_request_dialog_negative">Peidiwch ac ateb eto</string>
+    <string name="unknown">Anhysbys</string>
+    <string name="no_notification_access">Dim mynediad hysbysiadau</string>
+    <string name="allow_notification_access">Caniatáu mynediad hysbysiadau</string>
+    <string name="dismiss">Diystyru</string>
+    <string name="connected">Wedi cysylltu</string>
+    <string name="mic_assistant">Chwilio gan ddefnyddio\'r meicroffon</string>
+    <string name="keyboard_assistant">Chwilio gan ddefnyddio\'r bysellfwrdd</string>
+    <string name="system_settings">Gosodiadau\'r system</string>
+    <string name="launcher_settings">Gosodiadau\'r lansiwr</string>
+
+
+    <string name="background">Cefndir</string>
+    <string name="background_default">Rhagosodol</string>
+    <string name="background_image">Delwedd</string>
+    <string name="background_dynamic">Deinamig (teilsen wedi ffocys)</string>
+    <string name="background_blur_strength">Criander aneglur</string>
+    <string name="select_image">Dewis delwedd</string>
+    <string name="selected_image">Delwedd wedi gaus</string>
+    <string name="appearance">Ymddangosiad</string>
+    <string name="card_size_percent">%d %%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">Perfformiad animeiddiad</string>
+    <string name="background_auto_perf">Perfformiad addasol</string>
+    <string name="background_auto_perf_t0">Effaith llawn: aneglurder GPU, Ken Burns llyfn</string>
+    <string name="background_auto_perf_t1">Gydbwysoledig: Ken Burns ar 20 fps</string>
+    <string name="background_auto_perf_t2">Ysgafn: symud yr aneglurder i\'r CPU</string>
+    <string name="background_auto_perf_t3">Isafswm: Ken Burns wedi diffodd, cadw\'r aneglurder</string>
+    <string name="background_blur_prebaked">Aneglurder o\'r blaen (CPU, yn arbed GPU)</string>
+    <string name="background_kb_low_fps">Ken Burns ar 20 fps</string>
+    <string name="background_kb_pause">Saib Ken Burns yn ystod newidiadau\'r cefndir</string>
+    <string name="ok">Iawn</string>
+    <string name="overlay_title">Gorchudd Catapult</string>
+    <string name="overlay_hint">Gwasgu HOME, ESC neu BACK dwywaith i gau</string>
+    <string name="remove_program_failed">Methodd gwaredu\'r eitem</string>
+    <string name="vpn_no_clients">Ni chanfuwyd cleientiaid VPN</string>
+    <string name="additional">Ychwanegol</string>
+    <string name="external_launcher">Lansiwr allanol</string>
+    <string name="external_launcher_hint">Dewiswch ap i\'w ddefnyddio fel y lansiwr cartref. Bydd Catapult yn dal yn delio gyda\'r botwm Home ac apau diweddar.</string>
+    <string name="external_launcher_none">Be defnyddio lansiwr allanol</string>
+    <string name="external_launcher_not_found">Ni chanfuwyd unrhyw apau lansiwr eraill.</string>
+    <string name="external_launcher_picker">Catapult: dewis y lansiwr</string>
+    <string name="recent_apps">Apau diweddaraf</string>
+    <string name="recent_apps_enabled">Dangos y gorchudd apau diweddar</string>
+    <string name="recent_apps_size">Maint y cwrdd</string>
+    <string name="recent_apps_size_percent">%d %% o uchder yr sgrin</string>
+
+
+    <string name="android_settings">Gosodiadau Android</string>
+    <string name="modify_channels">Newid sianeli</string>
+    <string name="vpn">VPN</string>
+
 </resources>

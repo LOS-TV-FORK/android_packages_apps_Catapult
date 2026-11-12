@@ -75,4 +75,31 @@
     <string name="recent_tasks_title">Recente taken (%1$d)</string>
     <string name="close_all">Alles sluiten</string>
 
+
+    <string name="android_settings">Android-instellingen</string>
+    <string name="background_dynamic">Dynamisch (gefocuste tegel)</string>
+    <string name="background_blur_strength">Intensiteit van vervaging</string>
+    <string name="card_size_percent">%d%%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">Animatieprestaties</string>
+    <string name="background_auto_perf">Adaptieve prestaties</string>
+    <string name="background_auto_perf_t0">Alle effecten: GPU-vervaging, vloeiende Ken Burns</string>
+    <string name="background_auto_perf_t1">Gebalanceerd: Ken Burns op 20 fps</string>
+    <string name="background_auto_perf_t2">Licht: vervaging naar CPU verplaatst</string>
+    <string name="background_auto_perf_t3">Minimaal: Ken Burns uit, vervaging behouden</string>
+    <string name="background_blur_prebaked">Vervaging vooraf berekend (CPU, bespaart GPU)</string>
+    <string name="background_kb_low_fps">Ken Burns op 20 fps</string>
+    <string name="background_kb_pause">Ken Burns pauzeren tijdens achtergrondovergangen</string>
+    <string name="ok">OK</string>
+    <string name="overlay_title">Catapult-overlay</string>
+    <string name="overlay_hint">Dubbeldruk op HOME, ESC of BACK sluit</string>
+    <string name="remove_program_failed">Kon dit item niet verwijderen</string>
+    <string name="vpn_no_clients">Geen VPN-clients gevonden</string>
+    <string name="vpn">VPN</string>
+
+
+    <string name="all_apps">Alle apps</string>
+    <string name="mark_as_favorite">Markeren als favoriet</string>
+    <string name="channel_title">%1$s: %2$s</string>
+
 </resources>

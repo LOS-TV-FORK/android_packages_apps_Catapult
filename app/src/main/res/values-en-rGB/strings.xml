@@ -62,4 +62,40 @@
     <string name="recent_tasks_title">Recent tasks (%1$d)</string>
     <string name="close_all">Close All</string>
 
+
+    <string name="remove_program_failed">Could not remove this item</string>
+    <string name="vpn">VPN</string>
+    <string name="vpn_no_clients">VPN clients not found</string>
+    <string name="android_settings">Android settings</string>
+    <string name="appearance">Appearance</string>
+    <string name="background">Background</string>
+    <string name="background_default">Default</string>
+    <string name="background_image">Image</string>
+    <string name="background_dynamic">Dynamic (focused tile)</string>
+    <string name="background_blur_strength">Blur strength</string>
+    <string name="select_image">Select image</string>
+    <string name="selected_image">Image selected</string>
+    <string name="app_info">App info</string>
+    <string name="app_cards">App cards</string>
+    <string name="app_cards_size">App cards size</string>
+    <string name="favorite_cards_size">Favorite cards size</string>
+    <string name="watch_next_cards_size">Channel cards size</string>
+    <string name="card_size_percent">%d%%</string>
+    <string name="all_apps_grid_view">All apps grid view</string>
+    <string name="background_perf_title">Animation performance</string>
+    <string name="background_auto_perf">Adaptive performance</string>
+    <string name="background_auto_perf_t0">Full effects: GPU blur, smooth Ken Burns</string>
+    <string name="background_auto_perf_t1">Balanced: Ken Burns at 20 fps</string>
+    <string name="background_auto_perf_t2">Light: blur moved to CPU</string>
+    <string name="background_auto_perf_t3">Minimal: Ken Burns off, blur kept</string>
+    <string name="background_blur_prebaked">Pre-bake blur (CPU, saves GPU)</string>
+    <string name="background_kb_low_fps">Ken Burns at 20 fps</string>
+    <string name="background_kb_pause">Pause Ken Burns during background transitions</string>
+    <string name="all_apps_grid_columns">Grid columns</string>
+    <string name="card_corner_radius">Card corner radius</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="ok">OK</string>
+    <string name="overlay_title">Catapult Overlay</string>
+    <string name="overlay_hint">Double HOME, ESC or BACK to close</string>
+
 </resources>

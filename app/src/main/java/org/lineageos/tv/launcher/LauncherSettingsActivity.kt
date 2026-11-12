@@ -23,5 +23,12 @@ class LauncherSettingsActivity : ModalActivity(R.layout.activity_launcher_settin
         findViewById<android.view.View>(R.id.additional_item)?.setOnClickListener {
             startActivity(Intent(this, AdditionalSettingsActivity::class.java))
         }
+
+        findViewById<android.view.View>(R.id.android_settings_item)?.setOnClickListener {
+            startActivity(
+                Intent(android.provider.Settings.ACTION_SETTINGS)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+        }
     }
 }

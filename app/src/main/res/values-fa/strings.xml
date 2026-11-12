@@ -78,4 +78,26 @@
     <string name="recent_tasks_title">وظایف اخیر (%1$d)</string>
     <string name="close_all">بستن همه</string>
 
+
+    <string name="android_settings">تنظیمات Android</string>
+    <string name="background_dynamic">پویا (کاشی متمرکز)</string>
+    <string name="background_blur_strength">شدت تاری</string>
+    <string name="card_size_percent">%d%%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">عملکرد انیمیشن</string>
+    <string name="background_auto_perf">عملکرد سازگار</string>
+    <string name="background_auto_perf_t0">جلوه‌های کامل: تاری GPU، Ken Burns نرم</string>
+    <string name="background_auto_perf_t1">متعادل: Ken Burns با ۲۰ فریم</string>
+    <string name="background_auto_perf_t2">سبک: انتقال تاری به CPU</string>
+    <string name="background_auto_perf_t3">حداقل: Ken Burns خاموش، تاری حفظ شده</string>
+    <string name="background_blur_prebaked">پیش‌حساب تاری (CPU، صرفه‌جویی GPU)</string>
+    <string name="background_kb_low_fps">Ken Burns با ۲۰ فریم</string>
+    <string name="background_kb_pause">توقف Ken Burns هنگام تعویض پس‌زمینه</string>
+    <string name="ok">تأیید</string>
+    <string name="overlay_title">هم‌پوشانی Catapult</string>
+    <string name="overlay_hint">برای بستن، HOME، ESC یا BACK را دوباره فشار دهید</string>
+    <string name="remove_program_failed">این مورد حذف نشد</string>
+    <string name="vpn_no_clients">کلاینت VPN یافت نشد</string>
+    <string name="vpn">VPN</string>
+
 </resources>

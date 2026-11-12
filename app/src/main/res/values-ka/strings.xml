@@ -61,4 +61,48 @@
     <string name="recent_tasks_title">ბოლო ამოცანები (%1$d)</string>
     <string name="close_all">ყველას დახურვა</string>
 
+
+    <string name="system_settings">სისტემის პარამეტრები</string>
+    <string name="launcher_settings">გამშვების პარამეტრები</string>
+
+
+    <string name="background">ფონი</string>
+    <string name="background_default">ნაგულისხმევი</string>
+    <string name="background_image">სურათი</string>
+    <string name="background_dynamic">დინამიკური (ფოკუსირებული ფიფქა)</string>
+    <string name="background_blur_strength">ბუნდის სიძლიერე</string>
+    <string name="select_image">სურათის არჩევა</string>
+    <string name="selected_image">სურათი არჩეულია</string>
+    <string name="appearance">გარეგნობა</string>
+    <string name="card_size_percent">%d%%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">ანიმაციის წარმადობა</string>
+    <string name="background_auto_perf">ადაპტირებადი წარმადობა</string>
+    <string name="background_auto_perf_t0">სრული ეფექტები: GPU ბუნდი, ლამაზი Ken Burns</string>
+    <string name="background_auto_perf_t1">შეწონილი: Ken Burns 20 fps</string>
+    <string name="background_auto_perf_t2">მსუბუქი: ბუნდი CPU-ზე გადატანილი</string>
+    <string name="background_auto_perf_t3">მინიმალური: Ken Burns გამორთული, ბუნდი დარჩენილი</string>
+    <string name="background_blur_prebaked">წინასწარი ბუნდი (CPU, GPU-ს იჭუნებს)</string>
+    <string name="background_kb_low_fps">Ken Burns 20 fps</string>
+    <string name="background_kb_pause">Ken Burns-ის პაუზა ფონის ცვლილებისას</string>
+    <string name="ok">OK</string>
+    <string name="overlay_title">Catapult-ის ზეფენი</string>
+    <string name="overlay_hint">ორჯერ დააჭირეთ HOME, ESC ან BACK დასახურად</string>
+    <string name="remove_program_failed">ელემენტი ვერ მოცილდა</string>
+    <string name="vpn_no_clients">VPN კლიენტები ვერ მოიძებნა</string>
+    <string name="additional">დამატებით</string>
+    <string name="external_launcher">გარე გამშვები</string>
+    <string name="external_launcher_hint">აირჩიეთ აპლიკაცია მთავარი გამშვების სახით. Catapult მაინც დამუშავებს Home ღილაკს და ბოლო აპლიკაციებს.</string>
+    <string name="external_launcher_none">გარე გამშვების გამოუყენებლობა</string>
+    <string name="external_launcher_not_found">სხვა მთავარი გამშვები აპლიკაციები ვერ მოიძებნა.</string>
+    <string name="external_launcher_picker">Catapult: აირჩიეთ გამშვები</string>
+    <string name="recent_apps">ბოლო აპლიკაციები</string>
+    <string name="recent_apps_enabled">ბოლო აპლიკაციების ზეფენის ჩვენება</string>
+    <string name="recent_apps_size">ბარათის ზომა</string>
+    <string name="recent_apps_size_percent">ეკრანის სიმაღლის %d%%</string>
+
+
+    <string name="android_settings">Android-ის პარამეტრები</string>
+    <string name="vpn">VPN</string>
+
 </resources>

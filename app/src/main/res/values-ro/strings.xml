@@ -78,4 +78,26 @@
     <string name="recent_tasks_title">Activități recente (%1$d)</string>
     <string name="close_all">Închide toate</string>
 
+
+    <string name="android_settings">Setări Android</string>
+    <string name="background_dynamic">Dinamic (plocha focusată)</string>
+    <string name="background_blur_strength">Intensitatea estompării</string>
+    <string name="card_size_percent">%d%%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">Performanța animațiilor</string>
+    <string name="background_auto_perf">Performanță adaptivă</string>
+    <string name="background_auto_perf_t0">Efecte complete: estompare GPU, Ken Burns lin</string>
+    <string name="background_auto_perf_t1">Echilibrat: Ken Burns la 20 fps</string>
+    <string name="background_auto_perf_t2">Ușor: estomparea mutată pe CPU</string>
+    <string name="background_auto_perf_t3">Minim: Ken Burns oprit, estomparea păstrată</string>
+    <string name="background_blur_prebaked">Estompare precalculată (CPU, economisește GPU)</string>
+    <string name="background_kb_low_fps">Ken Burns la 20 fps</string>
+    <string name="background_kb_pause">Întrerupe Ken Burns în timpul tranzițiilor de fundal</string>
+    <string name="ok">OK</string>
+    <string name="overlay_title">Suprapunere Catapult</string>
+    <string name="overlay_hint">Apasă de două ori HOME, ESC sau BACK pentru a închide</string>
+    <string name="remove_program_failed">Nu s-a putut elimina acest element</string>
+    <string name="vpn_no_clients">Nu s-au găsit clienți VPN</string>
+    <string name="vpn">VPN</string>
+
 </resources>

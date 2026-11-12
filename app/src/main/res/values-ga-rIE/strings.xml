@@ -63,4 +63,44 @@
     <string name="recent_tasks_title">Tascanna le déanaí (%1$d)</string>
     <string name="close_all">Dún Uile</string>
 
+
+    <string name="background">Cúlra</string>
+    <string name="background_default">Réamhshocraithe</string>
+    <string name="background_image">Íomhá</string>
+    <string name="background_dynamic">Dinimiciúil (tile dírithe)</string>
+    <string name="background_blur_strength">Neart an chur in mhúine</string>
+    <string name="select_image">Roghnaigh íomhá</string>
+    <string name="selected_image">Íomhá roghnaithe</string>
+    <string name="appearance">Cuma</string>
+    <string name="card_size_percent">%d %%</string>
+    <string name="clock_size_sp">%1$d sp</string>
+    <string name="background_perf_title">Feidhmisteacht beochana</string>
+    <string name="background_auto_perf">Feidhmisteacht oiriúnaitheach</string>
+    <string name="background_auto_perf_t0">Gach tionchar: cur in mhúine GPU, Ken Burns réidh</string>
+    <string name="background_auto_perf_t1">Cothrom: Ken Burns ag 20 fps</string>
+    <string name="background_auto_perf_t2">Aerach: cur in mhúine ar CPU</string>
+    <string name="background_auto_perf_t3">Íosmhéid: Ken Burns as, cur in mhúine coimeadta</string>
+    <string name="background_blur_prebaked">Cur in mhúine réamh-ríofaithe (CPU, ag sábháil GPU)</string>
+    <string name="background_kb_low_fps">Ken Burns ag 20 fps</string>
+    <string name="background_kb_pause">Ken Burns ar sos le linn athruithe cúlra</string>
+    <string name="ok">Ceart</string>
+    <string name="overlay_title">Forlú Catapult</string>
+    <string name="overlay_hint">Brúigh HOME, ESC nó BACK faoi dhó chun dúnadh</string>
+    <string name="remove_program_failed">Níorbh fhéidir an mír seo a bhaint</string>
+    <string name="vpn_no_clients">Níor aimsíodh cliant VPN</string>
+    <string name="additional">Breise</string>
+    <string name="external_launcher">Launseoir sheachtrach</string>
+    <string name="external_launcher_hint">Roghnaigh feidhm mar launseoir baile. Déileoidh Catapult le cnaipe Home agus feidhmeanna le déanaí fós.</string>
+    <string name="external_launcher_none">Ná húsáid launseoir sheachtrach</string>
+    <string name="external_launcher_not_found">Níor aimsíodh aon fheidhm launseora eile.</string>
+    <string name="external_launcher_picker">Catapult: roghnaigh an launseoir</string>
+    <string name="recent_apps">Feidhmeanna le déanaí</string>
+    <string name="recent_apps_enabled">Taispeáin an forlú feidhmeanna le déanaí</string>
+    <string name="recent_apps_size">Méid an chárt</string>
+    <string name="recent_apps_size_percent">%d %% de airde an scáin</string>
+
+
+    <string name="android_settings">Socruithe Android</string>
+    <string name="vpn">VPN</string>
+
 </resources>
