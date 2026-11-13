@@ -7,6 +7,7 @@ package org.lineageos.tv.launcher.view
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Paint
 import android.net.Uri
 import android.provider.Settings
 import android.util.AttributeSet
@@ -38,7 +39,11 @@ import kotlin.reflect.safeCast
         protected val previewView by lazy { findViewById<ImageView>(R.id.app_preview) }
         protected val iconContainer by lazy { findViewById<LinearLayout>(R.id.app_with_icon)!! }
         protected val iconView by lazy { findViewById<ImageView>(R.id.app_icon)!! }
-        protected val nameView by lazy { findViewById<TextView>(R.id.app_name)!! }
+        protected val nameView by lazy {
+            findViewById<TextView>(R.id.app_name)!!.apply {
+                paintFlags = paintFlags or Paint.SUBPIXEL_TEXT_FLAG or Paint.LINEAR_TEXT_FLAG
+            }
+        }
 
         private var uninstallable: Boolean = true
         protected var hasCustomIcon: Boolean = false

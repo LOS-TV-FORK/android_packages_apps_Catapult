@@ -7,6 +7,7 @@ package org.lineageos.tv.launcher.view
 
 import android.animation.AnimatorInflater
 import android.content.Context
+import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.RenderEffect
@@ -42,7 +43,11 @@ class WatchNextCard @JvmOverloads constructor(
     private val bannerBackgroundView: ImageView by lazy { findViewById(R.id.app_banner_background)!! }
     private val bannerView: ImageView by lazy { findViewById(R.id.app_banner)!! }
     private val smallBannerView: ImageView by lazy { findViewById(R.id.app_banner_small)!! }
-    private val title: TextView by lazy { findViewById(R.id.title)!! }
+    private val title: TextView by lazy {
+        findViewById<TextView>(R.id.title)!!.apply {
+            paintFlags = paintFlags or Paint.SUBPIXEL_TEXT_FLAG or Paint.LINEAR_TEXT_FLAG
+        }
+    }
     private val progressView: LinearProgressIndicator by lazy { findViewById(R.id.watch_progress)!! }
 
     init {
