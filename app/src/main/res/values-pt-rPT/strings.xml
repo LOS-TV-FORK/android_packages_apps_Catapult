@@ -59,6 +59,8 @@
     <string name="recent_apps_thumbnails">Mostrar miniaturas</string>
     <string name="recent_apps_thumbnails_hint">Pré-visualização do último ecrã da aplicação nos cartões</string>
     <string name="app_info">Info da app</string>
+    <string name="hide_app">Ocultar esta app</string>
+    <string name="hidden_apps">Apps ocultas</string>
 
     <!-- App cards settings -->
     <string name="app_cards">Cartões de aplicações</string>

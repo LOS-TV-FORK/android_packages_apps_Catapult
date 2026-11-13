@@ -93,6 +93,8 @@
     <string name="recent_apps_thumbnails_hint">Pratinjau layar terakhir aplikasi pada kartu</string>
     <string name="remove_from_channel">Hapus dari %1$s</string>
     <string name="app_info">Info aplikasi</string>
+    <string name="hide_app">Sembunyikan aplikasi ini</string>
+    <string name="hidden_apps">Aplikasi tersembunyi</string>
     <string name="top_bar">Bilah atas</string>
     <string name="show_search_buttons">Tampilkan tombol pencarian</string>
     <string name="show_vpn_button">Tampilkan tombol VPN</string>

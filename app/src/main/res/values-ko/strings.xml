@@ -59,6 +59,8 @@
     <string name="recent_apps_thumbnails">썸네일 표시</string>
     <string name="recent_apps_thumbnails_hint">카드에 마지막 화면의 미리보기를 표시합니다</string>
     <string name="app_info">앱 정보</string>
+    <string name="hide_app">이 앱 숨기기</string>
+    <string name="hidden_apps">숨긴 앱</string>
 
     <!-- App cards settings -->
     <string name="app_cards">앱 카드</string>

@@ -59,6 +59,8 @@
     <string name="recent_apps_thumbnails">Miniaturansichten anzeigen</string>
     <string name="recent_apps_thumbnails_hint">Vorschau des letzten App-Bildschirms auf den Karten</string>
     <string name="app_info">App-Info</string>
+    <string name="hide_app">Diese App ausblenden</string>
+    <string name="hidden_apps">Ausgeblendete Apps</string>
 
     <!-- App cards settings -->
     <string name="app_cards">App-Karten</string>

@@ -92,6 +92,14 @@ class LauncherViewModel(application: Application) : AndroidViewModel(application
             initialValue = listOf(),
         )
 
+    val hiddenApps = LauncherRepository.hiddenApps(context)
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = setOf(),
+        )
+
     val watchNextPrograms = LauncherRepository.watchNextPrograms(context)
         .flowOn(Dispatchers.IO)
         .stateIn(

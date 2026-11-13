@@ -59,6 +59,8 @@
     <string name="recent_apps_thumbnails">הצג תמונות ממוזערות</string>
     <string name="recent_apps_thumbnails_hint">תצוגה מקדימה של המסך האחרון של האפליקציה בכרטיסים</string>
     <string name="app_info">פרטי האפליקציה</string>
+    <string name="hide_app">הסתר אפליקציה זו</string>
+    <string name="hidden_apps">אפליקציות מוסתרות</string>
 
     <!-- App cards settings -->
     <string name="app_cards">כרטיסי אפליקציות</string>

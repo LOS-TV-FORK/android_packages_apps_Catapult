@@ -59,6 +59,8 @@
     <string name="recent_apps_thumbnails">Показване на миниатюри</string>
     <string name="recent_apps_thumbnails_hint">Преглед на последния екран на приложението в картите</string>
     <string name="app_info">Информация за приложението</string>
+    <string name="hide_app">Скрий това приложение</string>
+    <string name="hidden_apps">Скрити приложения</string>
 
     <!-- App cards settings -->
     <string name="app_cards">Карти на приложенията</string>

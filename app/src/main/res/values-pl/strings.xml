@@ -58,7 +58,9 @@
     <string name="recent_apps_size_percent">%d%% wysokości ekranu</string>
     <string name="recent_apps_thumbnails">Pokaż miniatury</string>
     <string name="recent_apps_thumbnails_hint">Podglad ostatniego ekranu aplikacji na kartach</string>
-    <string name="app_info">Informacje o aplikacji</string>
+<string name="app_info">Informacje o aplikacji</string>
+    <string name="hide_app">Ukryj tę aplikację</string>
+    <string name="hidden_apps">Ukryte aplikacje</string>
 
     <!-- App cards settings -->
     <string name="app_cards">Karty aplikacji</string>

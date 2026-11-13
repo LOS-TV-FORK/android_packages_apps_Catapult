@@ -58,6 +58,8 @@
     <string name="recent_apps_thumbnails">Εμφάνιση μικρογραφιών</string>
     <string name="recent_apps_thumbnails_hint">Προεπισκόπηση της τελευταίας οθόνης της εφαρμογής στις κάρτες</string>
     <string name="app_info">Πληροφορίες εφαρμογής</string>
+    <string name="hide_app">Απόκρυψη εφαρμογής</string>
+    <string name="hidden_apps">Κρυφές εφαρμογές</string>
 
     <!-- App cards settings -->
     <string name="app_cards">Κάρτες εφαρμογών</string>

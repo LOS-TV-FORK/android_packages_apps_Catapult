@@ -18,6 +18,7 @@ class AllAppsAdapter : TvAdapter<LeanbackAppInfo, AppCard>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val card = AppCard(parent.context).apply {
             setGridMode(gridMode)
+            hideable = true
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT

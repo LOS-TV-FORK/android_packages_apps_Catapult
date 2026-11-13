@@ -59,6 +59,8 @@
     <string name="recent_apps_thumbnails">نمایش تصاویر کوچک</string>
     <string name="recent_apps_thumbnails_hint">پیش‌نماهای آخرین صفحهٔ برنامه در کارت‌ها</string>
     <string name="app_info">اطلاعات برنامه</string>
+    <string name="hide_app">پنهان کردن این برنامه</string>
+    <string name="hidden_apps">برنامه‌های پنهان</string>
 
     <!-- App cards settings -->
     <string name="app_cards">کارت‌های برنامه</string>

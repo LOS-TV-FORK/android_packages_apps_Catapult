@@ -56,6 +56,8 @@
     <string name="recent_apps_thumbnails">Miniaturen tonen</string>
     <string name="recent_apps_thumbnails_hint">Voorbeeld van het laatste app-scherm op de kaarten</string>
     <string name="app_info">App-info</string>
+    <string name="hide_app">Deze app verbergen</string>
+    <string name="hidden_apps">Verborgen apps</string>
 
     <!-- App cards settings -->
     <string name="app_cards">App-kaarten</string>

@@ -41,6 +41,17 @@ var SharedPreferences.favoriteApps: List<String>
         putString(FAVORITE_APPS_KEY, value.joinToString(","))
     }
 
+const val HIDDEN_APPS_KEY = "hidden_apps"
+
+/**
+ * The set of apps hidden by the user from the favorites carousel and all apps.
+ */
+var SharedPreferences.hiddenApps: Set<String>
+    get() = getStringSet(HIDDEN_APPS_KEY, setOf()) ?: setOf()
+    set(value) = edit {
+        putStringSet(HIDDEN_APPS_KEY, value)
+    }
+
 const val KNOWN_CHANNELS_KEY = "known_channels"
 
 /**

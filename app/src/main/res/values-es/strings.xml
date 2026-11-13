@@ -59,6 +59,8 @@
     <string name="recent_apps_thumbnails">Mostrar miniaturas</string>
     <string name="recent_apps_thumbnails_hint">Vista previa de la última pantalla de la app en las tarjetas</string>
     <string name="app_info">Información de la app</string>
+    <string name="hide_app">Ocultar esta app</string>
+    <string name="hidden_apps">Apps ocultas</string>
 
     <!-- App cards settings -->
     <string name="app_cards">Tarjetas de aplicaciones</string>

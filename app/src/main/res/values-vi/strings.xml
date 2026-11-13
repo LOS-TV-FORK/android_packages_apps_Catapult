@@ -59,6 +59,8 @@
     <string name="recent_apps_thumbnails">Hiển thị hình thu nhỏ</string>
     <string name="recent_apps_thumbnails_hint">Xem trước màn hình cuối cùng của ứng dụng trên thẻ</string>
     <string name="app_info">Thông tin ứng dụng</string>
+    <string name="hide_app">Ẩn ứng dụng này</string>
+    <string name="hidden_apps">Ứng dụng đã ẩn</string>
 
     <!-- App cards settings -->
     <string name="app_cards">Thẻ ứng dụng</string>

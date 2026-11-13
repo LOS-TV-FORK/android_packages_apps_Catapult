@@ -59,6 +59,8 @@
     <string name="recent_apps_thumbnails">サムネイルを表示</string>
     <string name="recent_apps_thumbnails_hint">カードにアプリの最後の画面を表示します</string>
     <string name="app_info">アプリ情報</string>
+    <string name="hide_app">このアプリを隠す</string>
+    <string name="hidden_apps">隠したアプリ</string>
 
     <!-- App cards settings -->
     <string name="app_cards">アプリカード</string>

@@ -51,6 +51,8 @@
     <string name="recent_apps_thumbnails">Zobrazit náhledy</string>
     <string name="recent_apps_thumbnails_hint">Náhledy poslední obrazovky aplikace na kartách</string>
     <string name="app_info">O aplikaci</string>
+    <string name="hide_app">Skrýt tuto aplikaci</string>
+    <string name="hidden_apps">Skryté aplikace</string>
 
     <!-- App cards settings -->
     <string name="app_cards">Karty aplikací</string>

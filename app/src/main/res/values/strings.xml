@@ -64,6 +64,8 @@
     <string name="select_image">Select image</string>
     <string name="selected_image">Image selected</string>
     <string name="app_info">App info</string>
+    <string name="hide_app">Hide this app</string>
+    <string name="hidden_apps">Hidden apps</string>
     <string name="app_cards">App cards</string>
     <string name="app_cards_size">App cards size</string>
     <string name="favorite_cards_size">Favorite cards size</string>

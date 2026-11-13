@@ -59,6 +59,8 @@
     <string name="recent_apps_thumbnails">Afficher les vignettes</string>
     <string name="recent_apps_thumbnails_hint">Aperçu du dernier écran de l\'application sur les cartes</string>
     <string name="app_info">Infos sur l\'appli</string>
+    <string name="hide_app">Masquer cette appli</string>
+    <string name="hidden_apps">Applis masquées</string>
 
     <!-- App cards settings -->
     <string name="app_cards">Cartes d\'applications</string>

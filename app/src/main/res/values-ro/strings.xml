@@ -59,6 +59,8 @@
     <string name="recent_apps_thumbnails">Afișați miniaturi</string>
     <string name="recent_apps_thumbnails_hint">Previzualizarea ultimului ecran al aplicației în carduri</string>
     <string name="app_info">Informații despre aplicație</string>
+    <string name="hide_app">Ascunde această aplicație</string>
+    <string name="hidden_apps">Aplicații ascunse</string>
 
     <!-- App cards settings -->
     <string name="app_cards">Carduri aplicații</string>

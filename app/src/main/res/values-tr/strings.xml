@@ -59,6 +59,8 @@
     <string name="recent_apps_thumbnails">Küçük resimleri göster</string>
     <string name="recent_apps_thumbnails_hint">Kartlarda uygulamanın son ekranının önizlemesi</string>
     <string name="app_info">Uygulama bilgileri</string>
+    <string name="hide_app">Bu uygulamayı gizle</string>
+    <string name="hidden_apps">Gizlenen uygulamalar</string>
 
     <!-- App cards settings -->
     <string name="app_cards">Uygulama kartları</string>

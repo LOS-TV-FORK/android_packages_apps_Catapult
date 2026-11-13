@@ -499,8 +499,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 lifecycleScope.launch {
                     lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                         model.installedApps.collectLatest {
-                            allAppsAdapter.submitList(it)
-
                             if (it.isNotEmpty()) {
                                 AppManager.updateFavoriteApps(this@MainActivity, it)
                             }
@@ -510,7 +508,19 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
                 lifecycleScope.launch {
                     lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                        model.favoriteApps.collectLatest {
+                        combine(model.installedApps, model.hiddenApps) { apps, hidden ->
+                            apps.filterNot { it.packageName in hidden }
+                        }.collectLatest {
+                            allAppsAdapter.submitList(it)
+                        }
+                    }
+                }
+
+                lifecycleScope.launch {
+                    lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                        combine(model.favoriteApps, model.hiddenApps) { favorites, hidden ->
+                            favorites.filterNot { it in hidden }
+                        }.collectLatest {
                             favoritesAdapter.submitList(
                                 it.mapNotNull {
                                     runCatching {

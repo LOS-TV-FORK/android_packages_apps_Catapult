@@ -12,6 +12,7 @@ import android.content.pm.ApplicationInfo.FLAG_SYSTEM
 import android.net.Uri
 import androidx.preference.PreferenceManager
 import org.lineageos.tv.launcher.ext.favoriteApps
+import org.lineageos.tv.launcher.ext.hiddenApps
 import org.lineageos.tv.launcher.model.LeanbackAppInfo
 
 import com.android.settingslib.Utils as SettingsLibUtils
@@ -52,6 +53,19 @@ object AppManager {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
         return sharedPreferences.favoriteApps
+    }
+
+    fun toggleHiddenApp(context: Context, packageName: String, hidden: Boolean) {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val hiddenApps = sharedPreferences.hiddenApps.toMutableSet()
+
+        if (hidden) {
+            hiddenApps.add(packageName)
+        } else {
+            hiddenApps.remove(packageName)
+        }
+
+        sharedPreferences.hiddenApps = hiddenApps
     }
 
     fun uninstallApp(context: Context, packageName: String) {

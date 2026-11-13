@@ -47,6 +47,7 @@ import kotlin.reflect.safeCast
 
         private var uninstallable: Boolean = true
         protected var hasCustomIcon: Boolean = false
+        var hideable: Boolean = false
 
         init {
             setupNameMarquee()
@@ -115,6 +116,11 @@ import kotlin.reflect.safeCast
             popupMenu.menu.removeItem(R.id.menu_uninstall)
         }
 
+        // Hide option only on favorites carousel and all apps cards
+        if (!hideable) {
+            popupMenu.menu.removeItem(R.id.menu_hide)
+        }
+
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_uninstall -> {
@@ -134,6 +140,11 @@ import kotlin.reflect.safeCast
 
                 R.id.menu_move -> {
                     FavoriteCard::class.safeCast(this)?.setMoving()
+                    true
+                }
+
+                R.id.menu_hide -> {
+                    AppManager.toggleHiddenApp(context, packageName, true)
                     true
                 }
 

@@ -36,6 +36,8 @@ class FavoriteCard @JvmOverloads constructor(
     init {
         inflate(context, R.layout.favorites_app_card, this)
 
+        hideable = true
+
         stateListAnimator =
             AnimatorInflater.loadStateListAnimator(context, R.animator.app_card_state_animator)
 

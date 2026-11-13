@@ -59,6 +59,8 @@
     <string name="recent_apps_thumbnails">Miniatűrök megjelenítése</string>
     <string name="recent_apps_thumbnails_hint">Az alkalmazás utolsó képernyőjének előnézete a kártyákon</string>
     <string name="app_info">Alkalmazásinfó</string>
+    <string name="hide_app">Alkalmazás elrejtése</string>
+    <string name="hidden_apps">Rejtett alkalmazások</string>
 
     <!-- App cards settings -->
     <string name="app_cards">Alkalmazáskártyák</string>

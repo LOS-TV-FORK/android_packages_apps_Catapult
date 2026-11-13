@@ -17,6 +17,12 @@
         android:title="@string/move" />
 
     <item
+        android:id="@+id/menu_hide"
+        android:icon="@drawable/ic_hide"
+        android:iconTint="@android:color/white"
+        android:title="@string/hide_app" />
+
+    <item
         android:id="@+id/menu_uninstall"
         android:icon="@drawable/ic_delete"
         android:iconTint="@android:color/white"

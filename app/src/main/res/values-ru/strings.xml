@@ -61,6 +61,8 @@
     <string name="external_launcher_picker">Catapult: выбор лаунчера</string>
 
     <string name="app_info">Информация о приложении</string>
+    <string name="hide_app">Скрыть это приложение</string>
+    <string name="hidden_apps">Скрытые приложения</string>
 
     <!-- App cards settings -->
     <string name="app_cards">Карточки приложений</string>
