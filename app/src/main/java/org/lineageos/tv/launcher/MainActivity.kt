@@ -482,10 +482,15 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                         }.collectLatest { (updatedList, watchNextPrograms) ->
                             // DiffUtil would emit notifyItemMoved; leanback GridLayoutManager
                             // corrupts its grid state on moves during pending updates (NPE).
-                            // On order change do a full replace (remove-all + insert-all);
-                            // content-only updates keep using the diff (no move ops there).
-                            val previousIds = mainVerticalAdapter.currentList.map { it.first }
-                            if (previousIds == updatedList.map { it.first }) {
+                            // Full replace (remove-all + insert-all) also blanks the whole
+                            // grid for a frame, so use it only when existing rows actually
+                            // swap places. Growing/shrinking row sets (providers publishing
+                            // programs at startup) go through the diff and never flicker.
+                            val newIds = updatedList.map { it.first }
+                            val prevIds = mainVerticalAdapter.currentList.map { it.first }
+                            val commonInPrev = prevIds.filter { it in newIds }
+                            val commonInNew = newIds.filter { it in prevIds }
+                            if (commonInPrev == commonInNew) {
                                 mainVerticalAdapter.submitList(updatedList)
                             } else {
                                 mainVerticalAdapter.submitList(null)
