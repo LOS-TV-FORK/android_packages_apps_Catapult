@@ -54,11 +54,8 @@ class InstalledAppsFlow(private val context: Context) {
                     AppInfo(resolveInfo, context)
                 }
 
-        (leanbackLauncherActivities + launcherActivities).distinctBy {
-            it.launchIntent?.resolveActivityInfo(
-                packageManager,
-                0
-            )?.name
+        (leanbackLauncherActivities + launcherActivities).distinctBy { card ->
+            "${card.packageName}/${card.launchIntent?.component?.className}"
         }
     }
 
