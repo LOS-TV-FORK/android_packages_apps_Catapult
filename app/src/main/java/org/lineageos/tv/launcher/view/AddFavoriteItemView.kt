@@ -30,6 +30,7 @@ class AddFavoriteItemView @JvmOverloads constructor(
         setBackgroundResource(
             context.getAttributeResourceId(android.R.attr.selectableItemBackground)
         )
+        isClickable = true
     }
 
     fun setActionToggle(favorite: Boolean) {
