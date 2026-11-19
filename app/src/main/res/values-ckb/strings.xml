@@ -102,4 +102,19 @@
     <string name="show_clock">پیشاندانی کاتژمێر</string>
     <string name="vpn">VPN</string>
 
+    <string name="my_collections">کۆلێکشنەکانم</string>
+    <string name="new_collection">کۆلێکشن</string>
+    <string name="collection_name">ناوی کۆلێکشن</string>
+    <string name="collection_apps">ئەپەکان</string>
+    <string name="collection_grid_view">دیمەنی تۆڕ</string>
+    <string name="collection_grid_columns">ستوونەکانی تۆڕ</string>
+    <string name="collection_card_size">قەبارەی کارتەکان</string>
+    <string name="collection_corner_radius">ڕادیۆسی گۆشەکان</string>
+    <string name="collection_add_apps">زیادکردنی ئەپ</string>
+    <string name="delete_collection">سڕینەوەی کۆلێکشن</string>
+    <string name="delete_collection_confirm">کۆلێکشن و ناوەڕۆکەکەی دەسڕدرێتەوە.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d ئەپ</item>
+        <item quantity="other">%d ئەپ</item>
+    </plurals>
 </resources>

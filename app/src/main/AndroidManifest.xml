@@ -152,6 +152,14 @@
             android:theme="@style/Theme.Catapult.SideActivity" />
 
         <activity
+            android:name=".CollectionsActivity"
+            android:theme="@style/Theme.Catapult.SideActivity" />
+
+        <activity
+            android:name=".CollectionEditActivity"
+            android:theme="@style/Theme.Catapult.SideActivity" />
+
+        <activity
             android:name=".ExternalLauncherActivity"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/external_launcher_picker"

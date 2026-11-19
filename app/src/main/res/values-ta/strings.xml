@@ -101,4 +101,19 @@
     <string name="recent_apps_size_percent">திரையின் உயரத்தில் %d%%</string>
     <string name="vpn">VPN</string>
 
+    <string name="my_collections">எனது தொகுப்புகள்</string>
+    <string name="new_collection">தொகுப்பு</string>
+    <string name="collection_name">தொகுப்பு பெயர்</string>
+    <string name="collection_apps">செயலிகள்</string>
+    <string name="collection_grid_view">கட்ட அமைப்பு</string>
+    <string name="collection_grid_columns">கட்ட நெடுக்குகள்</string>
+    <string name="collection_card_size">அட்டை அளவு</string>
+    <string name="collection_corner_radius">மூலை ஆரம்</string>
+    <string name="collection_add_apps">செயலிகளைச் சேர்</string>
+    <string name="delete_collection">தொகுப்பை நீக்கு</string>
+    <string name="delete_collection_confirm">தொகுப்பு மற்றும் அதன் உள்ளடக்கம் நீக்கப்படும்.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d செயலி</item>
+        <item quantity="other">%d செயலிகள்</item>
+    </plurals>
 </resources>

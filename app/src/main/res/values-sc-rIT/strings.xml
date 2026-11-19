@@ -103,4 +103,19 @@
     <string name="android_settings">Impostatziones Android</string>
     <string name="vpn">VPN</string>
 
+    <string name="my_collections">Is coletzionis mias</string>
+    <string name="new_collection">Coletzione</string>
+    <string name="collection_name">Nomi de sa coletzione</string>
+    <string name="collection_apps">Aplicatziones</string>
+    <string name="collection_grid_view">Vista a grilla</string>
+    <string name="collection_grid_columns">Colonas de sa grilla</string>
+    <string name="collection_card_size">Mannaria de sas tchedhas</string>
+    <string name="collection_corner_radius">Rachu de sos cantoneddos</string>
+    <string name="collection_add_apps">Agiunghe aplicatziones</string>
+    <string name="delete_collection">Burra sa coletzione</string>
+    <string name="delete_collection_confirm">Sa coletzione e su cuntenidu suo benant bogadas.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d aplicatzione</item>
+        <item quantity="other">%d aplicatziones</item>
+    </plurals>
 </resources>

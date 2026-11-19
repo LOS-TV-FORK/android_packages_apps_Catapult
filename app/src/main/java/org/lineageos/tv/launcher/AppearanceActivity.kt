@@ -19,6 +19,9 @@ class AppearanceActivity : ModalActivity(R.layout.activity_appearance) {
         findViewById<android.view.View>(R.id.app_cards_item)?.setOnClickListener {
             startActivity(Intent(this, CardsSettingsActivity::class.java))
         }
+        findViewById<android.view.View>(R.id.my_collections_item)?.setOnClickListener {
+            startActivity(Intent(this, CollectionsActivity::class.java))
+        }
 
         findViewById<android.view.View>(R.id.top_bar_item)?.setOnClickListener {
             startActivity(Intent(this, TopBarSettingsActivity::class.java))

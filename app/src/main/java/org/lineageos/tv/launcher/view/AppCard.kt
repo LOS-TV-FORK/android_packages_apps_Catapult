@@ -62,6 +62,21 @@ class AppCard @JvmOverloads constructor(
         applyCardSizeScaling()
     }
 
+    // Per-collection overrides (null = the global app-card defaults). In grid mode
+    // the size comes from the column count, so the scale override is ignored there.
+    private var radiusOverridePx: Float? = null
+
+    fun applyCardSettings(scale: Float?, radiusDp: Int?, grid: Boolean) {
+        customScale = scale
+        radiusOverridePx = radiusDp?.let { it * context.resources.displayMetrics.density }
+        if (isGridMode != grid) {
+            setGridMode(grid)
+        } else {
+            applyCardSizeScaling()
+            applyCornerRadius()
+        }
+    }
+
     /**
      * Shows a task preview screenshot filling the card frame,
      * with the app icon reduced to a small badge in the bottom-start corner.
@@ -126,12 +141,14 @@ class AppCard @JvmOverloads constructor(
     }
     
     fun applyCornerRadius() {
-        val borderDrawable = CardBackgroundHelper.getCardBorderDrawable(context)
-        val backgroundDrawable = CardBackgroundHelper.getCardIconBackgroundDrawable(context, currentIcon)
+        val borderDrawable = CardBackgroundHelper.getCardBorderDrawable(context, radiusOverridePx)
+        val backgroundDrawable = CardBackgroundHelper.getCardIconBackgroundDrawable(
+            context, currentIcon, radiusOverridePx
+        )
         
         cardContainer.background = borderDrawable
         applyCardShadow(cardFrame)
-        bannerView.background = CardBackgroundHelper.getBannerBorderDrawable(context)
+        bannerView.background = CardBackgroundHelper.getBannerBorderDrawable(context, radiusOverridePx)
         iconContainer.background = backgroundDrawable
     }
 

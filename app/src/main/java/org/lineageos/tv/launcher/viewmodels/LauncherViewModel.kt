@@ -29,9 +29,13 @@ import java.util.Collections
 class LauncherViewModel(application: Application) : AndroidViewModel(application) {
     @OptIn(ExperimentalCoroutinesApi::class)
     val channelsToPrograms = LauncherRepository.previewChannels(context)
-        .map { previewChannels ->
+        .combine(LauncherRepository.collections(context)) { previewChannels, collections ->
+            previewChannels to collections
+        }
+        .map { (previewChannels, collections) ->
             listOf(
                 Channel.getFavoritesAppsChannel(context),
+                *collections.map { Channel(it.id, it.title) }.toTypedArray(),
                 Channel.getWatchNextChannel(context),
                 *previewChannels.map {
                     Channel(
@@ -109,6 +113,14 @@ class LauncherViewModel(application: Application) : AndroidViewModel(application
         )
 
     val installedApps = LauncherRepository.installedApps(context)
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = listOf(),
+        )
+
+    val collections = LauncherRepository.collections(context)
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,

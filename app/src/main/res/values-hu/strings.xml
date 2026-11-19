@@ -102,4 +102,19 @@
     <string name="vpn_no_clients">Nincs VPN kliens</string>
     <string name="vpn">VPN</string>
 
+    <string name="my_collections">Gyűjteményeim</string>
+    <string name="new_collection">Gyűjtemény</string>
+    <string name="collection_name">A gyűjtemény neve</string>
+    <string name="collection_apps">Alkalmazások</string>
+    <string name="collection_grid_view">Rácsnézet</string>
+    <string name="collection_grid_columns">Rács oszlopai</string>
+    <string name="collection_card_size">Kártyák mérete</string>
+    <string name="collection_corner_radius">Kerekítés mértéke</string>
+    <string name="collection_add_apps">Alkalmazások hozzáadása</string>
+    <string name="delete_collection">Gyűjtemény törlése</string>
+    <string name="delete_collection_confirm">A gyűjtemény és tartalma törlődik.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d alkalmazás</item>
+        <item quantity="other">%d alkalmazás</item>
+    </plurals>
 </resources>

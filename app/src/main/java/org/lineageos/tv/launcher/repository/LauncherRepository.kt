@@ -49,4 +49,8 @@ object LauncherRepository {
     fun enabledChannels(
         context: Context,
     ) = SharedPreferencesFlows(context).enabledChannelsFlow()
+
+    fun collections(
+        context: Context,
+    ) = SharedPreferencesFlows(context).collectionsFlow()
 }

@@ -102,4 +102,19 @@
     <string name="show_clock">Tampilkan jam</string>
     <string name="vpn">VPN</string>
 
+    <string name="my_collections">Koleksi saya</string>
+    <string name="new_collection">Koleksi</string>
+    <string name="collection_name">Nama koleksi</string>
+    <string name="collection_apps">Aplikasi</string>
+    <string name="collection_grid_view">Tampilan kisi</string>
+    <string name="collection_grid_columns">Kolom kisi</string>
+    <string name="collection_card_size">Ukuran kartu</string>
+    <string name="collection_corner_radius">Radius sudut</string>
+    <string name="collection_add_apps">Tambah aplikasi</string>
+    <string name="delete_collection">Hapus koleksi</string>
+    <string name="delete_collection_confirm">Koleksi dan isinya akan dihapus.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d aplikasi</item>
+        <item quantity="other">%d aplikasi</item>
+    </plurals>
 </resources>

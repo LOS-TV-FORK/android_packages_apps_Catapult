@@ -103,4 +103,19 @@
     <string name="android_settings">Socruithe Android</string>
     <string name="vpn">VPN</string>
 
+    <string name="my_collections">Mo bhailiúcháin</string>
+    <string name="new_collection">Bailiúchán</string>
+    <string name="collection_name">Ainm an bhailiúcháin</string>
+    <string name="collection_apps">Feidhmchláir</string>
+    <string name="collection_grid_view">Amharc greille</string>
+    <string name="collection_grid_columns">Colúin greille</string>
+    <string name="collection_card_size">Méid na gcártaí</string>
+    <string name="collection_corner_radius">Radiú na gcúinní</string>
+    <string name="collection_add_apps">Cuir feidhmchláir leis</string>
+    <string name="delete_collection">Scrios an bailiúchán</string>
+    <string name="delete_collection_confirm">Baintear an bailiúchán agus a ábhar.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d fheidhmchláir</item>
+        <item quantity="other">%d feidhmchláir</item>
+    </plurals>
 </resources>

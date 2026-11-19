@@ -105,4 +105,19 @@
     <string name="android_settings">Android تەڭشىكى</string>
     <string name="vpn">VPN</string>
 
+    <string name="my_collections">مېنىڭ يىغىندىلىرىم</string>
+    <string name="new_collection">يىغىندا</string>
+    <string name="collection_name">يىغىندا نامى</string>
+    <string name="collection_apps">پروگراممىلار</string>
+    <string name="collection_grid_view">تور كۆرۈنۈشى</string>
+    <string name="collection_grid_columns">تور ئىستون سانى</string>
+    <string name="collection_card_size">كارتا چوڭلۇقى</string>
+    <string name="collection_corner_radius">بۇلۇڭ رادىئۇسى</string>
+    <string name="collection_add_apps">پروگرامما قوشۇش</string>
+    <string name="delete_collection">يىغىندىنى ئۆچۈرۈش</string>
+    <string name="delete_collection_confirm">يىغىندى ۋە ئۇنىڭ مەزمۇنى ئۆچۈرۈلىدۇ.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d پروگرامما</item>
+        <item quantity="other">%d پروگرامما</item>
+    </plurals>
 </resources>

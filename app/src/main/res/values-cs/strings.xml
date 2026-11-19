@@ -104,4 +104,20 @@
     <string name="system_settings">Nastavení systému</string>
     <string name="launcher_settings">Nastavení spouštěče</string>
 
+    <string name="my_collections">Moje kolekce</string>
+    <string name="new_collection">Kolekce</string>
+    <string name="collection_name">Název kolekce</string>
+    <string name="collection_apps">Aplikace</string>
+    <string name="collection_grid_view">Zobrazit jako mřížku</string>
+    <string name="collection_grid_columns">Sloupce mřížky</string>
+    <string name="collection_card_size">Velikost karet</string>
+    <string name="collection_corner_radius">Poloměr zaoblení</string>
+    <string name="collection_add_apps">Přidat aplikace</string>
+    <string name="delete_collection">Smazat kolekci</string>
+    <string name="delete_collection_confirm">Kolekce a její obsah budou odstraněny.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d aplikace</item>
+        <item quantity="few">%d aplikace</item>
+        <item quantity="other">%d aplikací</item>
+    </plurals>
 </resources>

@@ -103,4 +103,19 @@
     <string name="android_settings">Impostazions Android</string>
     <string name="vpn">VPN</string>
 
+    <string name="my_collections">Lis meis colegions</string>
+    <string name="new_collection">Colezion</string>
+    <string name="collection_name">Non de colezion</string>
+    <string name="collection_apps">Aplicazions</string>
+    <string name="collection_grid_view">Viste a gride</string>
+    <string name="collection_grid_columns">Colonnis de gride</string>
+    <string name="collection_card_size">Dimension schedis</string>
+    <string name="collection_corner_radius">Rai dai angui</string>
+    <string name="collection_add_apps">Zonte aplicazions</string>
+    <string name="delete_collection">Elimine colezion</string>
+    <string name="delete_collection_confirm">La colezion e il so contignûd a vignaràn gjavâts.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d aplicazion</item>
+        <item quantity="other">%d aplicazions</item>
+    </plurals>
 </resources>

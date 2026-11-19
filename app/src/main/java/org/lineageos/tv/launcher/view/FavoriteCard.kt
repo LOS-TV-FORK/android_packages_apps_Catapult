@@ -52,6 +52,11 @@ class FavoriteCard @JvmOverloads constructor(
         applyCornerRadius()
     }
     
+    fun refreshCardSettings() {
+        applyCardSizeScaling()
+        applyCornerRadius()
+    }
+
     fun applyCornerRadius() {
         val borderDrawable = CardBackgroundHelper.getCardBorderDrawable(context)
         val backgroundDrawable = if (useIconGradient && currentIcon != null) {

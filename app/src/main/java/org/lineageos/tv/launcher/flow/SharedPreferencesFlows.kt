@@ -7,11 +7,13 @@ package org.lineageos.tv.launcher.flow
 
 import android.content.Context
 import androidx.preference.PreferenceManager
+import org.lineageos.tv.launcher.ext.COLLECTIONS_KEY
 import org.lineageos.tv.launcher.ext.FAVORITE_APPS_KEY
 import org.lineageos.tv.launcher.ext.ENABLED_CHANNELS_KEY
 import org.lineageos.tv.launcher.ext.HIDDEN_APPS_KEY
 import org.lineageos.tv.launcher.ext.HIDDEN_CHANNELS_KEY
 import org.lineageos.tv.launcher.ext.KNOWN_CHANNELS_KEY
+import org.lineageos.tv.launcher.ext.collections
 import org.lineageos.tv.launcher.ext.enabledChannels
 import org.lineageos.tv.launcher.ext.favoriteApps
 import org.lineageos.tv.launcher.ext.hiddenApps
@@ -33,4 +35,6 @@ class SharedPreferencesFlows(context: Context) {
     fun hiddenChannelsFlow() = sharedPreferences.valueFlow(HIDDEN_CHANNELS_KEY) { hiddenChannels }
 
     fun enabledChannelsFlow() = sharedPreferences.valueFlow(ENABLED_CHANNELS_KEY) { enabledChannels }
+
+    fun collectionsFlow() = sharedPreferences.valueFlow(COLLECTIONS_KEY) { collections }
 }

@@ -102,4 +102,19 @@
     <string name="vpn_no_clients">לא נמצאו לקוחות VPN</string>
     <string name="vpn">VPN</string>
 
+    <string name="my_collections">האוספים שלי</string>
+    <string name="new_collection">אוסף</string>
+    <string name="collection_name">שם האוסף</string>
+    <string name="collection_apps">אפליקציות</string>
+    <string name="collection_grid_view">תצוגת רשת</string>
+    <string name="collection_grid_columns">עמודות הרשת</string>
+    <string name="collection_card_size">גודל כרטיסים</string>
+    <string name="collection_corner_radius">רדיוס פינות</string>
+    <string name="collection_add_apps">הוסף אפליקציות</string>
+    <string name="delete_collection">מחק אוסף</string>
+    <string name="delete_collection_confirm">האוסף ותוכנו יוסרו.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">אפליקציה %d</item>
+        <item quantity="other">%d אפליקציות</item>
+    </plurals>
 </resources>

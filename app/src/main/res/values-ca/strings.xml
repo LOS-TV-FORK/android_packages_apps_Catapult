@@ -100,4 +100,19 @@
     <string name="vpn">VPN</string>
     <string name="vpn_no_clients">No s\'han trobat clients de VPN</string>
 
+    <string name="my_collections">Les meves col·leccions</string>
+    <string name="new_collection">Col·lecció</string>
+    <string name="collection_name">Nom de la col·lecció</string>
+    <string name="collection_apps">Aplicacions</string>
+    <string name="collection_grid_view">Vista de quadrícula</string>
+    <string name="collection_grid_columns">Columnes de la quadrícula</string>
+    <string name="collection_card_size">Mida de les targetes</string>
+    <string name="collection_corner_radius">Radi dels angles</string>
+    <string name="collection_add_apps">Afegeix aplicacions</string>
+    <string name="delete_collection">Suprimeix la col·lecció</string>
+    <string name="delete_collection_confirm">La col·lecció i el contingut se suprimiran.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d aplicació</item>
+        <item quantity="other">%d aplicacions</item>
+    </plurals>
 </resources>

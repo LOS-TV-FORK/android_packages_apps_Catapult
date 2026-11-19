@@ -102,4 +102,19 @@
     <string name="vpn_no_clients">VPNクライアントが見つかりません</string>
     <string name="vpn">VPN</string>
 
+    <string name="my_collections">マイコレクション</string>
+    <string name="new_collection">コレクション</string>
+    <string name="collection_name">コレクション名</string>
+    <string name="collection_apps">アプリ</string>
+    <string name="collection_grid_view">グリッド表示</string>
+    <string name="collection_grid_columns">グリッド列数</string>
+    <string name="collection_card_size">カードサイズ</string>
+    <string name="collection_corner_radius">角の丸み</string>
+    <string name="collection_add_apps">アプリを追加</string>
+    <string name="delete_collection">コレクションを削除</string>
+    <string name="delete_collection_confirm">コレクションとその内容は削除されます。</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d 個のアプリ</item>
+        <item quantity="other">%d 個のアプリ</item>
+    </plurals>
 </resources>

@@ -100,4 +100,19 @@
     <string name="vpn">VPN</string>
     <string name="vpn_no_clients">VPN müştəriləri tapılmadı</string>
 
+    <string name="my_collections">Mənim kolleksiyalarım</string>
+    <string name="new_collection">Kolleksiya</string>
+    <string name="collection_name">Kolleksiya adı</string>
+    <string name="collection_apps">Tətbiqlər</string>
+    <string name="collection_grid_view">Şəbəkə görünüşü</string>
+    <string name="collection_grid_columns">Şəbəkə sütunları</string>
+    <string name="collection_card_size">Kart ölçüsü</string>
+    <string name="collection_corner_radius">Bucaq radiusu</string>
+    <string name="collection_add_apps">Tətbiq əlavə et</string>
+    <string name="delete_collection">Kolleksiyanı sil</string>
+    <string name="delete_collection_confirm">Koleksiya və tərkibi silinəcək.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d tətbiq</item>
+        <item quantity="other">%d tətbiq</item>
+    </plurals>
 </resources>

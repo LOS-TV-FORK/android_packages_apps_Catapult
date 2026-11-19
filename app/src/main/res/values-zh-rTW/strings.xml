@@ -102,4 +102,19 @@
     <string name="vpn_no_clients">找不到 VPN 用戶端</string>
     <string name="vpn">VPN</string>
 
+    <string name="my_collections">我的集合</string>
+    <string name="new_collection">集合</string>
+    <string name="collection_name">集合名稱</string>
+    <string name="collection_apps">應用程式</string>
+    <string name="collection_grid_view">網格檢視</string>
+    <string name="collection_grid_columns">網格欄數</string>
+    <string name="collection_card_size">卡片大小</string>
+    <string name="collection_corner_radius">圓角半徑</string>
+    <string name="collection_add_apps">新增應用程式</string>
+    <string name="delete_collection">刪除集合</string>
+    <string name="delete_collection_confirm">集合及其內容將被移除。</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d 個應用程式</item>
+        <item quantity="other">%d 個應用程式</item>
+    </plurals>
 </resources>

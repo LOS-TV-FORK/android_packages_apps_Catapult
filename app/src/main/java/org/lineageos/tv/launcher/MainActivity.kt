@@ -61,6 +61,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import org.lineageos.tv.launcher.adapter.AllAppsAdapter
+import org.lineageos.tv.launcher.adapter.CollectionAdapter
 import org.lineageos.tv.launcher.adapter.FavoritesAdapter
 import org.lineageos.tv.launcher.adapter.MainVerticalAdapter
 import org.lineageos.tv.launcher.adapter.PreviewProgramsAdapter
@@ -68,6 +69,8 @@ import org.lineageos.tv.launcher.adapter.WatchNextAdapter
 import org.lineageos.tv.launcher.ext.favoriteApps
 import org.lineageos.tv.launcher.ext.homeRoleRequestDialogDismissed
 import org.lineageos.tv.launcher.ext.roleCanBeRequested
+import org.lineageos.tv.launcher.ext.COLLECTIONS_KEY
+import org.lineageos.tv.launcher.ext.collections
 import org.lineageos.tv.launcher.ext.backgroundType
 import org.lineageos.tv.launcher.ext.backgroundColor
 import org.lineageos.tv.launcher.ext.backgroundBlur
@@ -143,6 +146,7 @@ import org.lineageos.tv.launcher.ext.recentAppsEnabled
 import org.lineageos.tv.launcher.ext.recentAppsShowThumbnails
 import org.lineageos.tv.launcher.model.LeanbackAppInfo
 import org.lineageos.tv.launcher.view.AppCard
+import org.lineageos.tv.launcher.view.MainRowItemView
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
     companion object {
@@ -440,6 +444,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private val mainVerticalAdapter by lazy { MainVerticalAdapter(this) }
     private val watchNextAdapter by lazy { WatchNextAdapter() }
     private val previewChannelAdapters = mutableMapOf<Long, PreviewProgramsAdapter>()
+    private val collectionAdapters = mutableMapOf<Long, CollectionAdapter>()
+    private var currentRows: List<Pair<Long, MainRowItem>>? = null
 
     private val sharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(this)
@@ -450,8 +456,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                     lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                         combine(
                             model.watchNextPrograms,
-                            model.channelsToPrograms
-                        ) { watchNextPrograms, channels ->
+                            model.channelsToPrograms,
+                            model.collections
+                        ) { watchNextPrograms, channels, collections ->
                             channels.mapNotNull { channel ->
                                 // Check if "Watch Next" should be skipped
                                 if (channel.first.id == InternalChannel.WATCH_NEXT.id && watchNextPrograms.isEmpty()) {
@@ -462,24 +469,45 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                                     // Don't show a row until the provider publishes programs
                                     null
                                 } else {
-                                    channel.first.id to MainRowItem(
-                                        channel.first.title,
-                                        when (channel.first.id) {
-                                            InternalChannel.FAVORITE_APPS.id -> favoritesAdapter
-                                            InternalChannel.WATCH_NEXT.id -> watchNextAdapter
-                                            InternalChannel.ALL_APPS.id -> allAppsAdapter
-                                            else -> previewChannelAdapters.getOrPut(channel.first.id) {
-                                                PreviewProgramsAdapter(channel.first.title)
+                                    val collection = collections.find {
+                                        it.id == channel.first.id
+                                    }
+                                    if (collection != null) {
+                                        channel.first.id to MainRowItem(
+                                            channel.first.title,
+                                            collectionAdapters.getOrPut(collection.id) {
+                                                CollectionAdapter()
                                             }.apply {
-                                                channel.second?.let { previewPrograms ->
-                                                    submitList(previewPrograms)
+                                                gridMode = collection.grid
+                                                gridColumns = collection.gridColumns
+                                                cardSize = collection.cardSize
+                                                cornerRadius = collection.cornerRadius
+                                            },
+                                            collection.settingsKey
+                                        )
+                                    } else {
+                                        channel.first.id to MainRowItem(
+                                            channel.first.title,
+                                            when (channel.first.id) {
+                                                InternalChannel.FAVORITE_APPS.id -> favoritesAdapter
+                                                InternalChannel.WATCH_NEXT.id -> watchNextAdapter
+                                                InternalChannel.ALL_APPS.id -> allAppsAdapter
+                                                else -> previewChannelAdapters.getOrPut(
+                                                    channel.first.id
+                                                ) {
+                                                    PreviewProgramsAdapter(channel.first.title)
+                                                }.apply {
+                                                    channel.second?.let { previewPrograms ->
+                                                        submitList(previewPrograms)
+                                                    }
                                                 }
                                             }
-                                        }
-                                    )
+                                        )
+                                    }
                                 }
                             } to watchNextPrograms
                         }.collectLatest { (updatedList, watchNextPrograms) ->
+                            currentRows = updatedList
                             // DiffUtil would emit notifyItemMoved; leanback GridLayoutManager
                             // corrupts its grid state on moves during pending updates (NPE).
                             // Full replace (remove-all + insert-all) also blanks the whole
@@ -517,6 +545,32 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                             apps.filterNot { it.packageName in hidden }
                         }.collectLatest {
                             allAppsAdapter.submitList(it)
+                        }
+                    }
+                }
+
+                lifecycleScope.launch {
+                    lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                        combine(model.collections, model.installedApps) {
+                            collections, installedApps ->
+                            collections to installedApps.map { it.packageName }.toSet()
+                        }.collectLatest { (collections, installedPackages) ->
+                            collectionAdapters.keys.retainAll(collections.map { it.id }.toSet())
+                            collections.forEach { collection ->
+                                collectionAdapters.getOrPut(collection.id) { CollectionAdapter() }
+                                    .submitList(
+                                        collection.packages
+                                            .filter { it in installedPackages }
+                                            .mapNotNull { pkg ->
+                                                runCatching {
+                                                    AppInfo.create(this@MainActivity, pkg)
+                                                }.getOrNull()
+                                            } +
+                                            CollectionAdapter.createAddToCollectionEntry(
+                                                this@MainActivity, collection.id
+                                            )
+                                    )
+                            }
                         }
                     }
                 }
@@ -704,6 +758,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 APP_CARD_SIZE_KEY, FAVORITE_CARD_SIZE_KEY, WATCH_NEXT_CARD_SIZE_KEY,
                 CARD_CORNER_RADIUS_KEY ->
                     scheduleLiveCardResize()
+                COLLECTIONS_KEY ->
+                    scheduleCollectionRowsChange()
                 SHOW_ASSISTANT_BUTTONS_KEY, SHOW_VPN_BUTTON_KEY, SHOW_CLOCK_KEY,
                 CLOCK_TEXT_SIZE_KEY ->
                     applyTopBarPreferences()
@@ -720,11 +776,25 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private fun scheduleLiveCardResize() {
         cardSizeResizeRunnable?.let { cardSizeHandler.removeCallbacks(it) }
         cardSizeResizeRunnable = Runnable {
+            val oldAppSize = lastAppCardSize
             lastAppCardSize = sharedPreferences.appCardSize
             lastFavoriteCardSize = sharedPreferences.favoriteCardSize
             lastWatchNextCardSize = sharedPreferences.watchNextCardSize
             lastCardCornerRadius = sharedPreferences.cardCornerRadius
+            // Rebind at the old size first so the animation grows from it instead
+            // of flashing the new size for one frame.
+            if (oldAppSize != sharedPreferences.appCardSize) {
+                allAppsAdapter.liveSizeOverride = oldAppSize
+            }
             refreshAllRows()
+            if (oldAppSize != lastAppCardSize) {
+                for (i in 0 until mainVerticalGridView.childCount) {
+                    val rowView = mainVerticalGridView.getChildAt(i) as? MainRowItemView ?: continue
+                    if (rowView.carouselAdapter() === allAppsAdapter) {
+                        rowView.animateCarouselSize(oldAppSize, lastAppCardSize)
+                    }
+                }
+            }
         }.also { cardSizeHandler.postDelayed(it, 120) }
     }
 
@@ -840,7 +910,68 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         favoritesAdapter.notifyDataSetChanged()
         watchNextAdapter.notifyDataSetChanged()
         previewChannelAdapters.values.forEach { it.notifyDataSetChanged() }
+        collectionAdapters.values.forEach { it.notifyDataSetChanged() }
         mainVerticalAdapter.notifyDataSetChanged()
+        for (i in 0 until mainVerticalGridView.childCount) {
+            (mainVerticalGridView.getChildAt(i) as? MainRowItemView)?.updateCarouselPadding()
+        }
+    }
+
+    // The settings editor runs in its own window: editing a collection must not
+    // rebind its row on every slider tick (the row view caches its applied settings
+    // key), so grid/column changes are coalesced here into one full row-list replace
+    // and plain card-size/radius edits rebind cards lazily via refreshAllRows on resume.
+    private var collectionSignature = listOf<Pair<Long, Pair<Boolean, Int>>>()
+    private var collectionCardSignature = listOf<Pair<Long, Pair<Int, Int>>>()
+    private var collectionRowsRunnable: Runnable? = null
+
+    private fun scheduleCollectionRowsChange() {
+        collectionRowsRunnable?.let { cardSizeHandler.removeCallbacks(it) }
+        collectionRowsRunnable = Runnable {
+            val collections = sharedPreferences.collections
+            val signature = collections.map { it.id to (it.grid to it.gridColumns) }
+            if (signature != collectionSignature) {
+                collectionSignature = signature
+                collectionCardSignature = collections.map { it.id to (it.cardSize to it.cornerRadius) }
+                currentRows?.let { rows ->
+                    // The row being replaced may host the grid's focused view: releasing
+                    // the focus before dropping the rows keeps focus handling sane.
+                    mainVerticalGridView.clearFocus()
+                    mainVerticalAdapter.submitList(null)
+                    mainVerticalAdapter.submitList(rows)
+                }
+            } else {
+                // Size/radius edits: no row rebuild, just rebind the cards of the
+                // collection rows. Focus is released first because rebinding recycles
+                // views and a focused card being recycled mid-rebind crashes the grid.
+                val cardSignature = collections.map { it.id to (it.cardSize to it.cornerRadius) }
+                if (cardSignature != collectionCardSignature) {
+                    val previous = collectionCardSignature.toMap()
+                    collectionCardSignature = cardSignature
+                    mainVerticalGridView.clearFocus()
+                    val animatedIds = mutableSetOf<Long>()
+                    for (i in 0 until mainVerticalGridView.childCount) {
+                        val rowView = mainVerticalGridView.getChildAt(i) as? MainRowItemView
+                            ?: continue
+                        val adapter = rowView.carouselAdapter() as? CollectionAdapter ?: continue
+                        val entry = collectionAdapters.entries.firstOrNull { it.value === adapter }
+                            ?: continue
+                        val oldSize = previous[entry.key]?.first ?: adapter.cardSize
+                        if (oldSize != adapter.cardSize) {
+                            animatedIds += entry.key
+                            rowView.animateCarouselSize(oldSize, adapter.cardSize)
+                        } else {
+                            adapter.notifyDataSetChanged()
+                            rowView.updateCarouselPadding()
+                        }
+                    }
+                    // Rows that are currently off-screen converge without animation.
+                    collectionAdapters.forEach { (id, adapter) ->
+                        if (id !in animatedIds) adapter.notifyDataSetChanged()
+                    }
+                }
+            }
+        }.also { cardSizeHandler.postDelayed(it, 150) }
     }
 
     private fun setupVpnButton() {
@@ -1357,6 +1488,18 @@ class MainVerticalGridView @JvmOverloads constructor(
 
     private fun ensureFocusedVisible(focused: View) {
         if (width == 0 || height == 0) return
+        // A view detached during a row rebuild may still deliver a pending focus
+        // request here; rect math on a detached view crashes, so skip it.
+        var parent = focused.parent
+        var descendant = false
+        while (parent != null) {
+            if (parent === this) {
+                descendant = true
+                break
+            }
+            parent = parent.parent
+        }
+        if (!descendant) return
         val rect = Rect()
         focused.getFocusedRect(rect)
         (focused.findViewById<View>(R.id.app_name) ?: focused.findViewById(R.id.title))?.let { name ->

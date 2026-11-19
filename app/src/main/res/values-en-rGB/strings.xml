@@ -98,4 +98,19 @@
     <string name="overlay_title">Catapult Overlay</string>
     <string name="overlay_hint">Double HOME, ESC or BACK to close</string>
 
+    <string name="my_collections">My collections</string>
+    <string name="new_collection">Collection</string>
+    <string name="collection_name">Collection name</string>
+    <string name="collection_apps">Apps</string>
+    <string name="collection_grid_view">Grid view</string>
+    <string name="collection_grid_columns">Grid columns</string>
+    <string name="collection_card_size">Card size</string>
+    <string name="collection_corner_radius">Corner radius</string>
+    <string name="collection_add_apps">Add apps</string>
+    <string name="delete_collection">Delete collection</string>
+    <string name="delete_collection_confirm">The collection and its contents will be removed.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d app</item>
+        <item quantity="other">%d apps</item>
+    </plurals>
 </resources>

@@ -102,4 +102,19 @@
     <string name="vpn_no_clients">Aucun client VPN trouvé</string>
     <string name="vpn">VPN</string>
 
+    <string name="my_collections">Mes collections</string>
+    <string name="new_collection">Collection</string>
+    <string name="collection_name">Nom de la collection</string>
+    <string name="collection_apps">Applications</string>
+    <string name="collection_grid_view">Vue en grille</string>
+    <string name="collection_grid_columns">Colonnes de la grille</string>
+    <string name="collection_card_size">Taille des cartes</string>
+    <string name="collection_corner_radius">Rayon des angles</string>
+    <string name="collection_add_apps">Ajouter des applications</string>
+    <string name="delete_collection">Supprimer la collection</string>
+    <string name="delete_collection_confirm">La collection et son contenu seront supprimés.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d application</item>
+        <item quantity="other">%d applications</item>
+    </plurals>
 </resources>

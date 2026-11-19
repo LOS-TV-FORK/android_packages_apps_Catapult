@@ -100,4 +100,21 @@
     <string name="vpn_no_clients">Ni najdenih odjemcev VPN</string>
     <string name="vpn">VPN</string>
 
+    <string name="my_collections">Moje zbirke</string>
+    <string name="new_collection">Zbirka</string>
+    <string name="collection_name">Ime zbirke</string>
+    <string name="collection_apps">Aplikacije</string>
+    <string name="collection_grid_view">Mrežni prikaz</string>
+    <string name="collection_grid_columns">Stolpci mreže</string>
+    <string name="collection_card_size">Velikost kartic</string>
+    <string name="collection_corner_radius">Kotni polmer</string>
+    <string name="collection_add_apps">Dodaj aplikacije</string>
+    <string name="delete_collection">Izbriši zbirko</string>
+    <string name="delete_collection_confirm">Zbirka in njena vsebina bosta odstranjena.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d aplikacija</item>
+        <item quantity="few">%d aplikacije</item>
+        <item quantity="many">%d aplikaciji</item>
+        <item quantity="other">%d aplikacij</item>
+    </plurals>
 </resources>

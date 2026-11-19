@@ -102,4 +102,19 @@
     <string name="vpn_no_clients">VPN istemcisi bulunamadı</string>
     <string name="vpn">VPN</string>
 
+    <string name="my_collections">Koleksiyonlarım</string>
+    <string name="new_collection">Koleksiyon</string>
+    <string name="collection_name">Koleksiyon adı</string>
+    <string name="collection_apps">Uygulamalar</string>
+    <string name="collection_grid_view">Izgara görünümü</string>
+    <string name="collection_grid_columns">Izgara sütunları</string>
+    <string name="collection_card_size">Kart boyutu</string>
+    <string name="collection_corner_radius">Köşe yarıçapı</string>
+    <string name="collection_add_apps">Uygulama ekle</string>
+    <string name="delete_collection">Koleksiyonu sil</string>
+    <string name="delete_collection_confirm">Koleksiyon ve içeriği kaldırılacak.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d uygulama</item>
+        <item quantity="other">%d uygulama</item>
+    </plurals>
 </resources>

@@ -117,6 +117,13 @@ class FavoritesAdapter : TvAdapter<Launchable, FavoriteCard>() {
         return true
     }
 
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        // Re-read the card size/corner radius from prefs at bind time: recycled holders
+        // were created with the old values and would otherwise keep them.
+        (holder.itemView as FavoriteCard).refreshCardSettings()
+        super.onBindViewHolder(holder, position)
+    }
+
     override fun handleClick(card: FavoriteCard) {
         if (!card.moving) {
             super.handleClick(card)

@@ -103,4 +103,19 @@
     <string name="android_settings">Android-innstillingar</string>
     <string name="vpn">VPN</string>
 
+    <string name="my_collections">Mine samlingar</string>
+    <string name="new_collection">Samling</string>
+    <string name="collection_name">Namn på samlinga</string>
+    <string name="collection_apps">Appar</string>
+    <string name="collection_grid_view">Rutenettvising</string>
+    <string name="collection_grid_columns">Rutenettkolonar</string>
+    <string name="collection_card_size">Kartstorleik</string>
+    <string name="collection_corner_radius">Hjørneradius</string>
+    <string name="collection_add_apps">Legg til appar</string>
+    <string name="delete_collection">Slett samlinga</string>
+    <string name="delete_collection_confirm">Samlinga og innhaldet blir fjerna.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d app</item>
+        <item quantity="other">%d appar</item>
+    </plurals>
 </resources>

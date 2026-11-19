@@ -102,4 +102,19 @@
     <string name="vpn_no_clients">Nu s-au găsit clienți VPN</string>
     <string name="vpn">VPN</string>
 
+    <string name="my_collections">Colețiile mele</string>
+    <string name="new_collection">Colecție</string>
+    <string name="collection_name">Numele colecției</string>
+    <string name="collection_apps">Aplicații</string>
+    <string name="collection_grid_view">Vizualizare grilă</string>
+    <string name="collection_grid_columns">Coloane grilă</string>
+    <string name="collection_card_size">Dimensiune carduri</string>
+    <string name="collection_corner_radius">Rază colțuri</string>
+    <string name="collection_add_apps">Adaugă aplicații</string>
+    <string name="delete_collection">Șterge colecția</string>
+    <string name="delete_collection_confirm">Colecția și conținutul ei vor fi eliminate.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d aplicație</item>
+        <item quantity="other">%d aplicații</item>
+    </plurals>
 </resources>

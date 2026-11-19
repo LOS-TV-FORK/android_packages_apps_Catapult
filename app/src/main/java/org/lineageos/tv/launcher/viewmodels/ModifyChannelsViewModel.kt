@@ -22,9 +22,13 @@ import org.lineageos.tv.launcher.utils.Suggestions.orderSuggestions
 
 class ModifyChannelsViewModel(application: Application) : AndroidViewModel(application) {
     val channelsToEnabled = LauncherRepository.previewChannels(context)
-        .map { previewChannels ->
+        .combine(LauncherRepository.collections(context)) { previewChannels, collections ->
+            previewChannels to collections
+        }
+        .map { (previewChannels, collections) ->
             listOf(
                 Channel.getFavoritesAppsChannel(context),
+                *collections.map { Channel(it.id, it.title) }.toTypedArray(),
                 Channel.getWatchNextChannel(context),
                 *previewChannels.map {
                     Channel(

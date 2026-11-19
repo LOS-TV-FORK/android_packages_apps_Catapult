@@ -104,4 +104,19 @@
 
     <string name="channel_title">%1$s: %2$s</string>
 
+    <string name="my_collections">Οι συλλογές μου</string>
+    <string name="new_collection">Συλλογή</string>
+    <string name="collection_name">Όνομα συλλογής</string>
+    <string name="collection_apps">Εφαρμογές</string>
+    <string name="collection_grid_view">Προβολή πλέγματος</string>
+    <string name="collection_grid_columns">Στήλες πλέγματος</string>
+    <string name="collection_card_size">Μέγεθος καρτών</string>
+    <string name="collection_corner_radius">Ακτίνα γωνιών</string>
+    <string name="collection_add_apps">Προσθήκη εφαρμογών</string>
+    <string name="delete_collection">Διαγραφή συλλογής</string>
+    <string name="delete_collection_confirm">Η συλλογή και το περιεχόμενό της θα αφαιρεθούν.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d εφαρμογή</item>
+        <item quantity="other">%d εφαρμογές</item>
+    </plurals>
 </resources>

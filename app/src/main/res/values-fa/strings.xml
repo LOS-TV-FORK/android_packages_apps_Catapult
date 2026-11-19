@@ -102,4 +102,19 @@
     <string name="vpn_no_clients">کلاینت VPN یافت نشد</string>
     <string name="vpn">VPN</string>
 
+    <string name="my_collections">مجموعه‌های من</string>
+    <string name="new_collection">مجموعه</string>
+    <string name="collection_name">نام مجموعه</string>
+    <string name="collection_apps">برنامه‌ها</string>
+    <string name="collection_grid_view">نمای شبکه‌ای</string>
+    <string name="collection_grid_columns">ستون‌های شبکه</string>
+    <string name="collection_card_size">اندازهٔ کارت‌ها</string>
+    <string name="collection_corner_radius">شعاع گوشه‌ها</string>
+    <string name="collection_add_apps">افزودن برنامه‌ها</string>
+    <string name="delete_collection">حذف مجموعه</string>
+    <string name="delete_collection_confirm">مجموعه و محتوای آن حذف خواهند شد.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d برنامه</item>
+        <item quantity="other">%d برنامه</item>
+    </plurals>
 </resources>

@@ -102,4 +102,19 @@
     <string name="vpn_no_clients">Không tìm thấy client VPN</string>
     <string name="vpn">VPN</string>
 
+    <string name="my_collections">Bộ sưu tập của tôi</string>
+    <string name="new_collection">Bộ sưu tập</string>
+    <string name="collection_name">Tên bộ sưu tập</string>
+    <string name="collection_apps">Ứng dụng</string>
+    <string name="collection_grid_view">Dạng lưới</string>
+    <string name="collection_grid_columns">Số cột lưới</string>
+    <string name="collection_card_size">Kích thước thẻ</string>
+    <string name="collection_corner_radius">Bán kính góc</string>
+    <string name="collection_add_apps">Thêm ứng dụng</string>
+    <string name="delete_collection">Xóa bộ sưu tập</string>
+    <string name="delete_collection_confirm">Bộ sưu tập và nội dung của nó sẽ bị xóa.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d ứng dụng</item>
+        <item quantity="other">%d ứng dụng</item>
+    </plurals>
 </resources>

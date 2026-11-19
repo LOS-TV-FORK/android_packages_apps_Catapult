@@ -104,4 +104,19 @@
     <string name="mark_as_favorite">Markeren als favoriet</string>
     <string name="channel_title">%1$s: %2$s</string>
 
+    <string name="my_collections">Mijn verzamelingen</string>
+    <string name="new_collection">Verzameling</string>
+    <string name="collection_name">Naam van verzameling</string>
+    <string name="collection_apps">Apps</string>
+    <string name="collection_grid_view">Rasterweergave</string>
+    <string name="collection_grid_columns">Kolommen raster</string>
+    <string name="collection_card_size">Kaartgrootte</string>
+    <string name="collection_corner_radius">Hoekradius</string>
+    <string name="collection_add_apps">Apps toevoegen</string>
+    <string name="delete_collection">Verzameling verwijderen</string>
+    <string name="delete_collection_confirm">De verzameling en de inhoud worden verwijderd.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d app</item>
+        <item quantity="other">%d apps</item>
+    </plurals>
 </resources>

@@ -104,4 +104,20 @@
     <string name="vpn_no_clients">VPN-клиенты не найдены</string>
     <string name="vpn">VPN</string>
 
+    <string name="my_collections">Мои коллекции</string>
+    <string name="new_collection">Коллекция</string>
+    <string name="collection_name">Название коллекции</string>
+    <string name="collection_apps">Приложения</string>
+    <string name="collection_grid_view">Режим сетки</string>
+    <string name="collection_grid_columns">Столбцы сетки</string>
+    <string name="collection_card_size">Размер карточек</string>
+    <string name="collection_corner_radius">Радиус скругления</string>
+    <string name="collection_add_apps">Добавить приложения</string>
+    <string name="delete_collection">Удалить коллекцию</string>
+    <string name="delete_collection_confirm">Коллекция и её содержимое будут удалены.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d приложение</item>
+        <item quantity="few">%d приложения</item>
+        <item quantity="other">%d приложений</item>
+    </plurals>
 </resources>

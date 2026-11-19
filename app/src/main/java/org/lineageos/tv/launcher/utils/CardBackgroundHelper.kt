@@ -34,8 +34,8 @@ object CardBackgroundHelper {
     private fun prefs(context: Context) =
         PreferenceManager.getDefaultSharedPreferences(context)
 
-    fun getCardBorderDrawable(context: Context): GradientDrawable {
-        val radius = cardCornerRadiusPx(context)
+    fun getCardBorderDrawable(context: Context, radiusPx: Float? = null): GradientDrawable {
+        val radius = radiusPx ?: cardCornerRadiusPx(context)
         return GradientDrawable().apply {
             shape = GradientDrawable.RECTANGLE
             cornerRadius = radius
@@ -65,15 +65,19 @@ object CardBackgroundHelper {
         }
     }
     
-    fun createThemeBackgroundDrawable(context: Context): GradientDrawable {
-        val radius = cardCornerRadiusPx(context)
+    fun createThemeBackgroundDrawable(context: Context, radiusPx: Float? = null): GradientDrawable {
+        val radius = radiusPx ?: cardCornerRadiusPx(context)
         val bgColor = context.getAttributeColor(MaterialR.attr.colorSecondaryContainer)
         return createSolidDrawable(context, radius, bgColor)
     }
     
-    fun getCardIconBackgroundDrawable(context: Context, iconDrawable: Drawable?): Drawable {
+    fun getCardIconBackgroundDrawable(
+        context: Context,
+        iconDrawable: Drawable?,
+        radiusPx: Float? = null,
+    ): Drawable {
         val prefs = prefs(context)
-        val radius = cardCornerRadiusPx(context)
+        val radius = radiusPx ?: cardCornerRadiusPx(context)
         val bgType = prefs.cardBackgroundType
         
         return when (bgType) {
@@ -98,9 +102,8 @@ object CardBackgroundHelper {
         }
     }
     
-    fun getBannerBorderDrawable(context: Context): GradientDrawable {
-        val prefs = prefs(context)
-        val radius = cardCornerRadiusPx(context)
+    fun getBannerBorderDrawable(context: Context, radiusPx: Float? = null): GradientDrawable {
+        val radius = radiusPx ?: cardCornerRadiusPx(context)
         return GradientDrawable().apply {
             shape = GradientDrawable.RECTANGLE
             cornerRadius = radius

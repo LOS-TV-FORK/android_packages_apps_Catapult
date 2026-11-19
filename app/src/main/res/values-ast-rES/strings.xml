@@ -103,4 +103,19 @@
     <string name="modify_channels">Modificar canales</string>
     <string name="vpn">VPN</string>
 
+    <string name="my_collections">Les mios colecciones</string>
+    <string name="new_collection">Coleición</string>
+    <string name="collection_name">Nome de la coleición</string>
+    <string name="collection_apps">Aplicaciones</string>
+    <string name="collection_grid_view">Vista de cuadrícula</string>
+    <string name="collection_grid_columns">Columnes de la cuadrícula</string>
+    <string name="collection_card_size">Tamañu de les tarxetes</string>
+    <string name="collection_corner_radius">Radiu de les esquines</string>
+    <string name="collection_add_apps">Amestar aplicaciones</string>
+    <string name="delete_collection">Desaniciar la coleición</string>
+    <string name="delete_collection_confirm">Esborrarase la coleición y el so conteníu.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d aplicación</item>
+        <item quantity="other">%d aplicaciones</item>
+    </plurals>
 </resources>

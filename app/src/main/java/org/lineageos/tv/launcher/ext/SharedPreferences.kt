@@ -9,6 +9,7 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
+import org.lineageos.tv.launcher.model.UserCollection
 
 fun <T> SharedPreferences.valueFlow(
     key: String,
@@ -342,3 +343,31 @@ var SharedPreferences.clockTextSize: Int
     set(value) = edit {
         putInt(CLOCK_TEXT_SIZE_KEY, value)
     }
+
+const val COLLECTIONS_KEY = "collections"
+
+/**
+ * The user-created collections (custom rows of app cards), serialized as JSON.
+ */
+var SharedPreferences.collections: List<UserCollection>
+    get() = UserCollection.listFromJson(getString(COLLECTIONS_KEY, null))
+    set(value) = edit {
+        putString(COLLECTIONS_KEY, UserCollection.listToJson(value))
+    }
+
+/**
+ * Replaces the collection with the same id, keeping the list order.
+ */
+fun SharedPreferences.updateCollection(collection: UserCollection) {
+    collections = collections.map { if (it.id == collection.id) collection else it }
+}
+
+/**
+ * Drops a collection and every trace of it in the channel settings, so a removed
+ * row cannot linger in the ordering or hidden lists.
+ */
+fun SharedPreferences.deleteCollection(id: Long) {
+    collections = collections.filterNot { it.id == id }
+    knownChannels = knownChannels.filterNot { it == id }
+    hiddenChannels = hiddenChannels.filterNot { it == id }.toSet()
+}

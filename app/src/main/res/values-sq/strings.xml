@@ -101,4 +101,19 @@
     <string name="mark_as_favorite">Shënoje si të preferuar</string>
     <string name="channel_title">%1$s: %2$s</string>
 
+    <string name="my_collections">Koleksionet e mia</string>
+    <string name="new_collection">Koleksion</string>
+    <string name="collection_name">Emri i koleksionit</string>
+    <string name="collection_apps">Aplikacione</string>
+    <string name="collection_grid_view">Pamje rrjetë</string>
+    <string name="collection_grid_columns">Shtylla rrjete</string>
+    <string name="collection_card_size">Madhësia e kartave</string>
+    <string name="collection_corner_radius">Rrezja e qosheve</string>
+    <string name="collection_add_apps">Shto aplikacione</string>
+    <string name="delete_collection">Fshi koleksionin</string>
+    <string name="delete_collection_confirm">Koleksioni dhe përmbajtja e tij do të hiqen.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d aplikacion</item>
+        <item quantity="other">%d aplikime</item>
+    </plurals>
 </resources>

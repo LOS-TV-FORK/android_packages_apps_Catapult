@@ -105,4 +105,19 @@
     <string name="modify_channels">Newid sianeli</string>
     <string name="vpn">VPN</string>
 
+    <string name="my_collections">Fy casgliadau</string>
+    <string name="new_collection">Casgliad</string>
+    <string name="collection_name">Enw\'r casgliad</string>
+    <string name="collection_apps">Apiau</string>
+    <string name="collection_grid_view">Golwg grid</string>
+    <string name="collection_grid_columns">Colofnau\'r grid</string>
+    <string name="collection_card_size">Maint cardiau</string>
+    <string name="collection_corner_radius">Radiwm corneli</string>
+    <string name="collection_add_apps">Ychwanegu apiau</string>
+    <string name="delete_collection">Dileu\'r casgliad</string>
+    <string name="delete_collection_confirm">Caiff y casgliad a\'i gynnwys eu tynnu.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d ap</item>
+        <item quantity="other">%d ap</item>
+    </plurals>
 </resources>

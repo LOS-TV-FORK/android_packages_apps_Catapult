@@ -105,4 +105,19 @@
     <string name="android_settings">Android-ის პარამეტრები</string>
     <string name="vpn">VPN</string>
 
+    <string name="my_collections">ჩემი კოლექციები</string>
+    <string name="new_collection">კოლექცია</string>
+    <string name="collection_name">კოლექციის სახელი</string>
+    <string name="collection_apps">აპლიკაციები</string>
+    <string name="collection_grid_view">ბადის ხედი</string>
+    <string name="collection_grid_columns">ბადის სვეტები</string>
+    <string name="collection_card_size">ბარათების ზომა</string>
+    <string name="collection_corner_radius">კუთხის რადიუსი</string>
+    <string name="collection_add_apps">აპლიკაციების დამატება</string>
+    <string name="delete_collection">კოლექციის წაშლა</string>
+    <string name="delete_collection_confirm">კოლექცია და მისი შიგთავსი წაიშლება.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d აპლიკაცია</item>
+        <item quantity="other">%d აპლიკაცია</item>
+    </plurals>
 </resources>

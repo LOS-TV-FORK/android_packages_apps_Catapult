@@ -102,4 +102,19 @@
     <string name="vpn_no_clients">Няма намерени VPN клиенти</string>
     <string name="vpn">VPN</string>
 
+    <string name="my_collections">Моите колекции</string>
+    <string name="new_collection">Колекция</string>
+    <string name="collection_name">Име на колекцията</string>
+    <string name="collection_apps">Приложения</string>
+    <string name="collection_grid_view">Мрежов изглед</string>
+    <string name="collection_grid_columns">Колони в мрежата</string>
+    <string name="collection_card_size">Размер на картите</string>
+    <string name="collection_corner_radius">Радиус на ъглите</string>
+    <string name="collection_add_apps">Добави приложения</string>
+    <string name="delete_collection">Изтрий колекцията</string>
+    <string name="delete_collection_confirm">Колекцията и съдържанието ѝ ще бъдат премахнати.</string>
+    <plurals name="collection_app_count">
+        <item quantity="one">%d приложение</item>
+        <item quantity="other">%d приложения</item>
+    </plurals>
 </resources>
