@@ -34,6 +34,7 @@ import androidx.palette.graphics.Palette
 import coil.drawable.CrossfadeDrawable
 import java.util.IdentityHashMap
 import kotlin.math.abs
+import kotlin.math.roundToInt
 
 class DynamicBackgroundHelper(
     private val container: FrameLayout,
@@ -113,8 +114,12 @@ class DynamicBackgroundHelper(
             drawable.setWeights(target)
             return
         }
+        val colors = drawable.colors()
         val animator = ValueAnimator.ofFloat(0f, 1f).apply {
-            duration = 900L
+            // Longer morphs for more distant dominant colors: the HSV distance
+            // between the currently dominant stop and the incoming one maps to
+            // 900..3300 ms.
+            duration = morphDurationMs(colors, start, target)
             interpolator = AccelerateDecelerateInterpolator()
             addUpdateListener { anim ->
                 val t = anim.animatedFraction
@@ -126,6 +131,51 @@ class DynamicBackgroundHelper(
         gradientAnimator = animator
         animator.start()
         pauseKbForTransition()
+    }
+
+    private fun hsvOf(color: Int): FloatArray {
+        val r = android.graphics.Color.red(color) / 255f
+        val g = android.graphics.Color.green(color) / 255f
+        val b = android.graphics.Color.blue(color) / 255f
+        val max = maxOf(r, g, b)
+        val min = minOf(r, g, b)
+        val delta = max - min
+        val hue = when {
+            delta == 0f -> 0f
+            max == r -> 60f * (((g - b) / delta) % 6f)
+            max == g -> 60f * ((b - r) / delta + 2f)
+            else -> 60f * ((r - g) / delta + 4f)
+        }
+        val saturation = if (max == 0f) 0f else delta / max
+        return floatArrayOf((hue + 360f) % 360f, saturation, max)
+    }
+
+    private fun morphDurationMs(colors: List<Int>, start: FloatArray, target: FloatArray): Long {
+        fun dominantIndex(weights: FloatArray): Int = weights.indices.maxByOrNull { weights[it] } ?: 0
+        val from = colors.getOrNull(dominantIndex(start)) ?: return 900L
+        val to = colors.getOrNull(dominantIndex(target)) ?: return 900L
+        // The collapsed-band case: a near-zero weight stop sits between the two
+        // dominant stops, splitting the gradient into two ramps with a hairline
+        // seam. That transition reads as a structural move, so run it several
+        // times slower than a plain color morph.
+        val fromIdx = dominantIndex(start)
+        val toIdx = dominantIndex(target)
+        val seamBetween = (fromIdx + 1 until toIdx) + (toIdx + 1 until fromIdx)
+        val collapsed = seamBetween.any { start[it] < 0.02f && target[it] < 0.02f }
+        val hsvFrom = hsvOf(from)
+        val hsvTo = hsvOf(to)
+        val hueDelta = kotlin.math.abs(hsvFrom[0] - hsvTo[0]).let { kotlin.math.min(it, 360f - it) } / 360f
+        val satDelta = kotlin.math.abs(hsvFrom[1] - hsvTo[1])
+        val valDelta = kotlin.math.abs(hsvFrom[2] - hsvTo[2])
+        // Hue is perceptually dominant: 55% hue, 25% saturation, 20% value.
+        val dist = kotlin.math.sqrt(hueDelta * hueDelta * 0.55f + satDelta * satDelta * 0.25f + valDelta * valDelta * 0.20f)
+        val base = (900.0 + dist * 2400.0).coerceIn(900.0, 3300.0)
+        // The collapsed-band type runs in a narrow high band: 5500..5900 ms.
+        return if (collapsed) {
+            (5500.0 + dist * 400.0).roundToInt().coerceIn(5500, 5900).toLong()
+        } else {
+            base.roundToInt().toLong()
+        }
     }
 
     fun setBlurRadius(dp: Float) {
