@@ -56,6 +56,7 @@ class DynamicBackgroundHelper(
         const val RETRY_MS = 500L
         const val MAX_SWAP_RETRIES = 12
         const val KEN_BURNS_MS = 22000L
+        const val LENS_FLOW_STEP_MS = 40L
         const val LOW_FPS_STEP_MS = 50L
         const val AUTO_INTERVAL_MS = 15000L
         const val FPS_WINDOW_MS = 1000L
@@ -100,6 +101,19 @@ class DynamicBackgroundHelper(
     private var previousFocusKey: String? = null
     private var currentGradient: GradientPaletteDrawable? = null
     private var gradientAnimator: ValueAnimator? = null
+
+    // Lens distortion around the focused card - only on the top performance tier.
+    private var lensActive = false
+    private var lensCx = -1f
+    private var lensCy = -1f
+    private var lensRadius = 0f
+    private var lensAnimator: ValueAnimator? = null
+    private val lensFlowTick = object : Runnable {
+        override fun run() {
+            currentGradient?.invalidateSelf()
+            handler.postDelayed(this, LENS_FLOW_STEP_MS)
+        }
+    }
 
     // Supplies the icon drawables of all currently bound app cards so the
     // gradient can carry the whole screen's palette, not just the focused one.
@@ -181,6 +195,39 @@ class DynamicBackgroundHelper(
     fun setBlurRadius(dp: Float) {
         blurRadiusDp = dp.coerceIn(0f, 30f)
         recomputeBlurEffect()
+    }
+
+    /** Focus-card position in the background view's coordinate space. */
+    fun setLensCenter(cx: Float, cy: Float, radiusPx: Float) {
+        // The lens glides to the new focus card instead of teleporting in one frame.
+        val fromX = lensCx
+        val fromY = lensCy
+        lensCx = cx
+        lensCy = cy
+        lensRadius = radiusPx
+        if (fromX < 0f || fromY < 0f) {
+            currentGradient?.setLens(lensActive, cx, cy, radiusPx)
+            return
+        }
+        lensAnimator?.cancel()
+        lensAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
+            duration = 450L
+            interpolator = AccelerateDecelerateInterpolator()
+            addUpdateListener { anim ->
+                val t = anim.animatedFraction
+                currentGradient?.setLens(
+                    lensActive,
+                    fromX + (cx - fromX) * t,
+                    fromY + (cy - fromY) * t,
+                    radiusPx
+                )
+            }
+            start()
+        }
+    }
+
+    private fun applyLensToGradient(gradient: GradientPaletteDrawable) {
+        gradient.setLens(lensActive && visible, lensCx, lensCy, lensRadius)
     }
 
     // CPU pre-baked Gaussian instead of the live RenderEffect: same kernel,
@@ -307,6 +354,15 @@ class DynamicBackgroundHelper(
         pauseKbDuringTransitions = if (autoPerf) true else pauseManual
         preBakedActive = if (autoPerf) autoTier >= 2 else preBakedBlur
         val enabled = if (autoPerf) autoTier < 3 else true
+        // The lens is a top-tier-only effect.
+        lensActive = if (autoPerf) autoTier == 0 else !lowFpsManual && !preBakedBlur
+        currentGradient?.setLens(lensActive && visible, lensCx, lensCy, lensRadius)
+        if (lensActive && visible) {
+            handler.removeCallbacks(lensFlowTick)
+            handler.postDelayed(lensFlowTick, LENS_FLOW_STEP_MS)
+        } else {
+            handler.removeCallbacks(lensFlowTick)
+        }
         recomputeBlurEffect()
         if (kenBurnsEnabled != enabled) {
             kenBurnsEnabled = enabled
@@ -371,11 +427,15 @@ class DynamicBackgroundHelper(
         container.isVisible = true
         setBlurRadius(blurRadiusDp)
         startKenBurns()
+        currentGradient?.setLens(lensActive, lensCx, lensCy, lensRadius)
+        handler.removeCallbacks(lensFlowTick)
+        if (lensActive) handler.postDelayed(lensFlowTick, LENS_FLOW_STEP_MS)
     }
 
     fun hide() {
         visible = false
         container.isVisible = false
+        handler.removeCallbacks(lensFlowTick)
         debounceRunnable?.let { handler.removeCallbacks(it) }
         debounceRunnable = null
         pendingProvider = null
@@ -555,6 +615,7 @@ class DynamicBackgroundHelper(
         next.animate().cancel()
         bitmaps.remove(next)?.recycle()
         next.setImageDrawable(artwork)
+        if (artwork is GradientPaletteDrawable) applyLensToGradient(artwork)
         next.setRenderEffect(
             if (artwork is GradientPaletteDrawable) null else blurEffect
         )
@@ -840,6 +901,67 @@ private class GradientPaletteDrawable(
     private var weights = weights.copyOf()
     private val positions = FloatArray(colors.size)
 
+    // Optical lens around the focused card: the palette is sampled through
+    // warped coordinates, so it bends outward around the card and swirls
+    // tangentially - the card reads as an obstacle the palette flows around.
+    private var lensEnabled = false
+    private var lensCx = -1f
+    private var lensCy = -1f
+    private var lensRadius = 0f
+    private var lensShader: android.graphics.RuntimeShader? = null
+
+    fun setLens(enabled: Boolean, cx: Float, cy: Float, radiusPx: Float) {
+        if (enabled == lensEnabled && cx == lensCx && cy == lensCy && radiusPx == lensRadius) {
+            return
+        }
+        lensEnabled = enabled
+        lensCx = cx
+        lensCy = cy
+        lensRadius = radiusPx
+        invalidateSelf()
+    }
+
+    private fun lensWrapped(base: LinearGradient): Shader? {
+        if (!lensEnabled || lensCx < 0f || lensRadius <= 0f) return null
+        return try {
+            val effect = lensShader
+                ?: android.graphics.RuntimeShader(LENS_AGSL).also { lensShader = it }
+            effect.setInputShader("content", base)
+            effect.setFloatUniform("uCx", lensCx)
+            effect.setFloatUniform("uCy", lensCy)
+            effect.setFloatUniform("uRadius", lensRadius)
+            effect.setFloatUniform("uTime", SystemClock.elapsedRealtimeNanos() / 1e9f)
+            effect
+        } catch (t: Throwable) {
+            null
+        }
+    }
+
+    private companion object {
+        // Gaussian falloff around the lens center: radial push (barrier) plus a
+        // tangential swirl whose phase drifts with time (flowing palette).
+        const val LENS_AGSL = """
+            uniform shader content;
+            uniform float uCx;
+            uniform float uCy;
+            uniform float uRadius;
+            uniform float uTime;
+            float2 warp(float2 p) {
+                float2 d = p - float2(uCx, uCy);
+                float r = length(d);
+                float k = exp(-r * r / (uRadius * uRadius));
+                float2 dir = d / max(r, 1.0);
+                float2 outward = dir * 0.34 * k * uRadius;
+                float2 tang = float2(-dir.y, dir.x);
+                float ang = 0.5 * k * (0.8 + 0.35 * sin(uTime * 0.55));
+                return p + outward + tang * ang * uRadius * 0.55;
+            }
+            float4 main(float2 fragCoord) {
+                return content.eval(warp(fragCoord));
+            }
+        """
+    }
+
     init {
         computePositions()
     }
@@ -871,9 +993,10 @@ private class GradientPaletteDrawable(
         val w = bounds.width().toFloat()
         val h = bounds.height().toFloat()
         val ramp = colors.map { toneColor(it) }.toIntArray()
-        paint.shader = LinearGradient(
+        val linear = LinearGradient(
             0f, 0f, w, h, ramp, positions, Shader.TileMode.CLAMP
         )
+        paint.shader = lensWrapped(linear) ?: linear
         canvas.drawPaint(paint)
         paint.shader = RadialGradient(
             w * 0.3f, h * 0.25f, w * 0.8f,

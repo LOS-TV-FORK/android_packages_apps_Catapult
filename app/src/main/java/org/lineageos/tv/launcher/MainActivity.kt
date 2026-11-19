@@ -293,6 +293,18 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 }
             }
         }
+        // Lens center follows the focused card in the background container's
+        // coordinate space; the flow radius is a bit wider than the card.
+        val cardLoc = IntArray(2).also { card.getLocationOnScreen(it) }
+        val contLoc = IntArray(2).also { dynamicBackgroundContainer.getLocationOnScreen(it) }
+        val lensRadius = kotlin.math.hypot(
+            card.width.toDouble(), card.height.toDouble()
+        ).toFloat() * 1.8f
+        dynamicBackground.setLensCenter(
+            cardLoc[0] + card.width / 2f - contLoc[0],
+            cardLoc[1] + card.height / 2f - contLoc[1],
+            lensRadius
+        )
     }
 
     // Return to first row when focus moves to the top bar
