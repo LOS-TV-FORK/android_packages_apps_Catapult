@@ -106,6 +106,7 @@
 
     <string name="my_collections">Мои коллекции</string>
     <string name="new_collection">Коллекция</string>
+    <string name="add_to_collection">Добавить в коллекцию</string>
     <string name="collection_name">Название коллекции</string>
     <string name="collection_apps">Приложения</string>
     <string name="collection_grid_view">Режим сетки</string>

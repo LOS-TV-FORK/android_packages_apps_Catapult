@@ -104,6 +104,7 @@
 
     <string name="my_collections">کۆلێکشنەکانم</string>
     <string name="new_collection">کۆلێکشن</string>
+    <string name="add_to_collection">زیادکردن بۆ کۆلێکشن</string>
     <string name="collection_name">ناوی کۆلێکشن</string>
     <string name="collection_apps">ئەپەکان</string>
     <string name="collection_grid_view">دیمەنی تۆڕ</string>

@@ -104,6 +104,7 @@
 
     <string name="my_collections">Koleksi saya</string>
     <string name="new_collection">Koleksi</string>
+    <string name="add_to_collection">Tambah ke koleksi</string>
     <string name="collection_name">Nama koleksi</string>
     <string name="collection_apps">Aplikasi</string>
     <string name="collection_grid_view">Tampilan kisi</string>

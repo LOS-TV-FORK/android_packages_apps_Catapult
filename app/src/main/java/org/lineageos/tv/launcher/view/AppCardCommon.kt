@@ -20,6 +20,7 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.isInvisible
+import org.lineageos.tv.launcher.AddToCollectionActivity
 import org.lineageos.tv.launcher.R
 import org.lineageos.tv.launcher.model.Launchable
 import org.lineageos.tv.launcher.model.LeanbackAppInfo
@@ -48,6 +49,8 @@ import kotlin.reflect.safeCast
         private var uninstallable: Boolean = true
         protected var hasCustomIcon: Boolean = false
         var hideable: Boolean = false
+        // Move option only where reordering applies (collection carousels, favorites).
+        var movable: Boolean = false
 
         init {
             setupNameMarquee()
@@ -121,6 +124,11 @@ import kotlin.reflect.safeCast
             popupMenu.menu.removeItem(R.id.menu_hide)
         }
 
+        // Move option only on rows that support reordering
+        if (!movable) {
+            popupMenu.menu.removeItem(R.id.menu_move)
+        }
+
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_uninstall -> {
@@ -138,8 +146,17 @@ import kotlin.reflect.safeCast
                     true
                 }
 
+                R.id.menu_add_to_collection -> {
+                    context.startActivity(
+                        Intent(context, AddToCollectionActivity::class.java)
+                            .putExtra(AddToCollectionActivity.EXTRA_PACKAGE_NAME, packageName)
+                    )
+                    true
+                }
+
                 R.id.menu_move -> {
                     FavoriteCard::class.safeCast(this)?.setMoving()
+                        ?: AppCard::class.safeCast(this)?.setMoving()
                     true
                 }
 

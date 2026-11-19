@@ -103,6 +103,7 @@
 
     <string name="my_collections">எனது தொகுப்புகள்</string>
     <string name="new_collection">தொகுப்பு</string>
+    <string name="add_to_collection">தொகுப்பில் சேர்</string>
     <string name="collection_name">தொகுப்பு பெயர்</string>
     <string name="collection_apps">செயலிகள்</string>
     <string name="collection_grid_view">கட்ட அமைப்பு</string>

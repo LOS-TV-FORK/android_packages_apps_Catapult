@@ -106,6 +106,7 @@
 
     <string name="my_collections">Οι συλλογές μου</string>
     <string name="new_collection">Συλλογή</string>
+    <string name="add_to_collection">Προσθήκη στη συλλογή</string>
     <string name="collection_name">Όνομα συλλογής</string>
     <string name="collection_apps">Εφαρμογές</string>
     <string name="collection_grid_view">Προβολή πλέγματος</string>

@@ -104,6 +104,7 @@
 
     <string name="my_collections">Colețiile mele</string>
     <string name="new_collection">Colecție</string>
+    <string name="add_to_collection">Adaugă în colecție</string>
     <string name="collection_name">Numele colecției</string>
     <string name="collection_apps">Aplicații</string>
     <string name="collection_grid_view">Vizualizare grilă</string>

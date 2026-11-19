@@ -104,6 +104,7 @@
 
     <string name="my_collections">مجموعه‌های من</string>
     <string name="new_collection">مجموعه</string>
+    <string name="add_to_collection">افودن به مجموعه</string>
     <string name="collection_name">نام مجموعه</string>
     <string name="collection_apps">برنامه‌ها</string>
     <string name="collection_grid_view">نمای شبکه‌ای</string>

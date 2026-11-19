@@ -105,6 +105,7 @@
 
     <string name="my_collections">Is coletzionis mias</string>
     <string name="new_collection">Coletzione</string>
+    <string name="add_to_collection">Ajunta a sa coletzione</string>
     <string name="collection_name">Nomi de sa coletzione</string>
     <string name="collection_apps">Aplicatziones</string>
     <string name="collection_grid_view">Vista a grilla</string>

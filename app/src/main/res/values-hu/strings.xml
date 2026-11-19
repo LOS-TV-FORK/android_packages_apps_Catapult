@@ -104,6 +104,7 @@
 
     <string name="my_collections">Gyűjteményeim</string>
     <string name="new_collection">Gyűjtemény</string>
+    <string name="add_to_collection">Gyűjteményhez hozzáadása</string>
     <string name="collection_name">A gyűjtemény neve</string>
     <string name="collection_apps">Alkalmazások</string>
     <string name="collection_grid_view">Rácsnézet</string>

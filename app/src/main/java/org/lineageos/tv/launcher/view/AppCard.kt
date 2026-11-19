@@ -15,7 +15,9 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.preference.PreferenceManager
 import org.lineageos.tv.launcher.R
 import org.lineageos.tv.launcher.ext.appCardSize
@@ -138,6 +140,21 @@ class AppCard @JvmOverloads constructor(
         super.setCardInfo(appInfo)
         currentIcon = appInfo.icon
         applyCornerRadius()
+    }
+
+    private val moveOverlayView by lazy { findViewById<ImageView>(R.id.app_move_handle)!! }
+
+    var moving = false
+        private set
+
+    fun setMoving() {
+        moveOverlayView.isVisible = true
+        moving = true
+    }
+
+    fun setMoveDone() {
+        moveOverlayView.isVisible = false
+        moving = false
     }
     
     fun applyCornerRadius() {

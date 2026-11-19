@@ -104,6 +104,7 @@
 
     <string name="my_collections">我的集合</string>
     <string name="new_collection">集合</string>
+    <string name="add_to_collection">添加到集合</string>
     <string name="collection_name">集合名称</string>
     <string name="collection_apps">应用</string>
     <string name="collection_grid_view">网格视图</string>

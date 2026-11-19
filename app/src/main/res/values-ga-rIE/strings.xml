@@ -105,6 +105,7 @@
 
     <string name="my_collections">Mo bhailiúcháin</string>
     <string name="new_collection">Bailiúchán</string>
+    <string name="add_to_collection">Cuir sa bhailiúchán</string>
     <string name="collection_name">Ainm an bhailiúcháin</string>
     <string name="collection_apps">Feidhmchláir</string>
     <string name="collection_grid_view">Amharc greille</string>

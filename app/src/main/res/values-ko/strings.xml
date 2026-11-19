@@ -104,6 +104,7 @@
 
     <string name="my_collections">내 컬렉션</string>
     <string name="new_collection">컬렉션</string>
+    <string name="add_to_collection">컬렉션에 추가</string>
     <string name="collection_name">컬렉션 이름</string>
     <string name="collection_apps">앱</string>
     <string name="collection_grid_view">그리드 보기</string>

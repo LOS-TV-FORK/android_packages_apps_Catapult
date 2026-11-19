@@ -105,6 +105,7 @@
 
     <string name="my_collections">Les mios colecciones</string>
     <string name="new_collection">Coleición</string>
+    <string name="add_to_collection">Amestiar a la coleición</string>
     <string name="collection_name">Nome de la coleición</string>
     <string name="collection_apps">Aplicaciones</string>
     <string name="collection_grid_view">Vista de cuadrícula</string>

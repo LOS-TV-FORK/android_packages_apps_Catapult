@@ -106,6 +106,7 @@
 
     <string name="my_collections">Mijn verzamelingen</string>
     <string name="new_collection">Verzameling</string>
+    <string name="add_to_collection">Toevoegen aan verzameling</string>
     <string name="collection_name">Naam van verzameling</string>
     <string name="collection_apps">Apps</string>
     <string name="collection_grid_view">Rasterweergave</string>

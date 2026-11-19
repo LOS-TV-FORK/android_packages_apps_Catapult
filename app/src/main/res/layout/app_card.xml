@@ -48,6 +48,15 @@
                 android:layout_height="36dp" />
 
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/app_move_handle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/ic_move_overlay"
+            android:backgroundTint="?attr/colorOnSecondaryContainer"
+            android:clipToOutline="true"
+            android:visibility="gone" />
     </FrameLayout>
 
     <TextView

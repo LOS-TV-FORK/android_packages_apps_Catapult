@@ -8,11 +8,14 @@ package org.lineageos.tv.launcher
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.leanback.widget.VerticalGridView
 import androidx.lifecycle.Lifecycle
@@ -62,6 +65,31 @@ class CollectionEditActivity : ModalActivity(R.layout.activity_collection_edit) 
     // so the collection object itself is the single source of truth.
     private var binding = false
 
+    // The on-screen keyboard state per window insets. Dismissing the keyboard
+    // restores the focus to the field; that restore must not summon the keyboard
+    // again, so showing is suppressed until the user actually navigates (a DPAD
+    // key press) - keyboard dismissal itself is not navigation.
+    private var keyboardVisible = false
+    private var keyboardSuppressed = false
+
+    private fun showKeyboard() {
+        val imm = getSystemService(InputMethodManager::class.java) ?: return
+        // SHOW_FORCED: SHOW_IMPLICIT is ignored by the IME right after it was
+        // dismissed (anti-toggle protection), which is exactly the moment the
+        // user re-enters the field after OK/"Done".
+        imm.showSoftInput(nameEdit, InputMethodManager.SHOW_FORCED)
+    }
+
+    // Ends editing: the keyboard is dismissed and the focus moves from the field to
+    // the next control in the navigation order (never into nothing).
+    private fun finishEditing() {
+        val next = nameEdit.focusSearch(View.FOCUS_DOWN)
+        nameEdit.clearFocus()
+        getSystemService(InputMethodManager::class.java)
+            ?.hideSoftInputFromWindow(nameEdit.windowToken, 0)
+        next?.requestFocus()
+    }
+
     private val permissionsGatedCallback = PermissionsGatedCallback(this) {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -104,11 +132,6 @@ class CollectionEditActivity : ModalActivity(R.layout.activity_collection_edit) 
         binding = false
     }
 
-    private fun showKeyboard() {
-        val imm = getSystemService(InputMethodManager::class.java) ?: return
-        imm.showSoftInput(nameEdit, InputMethodManager.SHOW_IMPLICIT)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -120,18 +143,52 @@ class CollectionEditActivity : ModalActivity(R.layout.activity_collection_edit) 
             if (!binding) model.toggleApp(packageName, selected)
         }
 
-        // On TV devices the automatic IME popup on focus is suppressed when a
-        // physical keyboard is present, so request the keyboard explicitly.
-        nameEdit.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) showKeyboard()
+        ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { view, insets ->
+            val visible = insets.isVisible(WindowInsetsCompat.Type.ime())
+            if (keyboardVisible && !visible) {
+                // Suppression is only needed for the focus the keyboard restore
+                // puts back on the field; if the focus has already left, the user
+                // navigated and the popup must work again.
+                keyboardSuppressed = nameEdit.hasFocus()
+            }
+            keyboardVisible = visible
+            ViewCompat.onApplyWindowInsets(view, insets)
         }
 
-        // The keyboard's "Done" action releases the field focus, like the OK key does.
-        nameEdit.setOnEditorActionListener { view, _, _ ->
-            view.clearFocus()
-            getSystemService(InputMethodManager::class.java)
-                ?.hideSoftInputFromWindow(view.windowToken, 0)
-            true
+        // On TV devices the automatic IME popup on focus is suppressed when a
+        // physical keyboard is present, so request the keyboard explicitly when the
+        // field is entered. The keyboard's dismissal restores the focus to the field
+        // while the keyboard is still closing, so that restore does not summon it;
+        // the focus leaving the field while the keyboard is already gone is real
+        // navigation and re-enables the popup.
+        nameEdit.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                if (!keyboardSuppressed) showKeyboard()
+            } else if (!keyboardVisible) {
+                keyboardSuppressed = false
+            }
+        }
+
+        // "Done" finishes editing: default handling stays intact (Enter/Done keep
+        // their normal semantics), the keyboard is dismissed explicitly and the
+        // focus is released after the keyboard's focus-restore pass has settled.
+        // Closing the keyboard any other way never touches the focus, so typing
+        // with a physical keyboard continues.
+        // OK on the focused field ends editing (the framework default does nothing
+        // here - verified on device: the focus stays on the field).
+        nameEdit.setOnKeyListener { _, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER && event.action == KeyEvent.ACTION_UP) {
+                finishEditing()
+                true
+            } else {
+                false
+            }
+        }
+
+        // "Done" ends editing the same way; the default action handling stays intact.
+        nameEdit.setOnEditorActionListener { _, _, _ ->
+            finishEditing()
+            false
         }
 
         nameEdit.addTextChangedListener(object : TextWatcher {

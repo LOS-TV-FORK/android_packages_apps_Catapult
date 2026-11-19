@@ -113,6 +113,8 @@
     <string name="my_collections">My collections</string>
     <!-- Collections list: create a new collection -->
     <string name="new_collection">Collection</string>
+    <!-- App card menu: add the app to a user collection -->
+    <string name="add_to_collection">Add to collection</string>
     <!-- Collection editor: name field -->
     <string name="collection_name">Collection name</string>
     <!-- Collection editor: apps to include -->

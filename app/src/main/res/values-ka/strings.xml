@@ -107,6 +107,7 @@
 
     <string name="my_collections">ჩემი კოლექციები</string>
     <string name="new_collection">კოლექცია</string>
+    <string name="add_to_collection">კოლექციაში დამატება</string>
     <string name="collection_name">კოლექციის სახელი</string>
     <string name="collection_apps">აპლიკაციები</string>
     <string name="collection_grid_view">ბადის ხედი</string>

@@ -102,6 +102,7 @@
 
     <string name="my_collections">Moje zbirke</string>
     <string name="new_collection">Zbirka</string>
+    <string name="add_to_collection">Dodaj v zbirko</string>
     <string name="collection_name">Ime zbirke</string>
     <string name="collection_apps">Aplikacije</string>
     <string name="collection_grid_view">Mrežni prikaz</string>

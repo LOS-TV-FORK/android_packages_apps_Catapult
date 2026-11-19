@@ -104,6 +104,7 @@
 
     <string name="my_collections">Meine Sammlungen</string>
     <string name="new_collection">Sammlung</string>
+    <string name="add_to_collection">Zur Sammlung hinzufügen</string>
     <string name="collection_name">Name der Sammlung</string>
     <string name="collection_apps">Apps</string>
     <string name="collection_grid_view">Rasteransicht</string>

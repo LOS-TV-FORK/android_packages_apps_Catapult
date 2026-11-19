@@ -104,6 +104,7 @@
 
     <string name="my_collections">האוספים שלי</string>
     <string name="new_collection">אוסף</string>
+    <string name="add_to_collection">הוסף לאוסף</string>
     <string name="collection_name">שם האוסף</string>
     <string name="collection_apps">אפליקציות</string>
     <string name="collection_grid_view">תצוגת רשת</string>

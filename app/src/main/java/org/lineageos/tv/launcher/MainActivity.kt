@@ -476,7 +476,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                                         channel.first.id to MainRowItem(
                                             channel.first.title,
                                             collectionAdapters.getOrPut(collection.id) {
-                                                CollectionAdapter()
+                                                CollectionAdapter().apply {
+                                                    onOrderChanged = { order ->
+                                                        persistCollectionOrder(collection.id, order)
+                                                    }
+                                                }
                                             }.apply {
                                                 gridMode = collection.grid
                                                 gridColumns = collection.gridColumns
@@ -557,18 +561,26 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                         }.collectLatest { (collections, installedPackages) ->
                             collectionAdapters.keys.retainAll(collections.map { it.id }.toSet())
                             collections.forEach { collection ->
+                                val items = collection.packages
+                                    .filter { it in installedPackages }
+                                    .mapNotNull { pkg ->
+                                        runCatching {
+                                            AppInfo.create(this@MainActivity, pkg)
+                                        }.getOrNull()
+                                    }
+                                // The "add apps" card is only needed for empty collections;
+                                // non-empty rows are managed through the app card menus.
                                 collectionAdapters.getOrPut(collection.id) { CollectionAdapter() }
                                     .submitList(
-                                        collection.packages
-                                            .filter { it in installedPackages }
-                                            .mapNotNull { pkg ->
-                                                runCatching {
-                                                    AppInfo.create(this@MainActivity, pkg)
-                                                }.getOrNull()
-                                            } +
-                                            CollectionAdapter.createAddToCollectionEntry(
-                                                this@MainActivity, collection.id
+                                        if (items.isEmpty()) {
+                                            listOf(
+                                                CollectionAdapter.createAddToCollectionEntry(
+                                                    this@MainActivity, collection.id
+                                                )
                                             )
+                                        } else {
+                                            items
+                                        }
                                     )
                             }
                         }
@@ -577,9 +589,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
                 lifecycleScope.launch {
                     lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                        combine(model.favoriteApps, model.hiddenApps) { favorites, hidden ->
-                            favorites.filterNot { it in hidden }
-                        }.collectLatest {
+                        // Hidden apps are only filtered out of the all-apps row; favorites
+                        // and collections are curated by the user and stay untouched.
+                        model.favoriteApps.collectLatest {
                             favoritesAdapter.submitList(
                                 it.mapNotNull {
                                     runCatching {
@@ -773,6 +785,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     // Applies card size changes while the settings slider is still open,
     // coalescing the rapid slider updates into one rebinding.
+    private fun persistCollectionOrder(collectionId: Long, packages: List<String>) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        prefs.collections = prefs.collections.map {
+            if (it.id == collectionId) it.copy(packages = packages) else it
+        }
+    }
+
     private fun scheduleLiveCardResize() {
         cardSizeResizeRunnable?.let { cardSizeHandler.removeCallbacks(it) }
         cardSizeResizeRunnable = Runnable {
