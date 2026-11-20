@@ -1634,10 +1634,25 @@ class MainVerticalGridView @JvmOverloads constructor(
         return false
     }
 
+    // Grid-space rect from stable layout coordinates: unlike
+    // offsetDescendantRectToMyCoords this ignores scroll offsets, because a
+    // carousel scrolled by its focus-centering animation reports a transient
+    // visible X at selection time. Main-grid scrolling is applied to child
+    // mTop directly, so vertical positions stay absolute.
+    private fun rectToGridSpace(view: View, rect: Rect) {
+        var current = view
+        while (current !== this) {
+            val parent = current.parent as? View ?: return
+            rect.offset(current.left + current.translationX.toInt(),
+                    current.top + current.translationY.toInt())
+            current = parent
+        }
+    }
+
     private fun verticalFocusSearch(focused: View, direction: Int): View? {
         val focusedRect = Rect()
         focused.getFocusedRect(focusedRect)
-        this.offsetDescendantRectToMyCoords(focused, focusedRect)
+        rectToGridSpace(focused, focusedRect)
         if (focusedRect.bottom <= focusedRect.top || focusedRect.right <= focusedRect.left) return null
 
         val row = findMainGridChild(focused) ?: return super.focusSearch(focused, direction)
@@ -1743,7 +1758,7 @@ class MainVerticalGridView @JvmOverloads constructor(
         for (candidate in candidates) {
             val rect = Rect()
             candidate.getFocusedRect(rect)
-            this.offsetDescendantRectToMyCoords(candidate, rect)
+            rectToGridSpace(candidate, rect)
             if (rect.bottom <= rect.top || rect.right <= rect.left) continue
 
             var valid = false
@@ -1784,7 +1799,7 @@ class MainVerticalGridView @JvmOverloads constructor(
         for (candidate in candidates) {
             val rect = Rect()
             candidate.getFocusedRect(rect)
-            this.offsetDescendantRectToMyCoords(candidate, rect)
+            rectToGridSpace(candidate, rect)
             if (rect.bottom <= rect.top || rect.right <= rect.left) continue
 
             val candidateCenterY = (rect.top + rect.bottom) / 2
