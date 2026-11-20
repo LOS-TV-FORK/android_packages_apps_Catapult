@@ -1577,21 +1577,38 @@ class MainVerticalGridView @JvmOverloads constructor(
         }
     }
 
+    private var pendingRerunDirection = 0
+
     override fun focusSearch(focused: View?, direction: Int): View? {
         val target = focused ?: return null
+        // Any fresh key press supersedes a scheduled post-scroll re-run.
+        pendingRerunDirection = 0
         if (!isInMainGrid(target)) {
             return super.focusSearch(target, direction)
         }
 
         return when (direction) {
             mainFocusSearchUp -> {
-                verticalFocusSearch(target, direction)
-                    ?: super.focusSearch(target, direction).takeUnless { it === target }
+                val up = verticalFocusSearch(target, direction)
+                if (up != null) return up
+                if (pendingRerunDirection != 0) return null
+                super.focusSearch(target, direction).takeUnless { it === target }
                     ?: if (isFirstMainRow(target)) mainFocusFallback(target, direction) else null
             }
             mainFocusSearchDown -> verticalFocusSearch(target, direction)
             else -> super.focusSearch(target, direction)
         }
+    }
+
+    private fun rerunFocusSearch() {
+        if (pendingRerunDirection == 0) return
+        val dir = pendingRerunDirection
+        pendingRerunDirection = 0
+        val current = findFocus() ?: return
+        val next = focusSearch(current, dir) ?: return
+        next.requestFocus(
+            if (dir == mainFocusSearchUp) View.FOCUS_UP else View.FOCUS_DOWN
+        )
     }
 
     private fun isFirstMainRow(target: View): Boolean {
@@ -1632,6 +1649,35 @@ class MainVerticalGridView @JvmOverloads constructor(
         if (sameRow != null) return sameRow
 
         val nextIndex = if (direction == mainFocusSearchUp) rowIndexOf - 1 else rowIndexOf + 1
+        val lm = layoutManager as? androidx.recyclerview.widget.LinearLayoutManager
+        val rowPos = getChildAdapterPosition(row)
+        val nextPos = if (direction == mainFocusSearchUp) rowPos - 1 else rowPos + 1
+        if (lm != null && nextPos >= 0 && nextPos < (adapter?.itemCount ?: 0)) {
+            val neighbor = lm.findViewByPosition(nextPos)
+            if (neighbor == null) {
+                // The row is not laid out yet: smooth-scroll it into view and
+                // re-run the standard focus search after the scroll reaches it.
+                pendingRerunDirection = direction
+                val scroller = androidx.recyclerview.widget.LinearSmoothScroller(context)
+                scroller.targetPosition = nextPos
+                val onceIdle = object : OnScrollListener() {
+                    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                            removeOnScrollListener(this)
+                            post { rerunFocusSearch() }
+                        }
+                    }
+                }
+                addOnScrollListener(onceIdle)
+                lm.startSmoothScroll(scroller)
+                return null
+            }
+            val neighbors = mutableListOf<View>()
+            collectCardCandidates(neighbor, focused, neighbors)
+            val rowCandidate = chooseBestVerticalCandidate(neighbors, focusedRect, direction, allowRelaxed = true)
+            if (rowCandidate != null) return rowCandidate
+            return null
+        }
         if (nextIndex >= 0 && nextIndex < childCount) {
             val neighbors = mutableListOf<View>()
             val neighbor = getChildAt(nextIndex)
