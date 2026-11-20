@@ -53,7 +53,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.palette.graphics.Palette
-import androidx.leanback.widget.VerticalGridView
 import androidx.preference.PreferenceManager
 import androidx.appcompat.content.res.AppCompatResources
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -317,8 +316,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             if (old != null && isMainDescendant(old)) {
                 // Row 0 must sit exactly at the bar bottom; otherwise it stays
                 // clipped under the bar and focus coming back down skips it.
-                mainVerticalGridView.setSelectedPosition(0)
-                snapGridToTop()
+                mainVerticalGridView.scrollToTop()
                 mainVerticalGridView.post { snapGridToTop() }
             }
         }
@@ -331,14 +329,14 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     // nothing is scrolled above it.
     private fun isGridAtTop(): Boolean {
         val lm = mainVerticalGridView.layoutManager
-            as? androidx.leanback.widget.GridLayoutManager ?: return true
+            as? androidx.recyclerview.widget.LinearLayoutManager ?: return true
         return lm.findViewByPosition(0) != null
     }
 
     // Push a clipped row 0 back down to the inset line under the bar.
     private fun snapGridToTop() {
         val lm = mainVerticalGridView.layoutManager
-            as? androidx.leanback.widget.GridLayoutManager ?: return
+            as? androidx.recyclerview.widget.LinearLayoutManager ?: return
         val row0 = lm.findViewByPosition(0) ?: return
         val delta = row0.top - mainVerticalGridView.paddingTop
         if (delta < 0) {
@@ -630,9 +628,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 startService(Intent(this, GlobalHotkeyService::class.java))
 
                 applyBackground()
-                mainVerticalGridView.setFocusScrollStrategy(androidx.leanback.widget.BaseGridView.FOCUS_SCROLL_ITEM)
                 mainVerticalGridView.adapter = mainVerticalAdapter
-                mainVerticalGridView.setSelectedPosition(0)
+                mainVerticalGridView.scrollToTop()
                 mainVerticalGridView.viewTreeObserver.addOnGlobalFocusChangeListener(mainFocusScrollListener)
                 mainVerticalGridView.addOnScrollListener(topBarScrollListener)
                 mainVerticalGridView.upFocusFallback = findTopBarFocusable()
@@ -749,7 +746,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                         guard++
                     }
                 }
-                mainVerticalGridView.setSelectedPosition(0)
+                mainVerticalGridView.scrollToTop()
                 snapGridToTop()
                 mainVerticalGridView.post {
                     snapGridToTop()
@@ -873,7 +870,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             refreshAllRows()
             val currentFocus = currentFocus
             if (currentFocus == null || !isMainDescendant(currentFocus)) {
-                mainVerticalGridView.setSelectedPosition(0)
+                mainVerticalGridView.scrollToTop()
             }
         }
     }
@@ -1481,15 +1478,38 @@ class MainVerticalGridView @JvmOverloads constructor(
     context: android.content.Context,
     attrs: android.util.AttributeSet? = null,
     defStyleAttr: Int = 0
-) : androidx.leanback.widget.VerticalGridView(context, attrs, defStyleAttr) {
+) : androidx.recyclerview.widget.RecyclerView(context, attrs, defStyleAttr) {
     private val mainFocusSearchUp = 0x00000004
     private val mainFocusSearchDown = 0x00000008
 
     var upFocusFallback: View? = null
 
+    init {
+        // A standard LinearLayoutManager always re-derives positions from the actual
+        // measured child heights; leanback's GridLayoutManager reuses stale cached row
+        // sizes after a row's height changes, which stacks rows on each other.
+        layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context, VERTICAL, false)
+        val spacing = (8f * resources.displayMetrics.density).toInt()
+        addItemDecoration(object : RecyclerView.ItemDecoration() {
+            override fun getItemOffsets(
+                outRect: android.graphics.Rect,
+                view: View,
+                parent: RecyclerView,
+                state: RecyclerView.State,
+            ) {
+                outRect.top = if (parent.getChildAdapterPosition(view) == 0) 0 else spacing
+            }
+        })
+    }
+
+    fun scrollToTop() {
+        (layoutManager as? androidx.recyclerview.widget.LinearLayoutManager)
+            ?.scrollToPositionWithOffset(0, paddingTop)
+    }
+
     override fun requestChildFocus(child: View, focused: View) {
         val inGrid = isInMainGrid(focused)
-        // Must be sampled before stopScroll(): while a leanback smooth-scroll pass is running
+        // Must be sampled before stopScroll(): while a smooth-scroll pass is running
         // (state SETTLING) the rule must not scrollBy from inside it.
         val busy = inLayoutPass || scrollState != RecyclerView.SCROLL_STATE_IDLE
         if (inGrid) stopScroll()
@@ -1576,11 +1596,9 @@ class MainVerticalGridView @JvmOverloads constructor(
 
     private fun isFirstMainRow(target: View): Boolean {
         val row = findMainGridChild(target) ?: return false
-        val lm = layoutManager as? androidx.leanback.widget.GridLayoutManager
         // Adapter position 0, not the first attached child: when scrolled deep,
-        // child index 0 is just the top visible row and must not escape to the
-        // top bar.
-        return if (lm != null) lm.getPosition(row) == 0 else indexOfChild(row) == 0
+        // child index 0 is just the top visible row and must not escape to the top bar.
+        return getChildAdapterPosition(row) == 0
     }
 
     private fun mainFocusFallback(target: View, direction: Int): View? {
