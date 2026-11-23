@@ -324,11 +324,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
     }
 
+    // Hide the bar only once the top-row card's top has scrolled above the top
+    // edge of the screen; while its top is still on screen the bar stays shown.
     private fun isGridAtTop(): Boolean {
-        val lm = mainVerticalGridView.layoutManager
-            as? androidx.recyclerview.widget.LinearLayoutManager ?: return true
-        val row0 = lm.findViewByPosition(0) ?: return false
-        return row0.top <= mainVerticalGridView.paddingTop
+        val card = mainVerticalGridView.matrixFirstCard() ?: return false
+        val rect = Rect(0, 0, 1, 1)
+        mainVerticalGridView.offsetDescendantRectToMyCoords(card, rect)
+        return rect.top >= 0
     }
 
     // Focus is the matrix cell (0,0): its card view exists once row 0 is
