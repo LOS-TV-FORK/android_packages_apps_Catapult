@@ -1803,6 +1803,27 @@ class MainVerticalGridView @JvmOverloads constructor(
         return true
     }
 
+    // The mouse wheel must scroll exactly like a finger gesture. RecyclerView's
+    // default wheel path scrolls while the state stays IDLE, so the focus
+    // re-anchor (tryLandPending) yanks the viewport back to the focused card.
+    // A gesture scrolls in SETTLING state, where that re-anchor is suppressed;
+    // routing the wheel through smoothScrollBy reproduces the gesture path with
+    // the framework's own scroll factor, so speed and direction are unchanged
+    // (wheel up scrolls up, wheel down scrolls down).
+    override fun onGenericMotionEvent(e: MotionEvent): Boolean {
+        if (e.action == MotionEvent.ACTION_SCROLL) {
+            val vScroll = -e.getAxisValue(MotionEvent.AXIS_VSCROLL)
+            if (vScroll != 0f) {
+                fitAnimator?.cancel()
+                val factor = androidx.core.view.ViewConfigurationCompat
+                    .getScaledVerticalScrollFactor(android.view.ViewConfiguration.get(context), context)
+                smoothScrollBy(0, (vScroll * factor).toInt())
+                return true
+            }
+        }
+        return super.onGenericMotionEvent(e)
+    }
+
     override fun focusSearch(focused: View?, direction: Int): View? {
         val target = focused ?: return null
         if (!isInMainGrid(target)) {
