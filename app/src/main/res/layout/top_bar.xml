@@ -22,6 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:focusable="true"
+        android:clickable="true"
         android:src="@drawable/ic_search" />
 
     <LinearLayout
@@ -37,12 +38,16 @@
             android:id="@+id/voice_assistant"
             android:contentDescription="@string/mic_assistant"
             android:src="@drawable/ic_mic"
+            android:focusable="true"
+            android:clickable="true"
             style="@style/TopBarSearchButton" />
 
         <ImageButton
             android:id="@+id/keyboard_assistant"
             android:contentDescription="@string/keyboard_assistant"
             android:src="@drawable/ic_keyboard"
+            android:focusable="true"
+            android:clickable="true"
             style="@style/TopBarSearchButton" />
 
     </LinearLayout>
@@ -120,6 +125,8 @@
                 android:id="@+id/settingsMaterialButton"
                 android:contentDescription="@string/settings"
                 android:src="@drawable/ic_settings"
+                android:focusable="true"
+                android:clickable="true"
                 style="@style/TopBarSearchButton" />
 
         </LinearLayout>

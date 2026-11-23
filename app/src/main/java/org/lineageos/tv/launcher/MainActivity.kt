@@ -125,16 +125,16 @@ import android.content.ComponentName
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.PixelFormat
-import android.util.Log
 import android.util.TypedValue
 import android.view.ContextThemeWrapper
+import android.view.MotionEvent
 import android.view.ViewConfiguration
 import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationSet
-import android.view.animation.DecelerateInterpolator
 import android.view.animation.RotateAnimation
 import android.view.animation.ScaleAnimation
 import android.view.animation.TranslateAnimation
@@ -306,107 +306,73 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         )
     }
 
-    // Return to first row when focus moves to the top bar
-    private val mainFocusScrollListener = ViewTreeObserver.OnGlobalFocusChangeListener { old, newFocus ->
+    // Top bar visibility is alpha-only: it must not move the grid.
+    private val mainFocusScrollListener = ViewTreeObserver.OnGlobalFocusChangeListener { _, newFocus ->
         if (newFocus != null && isTopBarDescendant(newFocus)) {
-            showTopBar()
-            // Jump to row 0 only when the user scrolled up from the grid into
-            // the bar. A focus restore after resume (no previous focus, or
-            // focus coming from the bar itself) must not move the grid.
-            if (old != null && isMainDescendant(old)) {
-                // Row 0 must sit exactly at the bar bottom; otherwise it stays
-                // clipped under the bar and focus coming back down skips it.
-                mainVerticalGridView.scrollToTop()
-                mainVerticalGridView.post { snapGridToTop() }
+            if (!mainVerticalGridView.navScrollActive) {
+                syncTopBarVisibility()
             }
         }
         if (newFocus != null && isMainDescendant(newFocus)) {
             updateDynamicBackground(newFocus)
+            if (!mainVerticalGridView.navScrollActive) {
+                syncTopBarVisibility()
+            }
+            if (assistantButtonsContainer.isVisible) {
+                collapseAssistantPanel()
+            }
         }
     }
 
-    // Row 0 is the true top of the desktop: it can only be attached once
-    // nothing is scrolled above it.
     private fun isGridAtTop(): Boolean {
         val lm = mainVerticalGridView.layoutManager
             as? androidx.recyclerview.widget.LinearLayoutManager ?: return true
-        return lm.findViewByPosition(0) != null
+        val row0 = lm.findViewByPosition(0) ?: return false
+        return row0.top <= mainVerticalGridView.paddingTop
     }
 
-    // Push a clipped row 0 back down to the inset line under the bar.
-    private fun snapGridToTop() {
-        val lm = mainVerticalGridView.layoutManager
-            as? androidx.recyclerview.widget.LinearLayoutManager ?: return
-        val row0 = lm.findViewByPosition(0) ?: return
-        val delta = row0.top - mainVerticalGridView.paddingTop
-        if (delta < 0) {
-            mainVerticalGridView.scrollBy(0, delta)
+    // Focus is the matrix cell (0,0): its card view exists once row 0 is
+    // bound and the matrix is built, so retry until the cell resolves.
+    private fun matrixFirstCellFocus(retries: Int = 25) {
+        val target = mainVerticalGridView.matrixFirstCard()
+        if (target != null) {
+            target.requestFocus()
+            return
+        }
+        if (retries > 0) {
+            mainVerticalGridView.postDelayed({ matrixFirstCellFocus(retries - 1) }, 200)
         }
     }
 
-    // Auto-hide: slide the top bar out when the user scrolls deeper into the rows
-    private var topBarAutoHidden = false
-    private var topBarScrollAccum = 0
+    private var topBarVisible = true
+    private var assistantPanelExpanding = false
+
+    private fun setTopBarVisible(visible: Boolean) {
+        topBarContainer.descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
+        if (topBarVisible == visible) return
+        topBarVisible = visible
+        topBarContainer.animate()
+            .alpha(if (visible) 1f else 0f)
+            .setDuration(150)
+            .start()
+    }
+
+    private fun syncTopBarVisibility() {
+        val focusInBar = currentFocus?.let { isTopBarDescendant(it) } == true
+        val visible = focusInBar || !sharedPreferences.topBarAutoHide || isGridAtTop()
+        setTopBarVisible(visible)
+    }
 
     private val topBarScrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            if (!sharedPreferences.topBarAutoHide) {
-                return
-            }
-            if (dy > 0) {
-                topBarScrollAccum += dy
-                if (topBarScrollAccum > 40) {
-                    hideTopBar()
-                }
-            } else if (dy < 0 && isGridAtTop()) {
-                snapGridToTop()
-                showTopBar()
-            }
-        }
-
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            topBarScrollAccum = 0
-            if (newState == RecyclerView.SCROLL_STATE_IDLE && isGridAtTop()) {
-                snapGridToTop()
-                showTopBar()
+            if (newState == RecyclerView.SCROLL_STATE_IDLE && !mainVerticalGridView.navScrollActive) {
+                syncTopBarVisibility()
             }
         }
-    }
-
-    private fun showTopBar() {
-        if (!topBarAutoHidden) {
-            return
-        }
-        topBarAutoHidden = false
-        topBarContainer.descendantFocusability = ViewGroup.FOCUS_BEFORE_DESCENDANTS
-        topBarContainer.animate()
-            .translationY(0f)
-            .alpha(1f)
-            .setDuration(150)
-            .start()
-    }
-
-    private fun hideTopBar() {
-        if (topBarAutoHidden || topBarContainer.height == 0) {
-            return
-        }
-        topBarAutoHidden = true
-        topBarContainer.animate()
-            .translationY(-topBarContainer.height.toFloat())
-            .alpha(0f)
-            .setDuration(150)
-            .withEndAction {
-                if (topBarAutoHidden) {
-                    topBarContainer.descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
-                }
-            }
-            .start()
     }
 
     private fun applyTopBarAutoHide() {
-        if (!sharedPreferences.topBarAutoHide) {
-            showTopBar()
-        }
+        syncTopBarVisibility()
     }
 
     private var assistAvailable = false
@@ -430,9 +396,29 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             clockTextView.textSize = sharedPreferences.clockTextSize.toFloat()
         }
 
-                mainVerticalGridView.upEscapeAction = {
-            showTopBar()
-            findTopBarFocusable()
+        mainVerticalGridView.upEscapeAction = {
+            setTopBarVisible(true)
+            val items = ArrayList<View>()
+            collectTopBarFocusables(topBarContainer, items)
+            val focused = currentFocus
+            val nearest = if (focused == null || items.isEmpty()) {
+                findTopBarFocusable()
+            } else {
+                val focusedLoc = IntArray(2)
+                focused.getLocationOnScreen(focusedLoc)
+                val focusedX = focusedLoc[0] + focused.width / 2
+                items.minByOrNull { item ->
+                    val loc = IntArray(2)
+                    item.getLocationOnScreen(loc)
+                    kotlin.math.abs(loc[0] + item.width / 2 - focusedX)
+                }
+            }
+            if (nearest === assistantHintImageView) {
+                expandAssistantPanel()
+                voiceAssistantButton
+            } else {
+                nearest
+            }
         }
     }
 
@@ -493,7 +479,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                                                     onOrderChanged = { order ->
                                                         persistCollectionOrder(collection.id, order)
                                                     }
-                                                }
+                                                }.also { mainVerticalGridView.registerMatrixModel(it) }
                                             }.apply {
                                                 gridMode = collection.grid
                                                 gridColumns = collection.gridColumns
@@ -513,6 +499,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                                                     channel.first.id
                                                 ) {
                                                     PreviewProgramsAdapter(channel.first.title)
+                                                        .also { mainVerticalGridView.registerMatrixModel(it) }
                                                 }.apply {
                                                     channel.second?.let { previewPrograms ->
                                                         submitList(previewPrograms)
@@ -583,7 +570,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                                     }
                                 // The "add apps" card is only needed for empty collections;
                                 // non-empty rows are managed through the app card menus.
-                                collectionAdapters.getOrPut(collection.id) { CollectionAdapter() }
+                                collectionAdapters.getOrPut(collection.id) {
+                                    CollectionAdapter().also { mainVerticalGridView.registerMatrixModel(it) }
+                                }
                                     .submitList(
                                         if (items.isEmpty()) {
                                             listOf(
@@ -632,23 +621,26 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
                 applyBackground()
                 mainVerticalGridView.adapter = mainVerticalAdapter
+                mainVerticalGridView.attachMatrixSource(mainVerticalAdapter)
+                mainVerticalGridView.registerMatrixModel(allAppsAdapter)
+                mainVerticalGridView.registerMatrixModel(favoritesAdapter)
+                mainVerticalGridView.registerMatrixModel(watchNextAdapter)
                 mainVerticalGridView.scrollToTop()
                 mainVerticalGridView.viewTreeObserver.addOnGlobalFocusChangeListener(mainFocusScrollListener)
                 mainVerticalGridView.addOnScrollListener(topBarScrollListener)
-                        mainVerticalGridView.upEscapeAction = {
-            showTopBar()
-            findTopBarFocusable()
-        }
+                // The FINAL inset, not the animating one: a fit measured
+                // mid-unfold would compute delta against a moving bound.
+                mainVerticalGridView.fitTopBound = {
+                    topBarContainer.height
+                }
+                mainVerticalGridView.navScrollEndAction = {
+                    syncTopBarVisibility()
+                }
                 setupTopBarScrim()
+                topBarContainer.descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
                 topBarContainer.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
                     if (bottom != oldBottom) {
                         applyMainGridTopInset()
-                        // Keep row 0 snug under the new bar height when the list
-                        // rests at the top (bar grew/shrank under the assistant,
-                        // clock or search toggles).
-                        if (isGridAtTop()) {
-                            mainVerticalGridView.post { snapGridToTop() }
-                        }
                     }
                 }
                 topBarContainer.post { applyMainGridTopInset() }
@@ -682,6 +674,15 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                     setupAssistantButtons(assistIntent)
                 }
                 applyTopBarPreferences()
+
+                assistantHintImageView.setOnClickListener {
+                    expandAssistantPanel()
+                }
+                assistantHintImageView.setOnFocusChangeListener { _, hasFocus ->
+                    if (hasFocus && !assistantHintImageView.isInTouchMode()) {
+                        expandAssistantPanel()
+                    }
+                }
 
                 favoritesAdapter.onFavoritesChangedCallback = {
                     sharedPreferences.favoriteApps = it
@@ -724,6 +725,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                     }
                 }
         handleHomePress()
+        matrixFirstCellFocus()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -737,30 +739,20 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         // real stop (another app took over) happens when returning from an
         // app. Never stopped means the desktop was on screen the whole time.
         if (homeIntent && !activityStopped && !RecentsActivity.isShowing()) {
-            showTopBar()
-            @Suppress("RestrictedApi")
             mainVerticalGridView.post {
                 val lm = mainVerticalGridView.layoutManager as?
-                    androidx.leanback.widget.GridLayoutManager
-                // Plain scrollToPosition gets re-anchored by leanback's focus
-                // machinery to the old focused row on long distances; scrollBy
-                // is immediate and loops until row 0 is really attached.
-                if (lm != null) {
-                    var guard = 0
-                    while (lm.findViewByPosition(0) == null && guard < 24) {
-                        mainVerticalGridView.scrollBy(0, -mainVerticalGridView.height.coerceAtLeast(1))
-                        guard++
-                    }
+                    androidx.recyclerview.widget.LinearLayoutManager
+                // scrollBy is immediate and loops until row 0 is really
+                // attached; scrollToTop then lands it on the inset line, and
+                // reaching the top fires the visibility sync on scroll.
+                var guard = 0
+                while (lm != null && lm.findViewByPosition(0) == null && guard < 24) {
+                    mainVerticalGridView.scrollBy(0, -mainVerticalGridView.height.coerceAtLeast(1))
+                    guard++
                 }
                 mainVerticalGridView.scrollToTop()
-                snapGridToTop()
                 mainVerticalGridView.post {
-                    snapGridToTop()
-                    val row = lm?.findViewByPosition(0)
-                    val cards = mutableListOf<View>()
-                    if (row != null) mainVerticalGridView.collectAttachedCards(row, cards)
-                    (cards.firstOrNull() ?: row ?: mainVerticalGridView).requestFocus()
-                    mainVerticalGridView.post { snapGridToTop() }
+                    matrixFirstCellFocus()
                 }
             }
         }
@@ -845,15 +837,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         applyBackground()
         applyBackgroundPerfPreferences()
         applyTopBarPreferences()
-        showTopBar()
         checkCardSizeChanges()
         dismissStaleModalTasks()
-        mainVerticalGridView.post {
-                    mainVerticalGridView.upEscapeAction = {
-            showTopBar()
-            findTopBarFocusable()
-        }
-        }
     }
 
     private fun dismissStaleModalTasks() {
@@ -1210,6 +1195,15 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     // (which jumps into the card rows).
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
         val code = event.keyCode
+        if (event.action == KeyEvent.ACTION_DOWN && isInsideTopBar(currentFocus ?: return super.dispatchKeyEvent(event))) {
+            if (code == KeyEvent.KEYCODE_DPAD_DOWN) {
+                // Re-entry into the grid is the first visible card, never a
+                // geometric guess of the pixel FocusFinder.
+                if (mainVerticalGridView.focusFirstVisibleCard()) {
+                    return true
+                }
+            }
+        }
         if (event.action == KeyEvent.ACTION_DOWN &&
             (code == KeyEvent.KEYCODE_DPAD_LEFT || code == KeyEvent.KEYCODE_DPAD_RIGHT)
         ) {
@@ -1217,13 +1211,28 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             if (focused != null && isInsideTopBar(focused)) {
                 val items = ArrayList<View>()
                 collectTopBarFocusables(topBarContainer, items)
-                items.sortBy { it.x }
+                items.sortBy { item ->
+                    val loc = IntArray(2)
+                    item.getLocationOnScreen(loc)
+                    loc[0]
+                }
                 val index = items.indexOf(focused)
-                if (index >= 0 &&
-                    (code == KeyEvent.KEYCODE_DPAD_LEFT && index == 0 ||
-                            code == KeyEvent.KEYCODE_DPAD_RIGHT && index == items.size - 1)
-                ) {
-                    return true
+                if (index >= 0) {
+                    if (code == KeyEvent.KEYCODE_DPAD_LEFT) {
+                        if (index == 0) return true
+                        val previous = items[index - 1]
+                        if (previous === assistantHintImageView) {
+                            expandAssistantPanel()
+                            voiceAssistantButton.requestFocus()
+                        } else {
+                            previous.requestFocus(View.FOCUS_LEFT)
+                        }
+                        return true
+                    } else {
+                        if (index == items.size - 1) return true
+                        items[index + 1].requestFocus(View.FOCUS_RIGHT)
+                        return true
+                    }
                 }
             }
         }
@@ -1284,18 +1293,24 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         view.isEnabled && view.visibility == View.VISIBLE
 
     private fun expandAssistantPanel() {
+        if (assistantButtonsContainer.isVisible) return
+        assistantPanelExpanding = true
+        setTopBarVisible(true)
         assistantTransition.removeTarget(assistantHintImageView)
         assistantTransition.addTarget(assistantButtonsContainer)
         TransitionManager.beginDelayedTransition(topBarContainer, assistantTransition)
         assistantHintImageView.isVisible = false
         assistantButtonsContainer.isVisible = true
-
+        voiceAssistantButton.isFocusable = true
+        keyboardAssistantButton.isFocusable = true
+        voiceAssistantButton.requestFocus()
         voiceAssistantButton.post {
-            voiceAssistantButton.requestFocus()
+            assistantPanelExpanding = false
         }
     }
 
     private fun collapseAssistantPanel() {
+        if (assistantPanelExpanding) return
         assistantTransition.removeTarget(assistantButtonsContainer)
         assistantTransition.addTarget(assistantHintImageView)
         TransitionManager.beginDelayedTransition(topBarContainer, assistantTransition)
@@ -1315,15 +1330,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             startActivity(keyboardAssistantIntent)
         }
 
-        assistantHintImageView.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                expandAssistantPanel()
-            }
-        }
-
         val assistantButtonFocusListener = View.OnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
-                if (!keyboardAssistantButton.hasFocus() && !voiceAssistantButton.hasFocus()) {
+                val focus = currentFocus
+                if (focus != null && !isTopBarDescendant(focus)) {
                     collapseAssistantPanel()
                 }
             }
@@ -1550,7 +1560,16 @@ class MainVerticalGridView @JvmOverloads constructor(
         // A standard LinearLayoutManager always re-derives positions from the actual
         // measured child heights; leanback's GridLayoutManager reuses stale cached row
         // sizes after a row's height changes, which stacks rows on each other.
-        layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context, VERTICAL, false)
+        // onRequestChildFocus returning true suppresses RecyclerView's instant
+        // scroll-to-child; the fit is animated by fitFocusedCard instead.
+        layoutManager = object : androidx.recyclerview.widget.LinearLayoutManager(context, VERTICAL, false) {
+            override fun onRequestChildFocus(
+                parent: RecyclerView,
+                state: RecyclerView.State,
+                child: View,
+                focused: View?
+            ): Boolean = true
+        }
         val spacing = (8f * resources.displayMetrics.density).toInt()
         addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(
@@ -1569,147 +1588,234 @@ class MainVerticalGridView @JvmOverloads constructor(
             ?.scrollToPositionWithOffset(0, paddingTop)
     }
 
-    override fun requestChildFocus(child: View, focused: View) {
-        val inGrid = isInMainGrid(focused)
-        // Must be sampled before stopScroll(): while a smooth-scroll pass is running
-        // (state SETTLING) the rule must not scrollBy from inside it.
-        val busy = inLayoutPass || scrollState != RecyclerView.SCROLL_STATE_IDLE
-        if (inGrid) stopScroll()
-        super.requestChildFocus(child, focused)
-        if (inGrid) {
-            stopScroll()
-            if (busy) {
-                post {
-                    findFocus()?.let { if (isInMainGrid(it)) ensureFocusedVisible(it) }
+    // Re-entry target from the top bar: the leftmost card of the first
+    // visible row, focused downward and fitted with the usual animation.
+    fun focusFirstVisibleCard(): Boolean {
+        val lm = layoutManager as? androidx.recyclerview.widget.LinearLayoutManager ?: return false
+        val rowPos = lm.findFirstVisibleItemPosition()
+        if (rowPos == RecyclerView.NO_POSITION) {
+            return false
+        }
+        val row = lm.findViewByPosition(rowPos) ?: return false
+        val cards = ArrayList<View>()
+        fun collect(v: View) {
+            if (v.isFocusable && v.visibility == View.VISIBLE && v.isEnabled) {
+                cards.add(v)
+            }
+            if (v is ViewGroup) {
+                for (i in 0 until v.childCount) {
+                    collect(v.getChildAt(i))
                 }
-            } else {
-                ensureFocusedVisible(focused)
             }
         }
+        collect(row)
+        val target = cards.minByOrNull { it.x } ?: return false
+        target.requestFocus(View.FOCUS_DOWN)
+        fitFocusedCard(target)
+        return true
     }
 
-    private var inLayoutPass = false
+    // Address of the cell holding the current grid focus. A data update
+    // re-binds rows and can detach the focused view; this cell is where
+    // focus is re-anchored, so a background refresh can never strand it.
+    private var lastCell: Pair<Int, Int>? = null
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        viewTreeObserver.addOnGlobalFocusChangeListener(globalFocusListener)
+    }
+
+    override fun onDetachedFromWindow() {
+        viewTreeObserver.removeOnGlobalFocusChangeListener(globalFocusListener)
+        super.onDetachedFromWindow()
+    }
+
+
+    // Glides the viewport one measured row step at a time: the caller names
+    // the row the viewport sits on NOW, so a press can never travel more
+    // than the single matrix step to its neighbor.
+    private var pendingOffset = 0
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        inLayoutPass = true
-        try {
-            super.onLayout(changed, l, t, r, b)
-        } finally {
-            inLayoutPass = false
+        super.onLayout(changed, l, t, r, b)
+        if (lastCell != null) {
+            post { tryLandPending() }
         }
     }
 
-    private fun ensureFocusedVisible(focused: View) {
-        if (width == 0 || height == 0) return
-        // A view detached during a row rebuild may still deliver a pending focus
-        // request here; rect math on a detached view crashes, so skip it.
-        var parent = focused.parent
-        var descendant = false
-        while (parent != null) {
-            if (parent === this) {
-                descendant = true
-                break
-            }
-            parent = parent.parent
+    var navScrollActive = false
+    var navScrollEndAction: (() -> Unit)? = null
+    private var navScrollToken = 0
+
+    private fun finishNavScroll() {
+        navScrollActive = false
+        navScrollEndAction?.invoke()
+    }
+
+    private fun animateScroll(delta: Int) {
+        val token = ++navScrollToken
+        fitAnimator?.cancel()
+        if (delta == 0) {
+            finishNavScroll()
+            return
         }
-        if (!descendant) return
+        navScrollActive = true
+        val duration = travelDuration(delta)
+        var applied = 0
+        fitAnimator = android.animation.ValueAnimator.ofInt(0, delta).apply {
+            this.duration = duration
+            interpolator = DecelerateInterpolator(1.2f)
+            addUpdateListener { animator ->
+                val value = animator.animatedValue as Int
+                scrollBy(0, value - applied)
+                applied = value
+            }
+            addListener(object : android.animation.AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: android.animation.Animator) {
+                    if (token != navScrollToken) return
+                    finishNavScroll()
+                    tryLandPending()
+                }
+            })
+            start()
+        }
+    }
+
+    private val globalFocusListener = android.view.ViewTreeObserver.OnGlobalFocusChangeListener { _, newFocus ->
+        if (newFocus != null && isInMainGrid(newFocus)) {
+            lastCell = coordOf(newFocus)
+            return@OnGlobalFocusChangeListener
+        }
+        if (lastCell != null) tryLandPending()
+    }
+
+    // Landing is event-driven, never polled: cards materialize in layout
+    // passes and adapter data events, so those are the only places that
+    // re-check the pending anchor. The pending target is set by the press
+    // path; while it is pending, repeat presses are no-ops (single gate in
+    // targetFromCoordinate).
+    private fun tryLandPending() {
+        val coord = lastCell ?: return
+        val cell = matrixCell(coord.first, coord.second) ?: return
+        val target = resolveCell(cell)
+        if (target != null) {
+            if (findFocus() !== target) {
+                target.requestFocus()
+                fitFocusedCard(target)
+            }
+            return
+        }
+        val lm = layoutManager as? androidx.recyclerview.widget.LinearLayoutManager ?: return
+        if (scrollState == RecyclerView.SCROLL_STATE_IDLE &&
+            fitAnimator?.isRunning != true && lm.findViewByPosition(cell.rowPos) == null
+        ) {
+            lm.scrollToPositionWithOffset(cell.rowPos, pendingOffset)
+        }
+    }
+
+    // Scroll speed law for every nav motion: fixed ~0.67 px per ms
+    // (2 px travel = 3 ms), so duration grows linearly with the distance.
+    private fun travelDuration(distance: Int): Long = kotlin.math.abs(distance) * 2L / 3L
+
+    var fitTopBound: (() -> Int)? = null
+
+    private var fitAnimator: android.animation.ValueAnimator? = null
+
+    private fun fitFocusedCard(focused: View) {
+        if (width == 0 || height == 0) {
+            finishNavScroll()
+            return
+        }
+        if (isLayoutRequested || focused.isLayoutRequested) {
+            post { findFocus()?.let { if (isInMainGrid(it)) fitFocusedCard(it) } }
+            return
+        }
+        animateScroll(fitDeltaFor(focused))
+    }
+
+    // Scroll delta needed for the given card to fully fit the usable viewport
+    // (label and final 1.1x focus size included); 0 when already inside.
+    private fun fitDeltaFor(card: View): Int {
+        if (width == 0 || height == 0) return 0
         val rect = Rect()
-        focused.getFocusedRect(rect)
-        (focused.findViewById<View>(R.id.app_name) ?: focused.findViewById(R.id.title))?.let { name ->
+        card.getFocusedRect(rect)
+        (card.findViewById<View>(R.id.app_name) ?: card.findViewById(R.id.title))?.let { name ->
             rect.bottom += name.height + (8f * resources.displayMetrics.density).toInt()
         }
-        val sx = focused.scaleX
-        val sy = focused.scaleY
+        val sx = maxOf(card.scaleX, 1.1f)
+        val sy = maxOf(card.scaleY, 1.1f)
         if (sx != 1f || sy != 1f) {
-            val px = focused.pivotX
-            val py = focused.pivotY
+            val px = card.pivotX
+            val py = card.pivotY
             rect.left = (px + (rect.left - px) * sx).toInt()
             rect.right = (px + (rect.right - px) * sx).toInt()
             rect.top = (py + (rect.top - py) * sy).toInt()
             rect.bottom = (py + (rect.bottom - py) * sy).toInt()
         }
-        offsetDescendantRectToMyCoords(focused, rect)
-        val delta = when {
-            rect.top < paddingTop -> rect.top - paddingTop
+        offsetDescendantRectToMyCoords(card, rect)
+        val topBound = fitTopBound?.invoke() ?: paddingTop
+        return when {
+            rect.top < topBound -> rect.top - topBound
             rect.bottom > height - paddingBottom -> rect.bottom - (height - paddingBottom)
             else -> 0
         }
-        if (delta != 0) {
-            scrollBy(0, delta)
-        }
     }
-
-    private var pendingRerunDirection = 0
-    private var pendingRerunCoord: Pair<Int, Int>? = null
 
     // Vertical D-pad inside the main grid is resolved by the address matrix
     // only: androidx RecyclerView.dispatchKeyEvent would otherwise run its own
     // performFocusSearch (pixel FocusFinder) for DPAD_UP/DOWN.
     override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
         val code = event?.keyCode ?: return super.dispatchKeyEvent(event)
-        if (event.action == KeyEvent.ACTION_DOWN &&
-            (code == KeyEvent.KEYCODE_DPAD_DOWN || code == KeyEvent.KEYCODE_DPAD_UP) &&
-            findFocus()?.let { isInMainGrid(it) } == true
+        if (event.action != KeyEvent.ACTION_DOWN ||
+            (code != KeyEvent.KEYCODE_DPAD_DOWN && code != KeyEvent.KEYCODE_DPAD_UP)
         ) {
-            // A fresh key press supersedes a scheduled post-scroll re-run.
-            pendingRerunDirection = 0
-            pendingRerunCoord = null
-            val focused = findFocus()!!
-            val direction = if (code == KeyEvent.KEYCODE_DPAD_UP) mainFocusSearchUp else mainFocusSearchDown
-            val target = verticalFocusSearch(focused, direction)
-            if (target != null) {
-                val ok = target.requestFocus(direction)
-                Log.d("NavDbg", "dk code=$code target=${System.identityHashCode(target)} ok=$ok")
-                return true
-            }
-            Log.d("NavDbg", "dk code=$code no-target pending=$pendingRerunDirection")
-            if (pendingRerunDirection != 0) return true
-            if (code == KeyEvent.KEYCODE_DPAD_UP) {
-                if (isFirstMainRow(focused)) {
-                    val fallback = upEscapeAction?.invoke()
-                    Log.d("NavDbg", "dk UP edge fallback=${fallback?.let { System.identityHashCode(it) }}")
-                    fallback?.requestFocus(mainFocusSearchUp)
-                }
-                return true
-            }
             return super.dispatchKeyEvent(event)
         }
-        return super.dispatchKeyEvent(event)
+        val direction = if (code == KeyEvent.KEYCODE_DPAD_UP) mainFocusSearchUp else mainFocusSearchDown
+        var focused = findFocus()
+        if (focused == null || !isInMainGrid(focused)) {
+            // Focus vanished (detached by a nested re-bind) or is mid-transition
+            // in the container: continue the press from the anchor cell; the
+            // pending transition itself is completed by layout/data events.
+            // Focus parked on the bar is a
+            // deliberate location (lastCell cleared) - untouched.
+            val cell = lastCell?.let { matrixCell(it.first, it.second) } ?: return super.dispatchKeyEvent(event)
+            val reentry = resolveCell(cell) ?: run {
+                tryLandPending()
+                return true
+            }
+            reentry.requestFocus()
+            focused = reentry
+        }
+        val target = verticalFocusSearch(focused, direction)
+        if (target != null) {
+            target.requestFocus(direction)
+            stopScroll()
+            animateScroll(fitDeltaFor(target))
+        } else if (code == KeyEvent.KEYCODE_DPAD_UP && isFirstMainRow(focused)) {
+            lastCell = null
+            val barTarget = upEscapeAction?.invoke()
+            if (barTarget?.requestFocus(mainFocusSearchUp) == true) return true
+            return super.dispatchKeyEvent(event)
+        }
+        // Consume every DPAD inside the grid: passing it to RecyclerView
+        // would run the pixel FocusFinder and tear focus off the matrix.
+        return true
     }
 
     override fun focusSearch(focused: View?, direction: Int): View? {
         val target = focused ?: return null
-        // Any fresh key press supersedes a scheduled post-scroll re-run.
-        pendingRerunDirection = 0
         if (!isInMainGrid(target)) {
             return super.focusSearch(target, direction)
         }
-
-        return when (direction) {
-            mainFocusSearchUp -> {
-                val up = verticalFocusSearch(target, direction)
-                if (up != null) return up
-                null
-            }
-            mainFocusSearchDown -> verticalFocusSearch(target, direction)
-            else -> super.focusSearch(target, direction)
+        return if (direction == mainFocusSearchUp || direction == mainFocusSearchDown) {
+            verticalFocusSearch(target, direction)
+        } else {
+            super.focusSearch(target, direction)
         }
     }
 
-    private fun rerunFocusSearch() {
-        if (pendingRerunDirection == 0) return
-        val dir = pendingRerunDirection
-        pendingRerunDirection = 0
-        val coord = pendingRerunCoord
-        pendingRerunCoord = null
-        val next = if (coord != null) targetFromCoordinate(coord, dir)
-            else findFocus()?.let { focusSearch(it, dir) }
-        next?.requestFocus(
-            if (dir == mainFocusSearchUp) View.FOCUS_UP else View.FOCUS_DOWN
-        )
-    }
-
-    private fun isFirstMainRow(target: View): Boolean {
+    fun isFirstMainRow(target: View): Boolean {
         val row = findMainGridChild(target) ?: return false
         // Adapter position 0, not the first attached child: when scrolled deep,
         // child index 0 is just the top visible row and must not escape to the top bar.
@@ -1756,27 +1862,6 @@ class MainVerticalGridView @JvmOverloads constructor(
         return if (shape.isGrid) ((shape.count + shape.span - 1) / shape.span).coerceAtLeast(1) else 1
     }
 
-    private fun globalYInfo(globalY: Int): Triple<Int, Int, Int>? {
-        if (globalY < 0) return null
-        var y = 0
-        val main = adapter as? MainVerticalAdapter ?: return null
-        for (rowPos in 0 until main.itemCount) {
-            val shape = rowShape(rowPos)
-            val lines = lineCount(rowPos)
-            if (globalY < y + lines) {
-                val line = globalY - y
-                val width = if (shape.isGrid) {
-                    (shape.count - line * shape.span).coerceAtMost(shape.span).coerceAtLeast(1)
-                } else {
-                    shape.count.coerceAtLeast(1)
-                }
-                return Triple(rowPos, line, width)
-            }
-            y += lines
-        }
-        return null
-    }
-
     private fun globalYStart(rowPos: Int): Int {
         var y = 0
         for (i in 0 until rowPos) y += lineCount(i)
@@ -1784,45 +1869,57 @@ class MainVerticalGridView @JvmOverloads constructor(
     }
 
     // Card view with the adapter index inside the row view of rowPos.
-    private fun cardViewAt(row: View, index: Int): View? {
-        if (row.visibility != View.VISIBLE) return null
-        if (row is RecyclerView) {
-            for (i in 0 until row.childCount) {
-                val child = row.getChildAt(i) ?: continue
-                if (child is Card && child.visibility == View.VISIBLE &&
-                        row.getChildAdapterPosition(child) == index) return child
-            }
-            return null
+    // The matrix: every card of the main grid in its own cell, built once
+    // from the row models (adapters), not from views. (Y, X) -> cell with the
+    // row position and the card index inside the row. Rebuilt only when the
+    // models change (adapter data observer), never per key press.
+    private class NavCell(val rowPos: Int, val idx: Int)
+
+    private val navMatrix = HashMap<Pair<Int, Int>, NavCell>()
+
+    private val modelObserver = object : RecyclerView.AdapterDataObserver() {
+        override fun onChanged() { post { rebuildMatrix(); tryLandPending() } }
+        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+            post { rebuildMatrix(); tryLandPending() }
         }
-        if (row is ViewGroup) {
-            for (i in 0 until row.childCount) {
-                val child = row.getChildAt(i) ?: continue
-                val hit = cardViewAt(child, index)
-                if (hit != null) return hit
-            }
+
+        override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+            post { rebuildMatrix(); tryLandPending() }
         }
-        return null
+
+        override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
+            post { rebuildMatrix(); tryLandPending() }
+        }
     }
 
-    // Nearest attached card view to index inside the row view (a carousel may
-    // have recycled the far columns; the edge card is the right destination).
-    private fun nearestCardAt(row: View, index: Int): View? {
-        var best: View? = null
-        var bestDistance = Int.MAX_VALUE
-        val cards = mutableListOf<View>()
-        collectAttachedCards(row, cards)
-        for (card in cards) {
-            val owner = card.parent as? RecyclerView ?: continue
-            val idx = owner.getChildAdapterPosition(card)
-            if (idx == RecyclerView.NO_POSITION) continue
-            val distance = kotlin.math.abs(idx - index)
-            if (distance < bestDistance) {
-                bestDistance = distance
-                best = card
+    fun attachMatrixSource(main: MainVerticalAdapter) {
+        registerMatrixModel(main)
+        rebuildMatrix()
+    }
+
+    // Row content lives in the nested adapters; their updates never reach
+    // the main adapter's observer, so each nested adapter is registered too
+    // - the matrix always covers every card of every row.
+    fun registerMatrixModel(a: RecyclerView.Adapter<*>) {
+        a.registerAdapterDataObserver(modelObserver)
+    }
+
+    private fun rebuildMatrix() {
+        navMatrix.clear()
+        val main = adapter as? MainVerticalAdapter ?: return
+        for (rowPos in 0 until main.itemCount) {
+            val shape = rowShape(rowPos)
+            val span = if (shape.isGrid) shape.span else shape.count.coerceAtLeast(1)
+            val start = globalYStart(rowPos)
+            for (idx in 0 until shape.count) {
+                navMatrix[Pair(start + idx / span, idx % span)] = NavCell(rowPos, idx)
             }
         }
-        return best
     }
+
+    private fun matrixCell(y: Int, x: Int): NavCell? = navMatrix[Pair(y, x)]
+
+    fun matrixFirstCard(): View? = matrixCell(0, 0)?.let { resolveCell(it) }
 
     fun collectAttachedCards(view: View, result: MutableList<View>) {
         if (view.visibility != View.VISIBLE) return
@@ -1838,60 +1935,78 @@ class MainVerticalGridView @JvmOverloads constructor(
         }
     }
 
-    private fun focusedCoordinates(focused: View): Pair<Int, Int>? {
-        val row = findMainGridChild(focused) ?: return null
-        val rowPos = getChildAdapterPosition(row)
-        if (rowPos == RecyclerView.NO_POSITION) return null
-        val owner = focused.parent as? RecyclerView ?: return null
-        val idx = owner.getChildAdapterPosition(focused)
-        if (idx == RecyclerView.NO_POSITION) return null
-        val shape = rowShape(rowPos)
-        val span = if (shape.isGrid) shape.span else shape.count.coerceAtLeast(1)
-        return Pair(globalYStart(rowPos) + idx / span, idx % span)
+    // Card view of a cell inside its row view. The nearest-card fallback is
+    // restricted to the SAME matrix line: picking the closest index across
+    // lines jumps focus to another line of a grid row (a different Y) and
+    // drags the viewport several cards. A missing line stays pending until
+    // its cards bind.
+    private fun cardInRow(row: View, idx: Int, span: Int): View? {
+        val cards = mutableListOf<View>()
+        collectAttachedCards(row, cards)
+        val line = idx / span
+        var best: View? = null
+        var bestDistance = Int.MAX_VALUE
+        for (card in cards) {
+            val owner = card.parent as? RecyclerView ?: continue
+            val i = owner.getChildAdapterPosition(card)
+            if (i == RecyclerView.NO_POSITION || i / span != line) continue
+            if (i == idx) return card
+            val distance = kotlin.math.abs(i - idx)
+            if (distance < bestDistance) {
+                bestDistance = distance
+                best = card
+            }
+        }
+        return best
     }
 
-    // Pure coordinate move: (Y +-1, X clamped). Returns the target card view,
-    // or null; when the target row is not bound yet it schedules the smooth
-    // scroll and stores the source coordinate for the post-scroll re-run
-    // (the source card may be recycled away by that scroll, so the re-run
-    // must not depend on the current focus).
-    private fun targetFromCoordinate(coord: Pair<Int, Int>, direction: Int): View? {
-        val nextY = coord.first + if (direction == mainFocusSearchUp) -1 else 1
-        val info = globalYInfo(nextY) ?: return null
-        val x = coord.second.coerceAtMost(info.third - 1)
-        val shape = rowShape(info.first)
-        val targetIndex = info.second * (if (shape.isGrid) shape.span else shape.count.coerceAtLeast(1)) + x
-        val lm = layoutManager as? androidx.recyclerview.widget.LinearLayoutManager ?: return null
-        val row = lm.findViewByPosition(info.first)
-        Log.d("NavDbg", "target=($nextY,$x) rowPos=${info.first} index=$targetIndex attached=${row != null}")
-        if (row == null) {
-            pendingRerunDirection = direction
-            pendingRerunCoord = coord
-            val scroller = androidx.recyclerview.widget.LinearSmoothScroller(context)
-            scroller.targetPosition = info.first
-            val onceIdle = object : OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        removeOnScrollListener(this)
-                        post { rerunFocusSearch() }
-                    }
-                }
-            }
-            addOnScrollListener(onceIdle)
-            lm.startSmoothScroll(scroller)
-            return null
+    // Address of a focused card: structural lookup (its row view and adapter
+    // index), resolved to the matrix cell that stores exactly that card.
+    private fun coordOf(view: View): Pair<Int, Int>? {
+        val row = findMainGridChild(view) ?: return null
+        val rowPos = getChildAdapterPosition(row)
+        if (rowPos == RecyclerView.NO_POSITION) return null
+        val owner = view.parent as? RecyclerView ?: return null
+        val idx = owner.getChildAdapterPosition(view)
+        if (idx == RecyclerView.NO_POSITION) return null
+        for (entry in navMatrix.entries) {
+            if (entry.value.rowPos == rowPos && entry.value.idx == idx) return entry.key
         }
-        val hit = cardViewAt(row, targetIndex) ?: nearestCardAt(row, targetIndex)
-        Log.d("NavDbg", "hit=${hit?.let { System.identityHashCode(it) }}")
-        return hit
+        return null
+    }
+
+    private fun resolveCell(cell: NavCell): View? {
+        val lm = layoutManager as? androidx.recyclerview.widget.LinearLayoutManager ?: return null
+        val row = lm.findViewByPosition(cell.rowPos) ?: return null
+        val shape = rowShape(cell.rowPos)
+        // A carousel is a single matrix line: every attached card is a valid
+        // edge fallback there. Only grid rows must stay inside their line.
+        return cardInRow(row, cell.idx, if (shape.isGrid) shape.span else Int.MAX_VALUE)
+    }
+
+    private fun targetFromCoordinate(coord: Pair<Int, Int>, direction: Int, focused: View): View? {
+        val nextY = coord.first + if (direction == mainFocusSearchUp) -1 else 1
+        var x = coord.second
+        while (x >= 0 && matrixCell(nextY, x) == null) x--
+        val cell = matrixCell(nextY, x) ?: return null
+        val lm = layoutManager as? androidx.recyclerview.widget.LinearLayoutManager ?: return null
+        val card = if (lm.findViewByPosition(cell.rowPos) == null) null else resolveCell(cell)
+        if (card != null) return card
+        // Target not materialized: one exact matrix step toward it, address
+        // parked; layout/data events land focus. Repeat presses on the same
+        // pending target travel nothing.
+        if (lastCell?.let { matrixCell(it.first, it.second) } != cell) {
+            val focusedRow = findMainGridChild(focused) ?: return null
+            lastCell = Pair(nextY, x)
+            pendingOffset = focusedRow.top
+            lm.scrollToPositionWithOffset(cell.rowPos, pendingOffset)
+        }
+        return null
     }
 
     private fun verticalFocusSearch(focused: View, direction: Int): View? {
-        val coord = focusedCoordinates(focused)
-        Log.d("NavDbg", "vv dir=$direction coord=" +
-            "${coord?.let { "(${it.first},${it.second})" }} rows=${adapter?.itemCount ?: 0}")
-        if (coord == null) return null
-        return targetFromCoordinate(coord, direction)
+        val coord = coordOf(focused) ?: return null
+        return targetFromCoordinate(coord, direction, focused)
     }
 
     private fun findMainGridChild(view: View): View? {
