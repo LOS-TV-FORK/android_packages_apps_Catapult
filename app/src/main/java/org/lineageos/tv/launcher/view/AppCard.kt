@@ -147,6 +147,8 @@ class AppCard @JvmOverloads constructor(
     var moving = false
         private set
 
+    override fun isMoving() = moving
+
     fun setMoving() {
         moveOverlayView.isVisible = true
         moving = true

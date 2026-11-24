@@ -1726,6 +1726,15 @@ class MainVerticalGridView @JvmOverloads constructor(
     // path; while it is pending, repeat presses are no-ops (single gate in
     // targetFromCoordinate).
     private fun tryLandPending() {
+        // While a card is being reordered the reorder owns focus. Keep the matrix
+        // anchor glued to the moving card so that, once the move settles, the
+        // re-anchor lands on the moved card instead of the coordinate it started
+        // from (which now holds the neighbor it swapped with).
+        val focused = findFocus()
+        if (focused is Card && focused.isMoving()) {
+            lastCell = coordOf(focused)
+            return
+        }
         val coord = lastCell ?: return
         val cell = matrixCell(coord.first, coord.second) ?: return
         val target = resolveCell(cell)
@@ -1805,6 +1814,10 @@ class MainVerticalGridView @JvmOverloads constructor(
         }
         val direction = if (code == KeyEvent.KEYCODE_DPAD_UP) mainFocusSearchUp else mainFocusSearchDown
         var focused = findFocus()
+        // A card being reordered handles the D-pad itself (collection grid rows
+        // move vertically across lines). Hand the press to the card instead of
+        // running matrix navigation, which would tear focus off the moving card.
+        if (focused is Card && focused.isMoving()) return super.dispatchKeyEvent(event)
         if (focused == null || !isInMainGrid(focused)) {
             // Focus vanished (detached by a nested re-bind) or is mid-transition
             // in the container: continue the press from the anchor cell; the

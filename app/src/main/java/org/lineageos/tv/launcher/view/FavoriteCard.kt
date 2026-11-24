@@ -33,6 +33,8 @@ class FavoriteCard @JvmOverloads constructor(
     private var useIconGradient: Boolean = false
     var moving: Boolean = false
 
+    override fun isMoving() = moving
+
     init {
         inflate(context, R.layout.favorites_app_card, this)
         movable = true

@@ -40,6 +40,10 @@ abstract class Card @JvmOverloads constructor(
     var launchIntent: Intent? = null
     var hasMenu: Boolean = true
 
+    // True while this card is being reordered. The main grid's matrix re-anchor
+    // must not steal focus away from the card the user is moving.
+    open fun isMoving(): Boolean = false
+
     private var shadowDrawable: DropShadowDrawable? = null
     private var glowView: View? = null
     private var breatheAnimator: ValueAnimator? = null
