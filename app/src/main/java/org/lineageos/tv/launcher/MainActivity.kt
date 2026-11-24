@@ -1199,9 +1199,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         val code = event.keyCode
         if (event.action == KeyEvent.ACTION_DOWN && isInsideTopBar(currentFocus ?: return super.dispatchKeyEvent(event))) {
             if (code == KeyEvent.KEYCODE_DPAD_DOWN) {
-                // Re-entry into the grid is the first visible card, never a
-                // geometric guess of the pixel FocusFinder.
-                if (mainVerticalGridView.focusFirstVisibleCard()) {
+                // Re-entry lands on the card nearest, by screen X, to the bar
+                // control being left - never a pixel FocusFinder guess.
+                val barFocus = currentFocus ?: return super.dispatchKeyEvent(event)
+                val loc = IntArray(2)
+                barFocus.getLocationOnScreen(loc)
+                if (mainVerticalGridView.focusNearestCardInFirstRow(loc[0] + barFocus.width / 2)) {
                     return true
                 }
             }
@@ -1590,9 +1593,13 @@ class MainVerticalGridView @JvmOverloads constructor(
             ?.scrollToPositionWithOffset(0, paddingTop)
     }
 
-    // Re-entry target from the top bar: the leftmost card of the first
-    // visible row, focused downward and fitted with the usual animation.
-    fun focusFirstVisibleCard(): Boolean {
+    // Re-entry target from the top bar. The row edge that matters follows the
+    // side of the bar being left: a left control (search) checks the row's true
+    // first card, a right control its true last card. When that edge card is on
+    // screen, land on the card nearest (by screen X) to the control; when the
+    // row runs past the edge, land on the screen-center card. The target is
+    // already on screen, so it is only fitted when its top is above the screen.
+    fun focusNearestCardInFirstRow(fromScreenX: Int): Boolean {
         val lm = layoutManager as? androidx.recyclerview.widget.LinearLayoutManager ?: return false
         val rowPos = lm.findFirstVisibleItemPosition()
         if (rowPos == RecyclerView.NO_POSITION) {
@@ -1600,20 +1607,42 @@ class MainVerticalGridView @JvmOverloads constructor(
         }
         val row = lm.findViewByPosition(rowPos) ?: return false
         val cards = ArrayList<View>()
-        fun collect(v: View) {
-            if (v.isFocusable && v.visibility == View.VISIBLE && v.isEnabled) {
-                cards.add(v)
-            }
-            if (v is ViewGroup) {
-                for (i in 0 until v.childCount) {
-                    collect(v.getChildAt(i))
-                }
-            }
+        collectAttachedCards(row, cards)
+        if (cards.isEmpty()) return false
+        val metrics = resources.displayMetrics
+        fun centerX(v: View): Int {
+            val loc = IntArray(2)
+            v.getLocationOnScreen(loc)
+            return loc[0] + v.width / 2
         }
-        collect(row)
-        val target = cards.minByOrNull { it.x } ?: return false
+        fun onScreen(v: View): Boolean {
+            val loc = IntArray(2)
+            v.getLocationOnScreen(loc)
+            return loc[0] < metrics.widthPixels && loc[0] + v.width > 0 &&
+                loc[1] < metrics.heightPixels && loc[1] + v.height > 0
+        }
+        // The relevant row edge follows the side of the bar being left: a
+        // left-side control (search) checks the row's true first card, a
+        // right-side control its true last card. The edge is the adapter
+        // head/tail, not just the outermost attached card; when it is off-screen
+        // the row runs past that edge, so land on the screen-center card instead.
+        val owner = cards.first().parent as? RecyclerView
+        val leftSide = fromScreenX < metrics.widthPixels / 2
+        val edgePos = if (leftSide) 0 else owner?.adapter?.itemCount?.minus(1)
+        val edgeCard = if (owner != null && edgePos != null && edgePos >= 0) {
+            owner.findViewHolderForAdapterPosition(edgePos)?.itemView
+        } else {
+            if (leftSide) cards.minByOrNull { centerX(it) } else cards.maxByOrNull { centerX(it) }
+        }
+        val target = if (edgeCard != null && onScreen(edgeCard)) {
+            cards.minByOrNull { kotlin.math.abs(centerX(it) - fromScreenX) }
+        } else {
+            cards.minByOrNull { kotlin.math.abs(centerX(it) - metrics.widthPixels / 2) }
+        } ?: return false
         target.requestFocus(View.FOCUS_DOWN)
-        fitFocusedCard(target)
+        val rect = Rect(0, 0, 1, 1)
+        offsetDescendantRectToMyCoords(target, rect)
+        if (rect.top < 0) fitFocusedCard(target)
         return true
     }
 
@@ -1736,7 +1765,9 @@ class MainVerticalGridView @JvmOverloads constructor(
     }
 
     // Scroll delta needed for the given card to fully fit the usable viewport
-    // (label and final 1.1x focus size included); 0 when already inside.
+    // (label and final 1.1x focus size included); 0 when already inside. The
+    // top bound is measured against the card's real (unscaled) top: a card
+    // resting on the bar line must not be nudged down by the focus growth.
     private fun fitDeltaFor(card: View): Int {
         if (width == 0 || height == 0) return 0
         val rect = Rect()
@@ -1751,7 +1782,6 @@ class MainVerticalGridView @JvmOverloads constructor(
             val py = card.pivotY
             rect.left = (px + (rect.left - px) * sx).toInt()
             rect.right = (px + (rect.right - px) * sx).toInt()
-            rect.top = (py + (rect.top - py) * sy).toInt()
             rect.bottom = (py + (rect.bottom - py) * sy).toInt()
         }
         offsetDescendantRectToMyCoords(card, rect)
