@@ -8,11 +8,13 @@ package org.lineageos.tv.launcher.view
 import android.animation.AnimatorInflater
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Outline
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
+import android.view.ViewOutlineProvider
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -169,6 +171,20 @@ class AppCard @JvmOverloads constructor(
         applyCardShadow(cardFrame)
         bannerView.background = CardBackgroundHelper.getBannerBorderDrawable(context, radiusOverridePx)
         iconContainer.background = backgroundDrawable
+
+        // Clip the task screenshot to the visible rounded card (the frame is enlarged by the
+        // shadow padding, so inset by it to match the card body drawn by DropShadowDrawable).
+        val radius = radiusOverridePx ?: CardBackgroundHelper.cardCornerRadiusPx(context)
+        previewView?.apply {
+            clipToOutline = true
+            outlineProvider = object : ViewOutlineProvider() {
+                override fun getOutline(view: View, outline: Outline) {
+                    val pad = shadowPadding()
+                    outline.setRoundRect(pad, pad, view.width - pad, view.height - pad, radius)
+                }
+            }
+            invalidateOutline()
+        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

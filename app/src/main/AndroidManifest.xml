@@ -165,14 +165,8 @@
 
         <activity
             android:name=".ExternalLauncherActivity"
-            android:icon="@mipmap/ic_launcher"
             android:label="@string/external_launcher_picker"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="false" />
 
         <service
             android:name=".notification.TvNotificationListener"

@@ -5,8 +5,10 @@
 
 package org.lineageos.tv.launcher
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 
 class LauncherSettingsActivity : ModalActivity(R.layout.activity_launcher_settings) {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +23,16 @@ class LauncherSettingsActivity : ModalActivity(R.layout.activity_launcher_settin
         }
 
         findViewById<android.view.View>(R.id.additional_item)?.setOnClickListener {
-            startActivity(Intent(this, AdditionalSettingsActivity::class.java))
+            // Prefer the system "Default apps" screen (standard intent, works across ROMs);
+            // fall back to the in-app picker when the firmware doesn't provide it.
+            val systemIntent = Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS)
+                .addCategory(Intent.CATEGORY_DEFAULT)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            try {
+                startActivity(systemIntent)
+            } catch (e: ActivityNotFoundException) {
+                startActivity(Intent(this, ExternalLauncherActivity::class.java))
+            }
         }
 
         findViewById<android.view.View>(R.id.android_settings_item)?.setOnClickListener {
