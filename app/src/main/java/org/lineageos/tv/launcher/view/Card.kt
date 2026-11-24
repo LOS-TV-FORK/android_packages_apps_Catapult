@@ -5,11 +5,14 @@
 
 package org.lineageos.tv.launcher.view
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.LinearLayout
 import org.lineageos.tv.launcher.model.Launchable
 import org.lineageos.tv.launcher.utils.DropShadowDrawable
@@ -37,6 +40,10 @@ abstract class Card @JvmOverloads constructor(
     var launchIntent: Intent? = null
     var hasMenu: Boolean = true
 
+    private var shadowDrawable: DropShadowDrawable? = null
+    private var glowView: View? = null
+    private var breatheAnimator: ValueAnimator? = null
+
     open fun setCardInfo(appInfo: Launchable) {
         label = appInfo.label
         packageName = appInfo.packageName
@@ -53,7 +60,44 @@ abstract class Card @JvmOverloads constructor(
             lp.setMargins(-pad, -pad, -pad, -pad)
             shadowView.layoutParams = lp
         }
-        shadowView.background = DropShadowDrawable(context)
+        val shadow = DropShadowDrawable(context)
+        shadowDrawable = shadow
+        glowView = shadowView
+        shadowView.background = shadow
+        if (hasFocus()) startBreathing() else shadow.glowIntensity = 0f
+    }
+
+    override fun onFocusChanged(gainFocus: Boolean, direction: Int, previouslyFocusedRect: Rect?) {
+        super.onFocusChanged(gainFocus, direction, previouslyFocusedRect)
+        if (hasFocus()) startBreathing() else stopBreathing()
+    }
+
+    override fun onDetachedFromWindow() {
+        stopBreathing()
+        super.onDetachedFromWindow()
+    }
+
+    private fun startBreathing() {
+        val shadow = shadowDrawable ?: return
+        if (breatheAnimator?.isRunning == true) return
+        breatheAnimator = ValueAnimator.ofFloat(0.35f, 1f).apply {
+            duration = 1100
+            repeatMode = ValueAnimator.REVERSE
+            repeatCount = ValueAnimator.INFINITE
+            interpolator = AccelerateDecelerateInterpolator()
+            addUpdateListener {
+                shadow.glowIntensity = it.animatedValue as Float
+                glowView?.invalidate()
+            }
+            start()
+        }
+    }
+
+    private fun stopBreathing() {
+        breatheAnimator?.cancel()
+        breatheAnimator = null
+        shadowDrawable?.glowIntensity = 0f
+        glowView?.invalidate()
     }
 
     companion object
